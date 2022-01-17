@@ -1,0 +1,46 @@
+{
+    "duckApiUrl": "http://localhost:8081",
+    "secrets": {
+        "svc": {
+            "clientEmail": "423598292855-compute@developer.gserviceaccount.com",
+            "privateKeyFile": "sa.pem"
+        }
+    },
+    "fireDuck": {
+        "enableLogging": true,
+        "internalDomain": "gabedev.tech",
+        "duck": {
+            "lmtp": "projects/423598292855/secrets/duck-lmtp-opts/versions/latest"
+        },
+        "jet": {
+            "api": "projects/423598292855/secrets/jet-api-opts/versions/1"
+        }
+    },
+    "wildDuck": {
+        "apiKey": "projects/423598292855/secrets/wildduck-api-key/versions/latest",
+        "domain": "gabedev.tech",
+        "idPrefix": "DuckSuite",
+        "registrationEnabled": true,
+        "reservedUsernames": [
+            "abuse",
+            "admin",
+            "administrator",
+            "hostmaster",
+            "majordomo",
+            "postmaster",
+            "root",
+            "ssl-admin",
+            "webmaster"
+        ],
+        "newUser": {
+            "quota": 1024,
+            "recipients": 2000,
+            "forwards": 2000
+        }
+    },
+    "firebase": {
+        "svcAccountEmail": "firebase-adminsdk-5h5m4@boisly.iam.gserviceaccount.com",
+        "audience": "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
+        "privateKeyFile": "sa.pem"
+    }
+}

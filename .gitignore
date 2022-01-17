@@ -1,0 +1,5 @@
+.haxelib/**
+.vscode/**
+node_modules/**
+bin/**
+*.pem
