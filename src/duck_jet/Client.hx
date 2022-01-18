@@ -1,5 +1,6 @@
 package duck_jet;
 
+import tink.Chunk;
 import tink.tcp.nodejs.NodejsConnector;
 import why.Email;
 import why.email.*;
@@ -16,7 +17,6 @@ import duck_jet.Types;
 @:require(tink_tcp)
 @:await class Client extends EmailBase {
 	var api:tink.web.proxy.Remote<duck_jet.Api>;
-	
 
 	public function new(api)
 		this.api = api;
@@ -39,7 +39,7 @@ import duck_jet.Types;
 			body)).result;
 		return if (result == 'OK') Success(Noise) else {
 			final uuid = result;
-      final appConfig = boisly.AppSettings.config.duckJet;
+			final appConfig = boisly.AppSettings.config.duckJet;
 			@:await sendFiles(uuid,
 				appConfig.dropoff.protocol + "://" +
 				appConfig.dropoff.url,
@@ -49,8 +49,8 @@ import duck_jet.Types;
 		}
 	}
 
-	@:async function sendFiles(uuid:String, url, host,
-			port,
+	@:async inline function sendFiles(uuid:String, url,
+			host, port,
 			files:Array<Attachment>):Outcome<Noise, Error> {
 		var sender = Signal.trigger();
 		var outgoing = new SignalStream(sender);
@@ -71,7 +71,7 @@ import duck_jet.Types;
 			handler.toTcpHandler(url))
 			.eager();
 
-		function emit(d:haxe.io.Bytes)
+		inline function emit(d:haxe.io.Bytes)
 			return {
 				sender.trigger(Data(RawMessage.Binary(d)));
 				Resume;
@@ -97,8 +97,8 @@ import duck_jet.Types;
 						})));
 			}
 
-		@:await Promise.iterate(files.map(transmit),
-			p -> None, _ -> Some(Noise));
+		@:await Promise.inSequence(files.map(transmit));
+		emit(Chunk.EMPTY);
 		sender.trigger(End);
 		return Success(Noise);
 	}

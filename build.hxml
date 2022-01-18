@@ -4,6 +4,7 @@
 --library node-mailjet
 --library fireduck
 --library tink_tcp
+--library mime
 --library tink_await
 --library tink_macro
 --library  asys

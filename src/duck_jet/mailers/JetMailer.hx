@@ -1,5 +1,7 @@
 package duck_jet.mailers;
 
+using tink.io.Source;
+
 import haxe.io.Bytes;
 import haxe.crypto.Base64;
 import why.email.Attachment;
@@ -12,10 +14,13 @@ import why.email.*;
 import node_mailjet.email.Client as Impl;
 import NodeMailjet;
 
-typedef JetTransportOptions = {apiKey:String, apiSecret:String,
-	?options:ConnectOptions}
+typedef JetTransportOptions = {
+	apiKey:String,
+	apiSecret:String,
+	?options:ConnectOptions
+}
 
-class JetMailer extends EmailBase {
+@:await class JetMailer extends EmailBase {
 	var impl:Impl;
 
 	public function new(cfg:JetTransportOptions)
@@ -37,7 +42,7 @@ class JetMailer extends EmailBase {
 						Bcc: config.bcc.map(mkAddressList),
 						HtmlPart: config.content.html,
 						Subject: config.subject,
-						Attachments: config.attachments.map(mkAttachments)
+						Attachments: (@:await Promise.inParallel(config.attachments.map(mkAttachment)))
 					}
 				]
 			}))
@@ -49,7 +54,15 @@ class JetMailer extends EmailBase {
 			Email: whyAddress.address
 		});
 
-	function mkAttachments(whyAttachment:Attachment):ImplAttachment {
-		throw new haxe.exceptions.NotImplementedException();
+	@:async function mkAttachment(whyAttachment:Attachment):ImplAttachment {
+		return {
+			Filename: whyAttachment.filename,
+			ContentType: mime.Mime.lookup(whyAttachment.filename),
+			Base64Content: haxe.crypto.Base64.encode(@:await
+				(switch whyAttachment.source {
+					case Local(path): asys.io.File.readStream(path);
+					case Stream(source): source;
+				}).all())
+		}
 	}
 }

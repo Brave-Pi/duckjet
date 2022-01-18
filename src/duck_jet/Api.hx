@@ -114,7 +114,7 @@ interface Api {
 			});
 		}
 
-		function initiateSession(client:ConnectedClient,
+		inline function initiateSession(client:ConnectedClient,
 				m:Message) {
 			sess(({
 				var trigger:SignalTrigger<Yield<Chunk,
@@ -134,22 +134,22 @@ interface Api {
 
 		static macro function sess(e);
 
-		function continueSession(client:ConnectedClient,
+		inline function continueSession(client:ConnectedClient,
 				m:Message, session:DropoffSession) {
 			sess(({
 				if (binData.currentFile != session.currentFile)
 					saveAndCreateNew(session,
 						binData.currentFile);
-				if (binData.chunk.length == 0) {
+				if (binData.chunk.length == 0) 
 					teardown(session);
-				} else {
+				 else {
 					var chunk = tink.Chunk.ofBytes(binData.chunk);
 					session.channel.trigger(Data(chunk));
 				}
 			} : SessionContinuation));
 		}
 
-		function teardown(session:DropoffSession) {
+		inline function teardown(session:DropoffSession) {
 			session.client.close();
 			dropoffSessions.remove(session);
 			fire(session);
