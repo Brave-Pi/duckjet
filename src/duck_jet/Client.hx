@@ -16,9 +16,9 @@ import duck_jet.Types;
 @:require(tink_tcp)
 @:await class Client extends EmailBase {
 	var api:tink.web.proxy.Remote<duck_jet.Api>;
-	var appConfig:Dynamic;
+	
 
-	public function new(api, appConfig)
+	public function new(api)
 		this.api = api;
 
 	function doSend(config:EmailConfig):Promise<Noise>
@@ -39,7 +39,7 @@ import duck_jet.Types;
 			body)).result;
 		return if (result == 'OK') Success(Noise) else {
 			final uuid = result;
-
+      final appConfig = boisly.AppSettings.config.duckJet;
 			@:await sendFiles(uuid,
 				appConfig.dropoff.protocol + "://" +
 				appConfig.dropoff.url,
@@ -51,8 +51,7 @@ import duck_jet.Types;
 
 	@:async function sendFiles(uuid:String, url, host,
 			port,
-			files:Array<Attachment>):Outcome<Noise,
-			Error> {
+			files:Array<Attachment>):Outcome<Noise, Error> {
 		var sender = Signal.trigger();
 		var outgoing = new SignalStream(sender);
 		var handler:ClientHandler = function(stream) {
