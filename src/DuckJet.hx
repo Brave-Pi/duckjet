@@ -1,3 +1,4 @@
+package;
 import tink.http.containers.*;
 import tink.http.Response;
 import tink.web.routing.*;
@@ -6,9 +7,13 @@ import duck_jet.Ws;
 
 using Lambda;
 import boisly.AppSettings;
+
 @:await class DuckJet {
 	public static var handler:tink.http.Handler;
-
+  
+  // static var config:boisly.AppSettings;
+  static var client:duck_jet.Client;
+  
 	@:await public static function main() {
 		// 'testing'._(trace('test'));
 
@@ -27,13 +32,22 @@ import boisly.AppSettings;
 		#end
 		Ws.server.clientConnected.handle(controller.dropoffSession);
 		container.run(handler);
-		// final nodeHandler = #if (tink_http >= "0.10.0") this.handler.toNodeHandler.bind({}) #else NodeContainer.toNodeHandler.bind(this.handler, {}) #end;
+		// final nodeHandler = #if (tink_http >= "0.10.0") handler.toNodeHandler.bind({}) #else NodeContainer.toNodeHandler.bind(handler, {}) #end;
 	}
+  
 }
 
+// #if !macro
+
+// #end
 @:config
-class Config extends fire_duck.Config {
+class Config extends fire_duck.Config  {
 	public var duckJet:{
+    var dropoff:{
+      protocol:String,
+      url:String,
+      port:Int
+    };
 		@:optional
 		var messageRetention:Int;
 		var internalDomain:String;
@@ -44,4 +58,5 @@ class Config extends fire_duck.Config {
 			var api:boisly.Secret;
 		}
 	};
+
 }
