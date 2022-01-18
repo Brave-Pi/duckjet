@@ -10,15 +10,17 @@ import why.email.Address;
 import tink.websocket.Server;
 
 typedef DropoffSession = {
-  uuid:String, 
-  client:ConnectedClient, 
-  currentFile:String, 
-  tmp:String, 
-  channel:SignalTrigger<Yield<Chunk, Error>>,
-  attachments:Array<String>
+	uuid:String,
+	client:ConnectedClient,
+	currentFile:String,
+	tmp:String,
+	channel:SignalTrigger<Yield<Chunk, Error>>,
+	attachments:Array<String>
 };
+
 typedef SessionInitiation = {uuid:String};
-typedef SessionContinuation = {chunk:haxe.io.Bytes, currentFile:String};
+typedef SessionContinuation = {chunk:haxe.io.Bytes,
+	currentFile:String};
 
 typedef MailerConfig = {
 	from:Address,

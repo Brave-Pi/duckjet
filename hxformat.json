@@ -1,0 +1,18 @@
+{
+  "wrapping": {
+      "maxLineLength": 64,
+      "callParameter": {
+          "rules": [
+              {
+                  "type": "fillLine",
+                  "conditions": [
+                      {
+                          "cond": "lineLength >= n",
+                          "value": 32
+                      }
+                  ]
+              }
+          ]
+      }
+  }
+}

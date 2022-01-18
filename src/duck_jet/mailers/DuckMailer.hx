@@ -41,7 +41,8 @@ class DuckMailer extends EmailBase {
 		});
 
 	function mkDuckBoundary(address:String):String {
-		return '_duckkit_boundary_${Base64.encode(Bytes.ofString(address))}__';
+		return
+			'_duckkit_boundary_${Base64.encode(Bytes.ofString(address))}__';
 	}
 
 	function mkAttachments(whyAttachment:Attachment):AttachmentCreate

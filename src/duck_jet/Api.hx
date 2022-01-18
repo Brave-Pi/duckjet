@@ -15,7 +15,6 @@ import tink.http.middleware.*;
 import why.Email;
 import why.email.*;
 import duck_jet.Ws;
-
 import why.email.Address;
 import why.email.Attachment;
 import tink.CoreApi;
@@ -26,7 +25,8 @@ using Lambda;
 interface Api {
 	@:post('/send')
 	@:params(configData = header['data'])
-	function send(configData:String, body:IdealSource):{result:String};
+	function send(configData:String,
+		body:IdealSource):{result:String};
 }
 
 @:await class Impl {
@@ -35,21 +35,27 @@ interface Api {
 	var pending:Map<String, MailerConfig> = [];
 	var dropoffSessions:Array<DropoffSession> = [];
 
-	public function new(duckCfg:TransporterConfig, jetCfg:JetTransportOptions) {
+	public function new(duckCfg:TransporterConfig,
+			jetCfg:JetTransportOptions) {
 		this.duckMailer = new Nodemailer(duckCfg);
 		this.jetMailer = new JetMailer(jetCfg);
 	}
 
 	@:post('/send')
 	@:params(configData = header["data"])
-	@:async public function send(#if duckfireEnabled user:fire_duck.Session.User, #end configData:String, body:RealSource) {
+	@:async public function send(#if duckfireEnabled user:fire_duck.Session.User,
+	#end
+			configData:String, body:RealSource) {
 		#if duckfireEnabled
 		if (!user.duck.disabled) {
 		#end
 			final email:MailerConfig = tink.Serialize.decode(haxe.crypto.Base64.decode(configData));
 			#if duckfireEnabled
-			final addressesResult = @:await user.duck.api.addresses().list();
-			if (addressesResult.success && addressesResult.results.findIndex(r -> r.address == email.from.address) != -1) {
+			final addressesResult = @:await user.duck.api.addresses()
+				.list();
+			if (addressesResult.success
+				&& addressesResult.results.findIndex(r ->
+					r.address == email.from.address) != -1) {
 			#end
 				final uuid = '${js.npm.Uuid.v4()}';
 				email.body = @:await body.all();
@@ -58,7 +64,8 @@ interface Api {
 					haxe.Timer.delay(() -> {
 						pending.remove(uuid);
 					},
-						1000 * 60 * (if (boisly.AppSettings.config.duckJet.messageRetention != null) boisly.AppSettings.config.duckJet.messageRetention else
+						1000 * 60 * (if (boisly.AppSettings.config.duckJet.messageRetention != null)
+							boisly.AppSettings.config.duckJet.messageRetention else
 							10)); // expire pending email after 10 mins
 					return {result: uuid};
 				} else {
@@ -68,7 +75,8 @@ interface Api {
 			#if duckfireEnabled
 			}
 			else if (!addressesResult.success) {
-				throw Error.withData("Something went wrong", addressesResult);
+				throw Error.withData("Something went wrong",
+					addressesResult);
 			} else {
 				throw new Error(Unauthorized, "Unauthorized");
 			}
@@ -78,13 +86,14 @@ interface Api {
 			}
 			#end
 		}
-    
+
 		@:all('/dropoff')
 		public function dropoff(ctx:tink.web.routing.Context) @:privateAccess {
 			trace('droppin off');
 			var wsHandler = DuckJet.handler.applyMiddleware(new WebSocket(Ws.server.handle));
 			trace('processing..');
-			return try wsHandler.process(ctx.request) catch (e) {
+			return try wsHandler.process(ctx.request)
+			catch (e) {
 				trace(e);
 				throw Error.withData("dropoff error", e);
 			};
@@ -93,7 +102,8 @@ interface Api {
 		public function dropoffSession(client:ConnectedClient) {
 			trace('welcome to the dropoff');
 			client.messageReceived.handle(m -> {
-				var thisSession = dropoffSessions.find(s -> s.client == client);
+				var thisSession = dropoffSessions.find(s ->
+					s.client == client);
 				if (thisSession == null)
 					initiateSession(client, m);
 				else
@@ -101,9 +111,11 @@ interface Api {
 			});
 		}
 
-		function initiateSession(client:ConnectedClient, m:Message) {
+		function initiateSession(client:ConnectedClient,
+				m:Message) {
 			sess(({
-				var trigger:SignalTrigger<Yield<Chunk, Error>> = Signal.trigger();
+				var trigger:SignalTrigger<Yield<Chunk,
+					Error>> = Signal.trigger();
 				final tmp = '${js.npm.Uuid.v4()}.tmp';
 				dropoffSessions.push({
 					client: client,
@@ -111,17 +123,20 @@ interface Api {
 					currentFile: null,
 					channel: trigger,
 					attachments: [],
-					tmp: ensureDirectory('./dropoff/${binData.uuid}/') + tmp
+					tmp: ensureDirectory('./dropoff/${binData.uuid}/') +
+					tmp
 				});
 			} : SessionInitiation));
 		}
 
-		
-    static macro function sess(e);
-		function continueSession(client:ConnectedClient, m:Message, session:DropoffSession) {
+		static macro function sess(e);
+
+		function continueSession(client:ConnectedClient,
+				m:Message, session:DropoffSession) {
 			sess(({
 				if (binData.currentFile != session.currentFile)
-					saveAndCreateNew(session, binData.currentFile);
+					saveAndCreateNew(session,
+						binData.currentFile);
 				if (binData.chunk.length == 0) {
 					teardown(session);
 				} else {
@@ -145,22 +160,26 @@ interface Api {
 				cwd;
 			}, '');
 
-		function saveAndCreateNew(session:DropoffSession, newFile:String) {
+		function saveAndCreateNew(session:DropoffSession,
+				newFile:String) {
 			if (session.currentFile != null) {
 				session.channel.trigger(End);
-				final dest = ensureDirectory('./dropoff/${session.uuid}/') + session.currentFile;
+				final dest = ensureDirectory('./dropoff/${session.uuid}/')
+					+ session.currentFile;
 				sys.FileSystem.rename(session.tmp, dest);
 				session.attachments.push(dest);
 			}
 
 			session.tmp = '${js.npm.Uuid.v4()}.tmp';
 			session.currentFile = newFile;
-			var writeStream = asys.io.File.writeStream(ensureDirectory('./dropoff/${session.uuid}/') + session.tmp);
+			var writeStream = asys.io.File.writeStream(ensureDirectory('./dropoff/${session.uuid}/')
+				+ session.tmp);
 			var inStream:RealSource = new SignalStream(session.channel);
 			inStream.pipeTo(writeStream).eager();
 		}
 
-		function fire(?mail:MailerConfig, ?session:DropoffSession) {
+		function fire(?mail:MailerConfig,
+				?session:DropoffSession) {
 			if (mail == null)
 				if (session != null)
 					mail = pending.get(session.uuid)
@@ -168,11 +187,15 @@ interface Api {
 					throw 'mail config or dropoff session required';
 			final config:EmailConfig = cast mail;
 			if (session != null) {
-				config.attachments = session.attachments.map(a -> ({filename: a, source: Local(a)}));
+				config.attachments = session.attachments.map(a ->
+					({filename: a, source: Local(a)}));
 			}
-			config.content = {html: mail.body, text: 'DuckJet Express Mail'};
-			return this.getMailer(config).send(config).next(_ -> {
-				haxe.Timer.delay(session.attachments.iter.bind(sys.FileSystem.deleteFile), 1000 * 60 * 5);
+			config.content = {html: mail.body,
+				text: 'DuckJet Express Mail'};
+			return this.getMailer(config)
+				.send(config).next(_ -> {
+				haxe.Timer.delay(session.attachments.iter.bind(sys.FileSystem.deleteFile),
+					1000 * 60 * 5);
 				Noise;
 			});
 		}

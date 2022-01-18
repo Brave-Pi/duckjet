@@ -1,7 +1,5 @@
 package duck_jet;
 
-
-
 import tink.tcp.nodejs.NodejsConnector;
 import why.Email;
 import why.email.*;
@@ -14,11 +12,12 @@ using tink.io.Source;
 
 import tink.websocket.*;
 import duck_jet.Types;
+
 @:require(tink_tcp)
 @:await class Client extends EmailBase {
-	
 	var api:tink.web.proxy.Remote<duck_jet.Api>;
-  var appConfig:Dynamic;
+	var appConfig:Dynamic;
+
 	public function new(api, appConfig)
 		this.api = api;
 
@@ -32,26 +31,25 @@ import duck_jet.Types;
 			cc: config.cc,
 			bcc: config.bcc,
 			subject: config.subject,
-			hasAttachments: config.attachments != null && config.attachments.length != 0,
+			hasAttachments: config.attachments != null
+			&& config.attachments.length != 0,
 		};
 		final body:IdealSource = 'test';
-		final result = (@:await api.send(haxe.crypto.Base64.encode(tink.Serialize.encode(mailerConfig)), body)).result;
+		final result = (@:await api.send(haxe.crypto.Base64.encode(tink.Serialize.encode(mailerConfig)),
+			body)).result;
 		return if (result == 'OK') Success(Noise) else {
 			final uuid = result;
-			
-      
-			@:await sendFiles(
-        uuid, 
-        appConfig.dropoff.protocol + "://" + appConfig.dropoff.url, 
-        appConfig.dropoff.url, 
-        appConfig.dropoff.port,
-				config.attachments
-      );
-      
+
+			@:await sendFiles(uuid,
+				appConfig.dropoff.protocol + "://" +
+				appConfig.dropoff.url,
+				appConfig.dropoff.url, appConfig.dropoff.port,
+				config.attachments);
 		}
 	}
 
-	@:async function sendFiles(uuid:String, url, host, port, files:Array<Attachment>):Outcome<Noise, Error> {
+	@:async function sendFiles(uuid:String, url, host, port,
+			files:Array<Attachment>):Outcome<Noise, Error> {
 		var sender = Signal.trigger();
 		var outgoing = new SignalStream(sender);
 		var handler:ClientHandler = function(stream) {
@@ -67,7 +65,9 @@ import duck_jet.Types;
 			return RawMessageStream.lift(outgoing);
 		}
 
-		NodejsConnector.connect({host: host, port: port}, handler.toTcpHandler(url)).eager();
+		NodejsConnector.connect({host: host, port: port},
+			handler.toTcpHandler(url))
+			.eager();
 
 		function emit(d:haxe.io.Bytes)
 			return {
@@ -90,7 +90,8 @@ import duck_jet.Types;
 					
 			}
       // @formatter:on
-		@:await Promise.iterate(files.map(transmit), p -> None, _ -> Some(Noise));
+		@:await Promise.iterate(files.map(transmit),
+			p -> None, _ -> Some(Noise));
 		sender.trigger(End);
 		return Success(Noise);
 	}

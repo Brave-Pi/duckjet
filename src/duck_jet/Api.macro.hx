@@ -25,7 +25,8 @@ class Impl {
 			case Binary(d):
 				try $actualExpr catch (e) {
 					client.close();
-					trace(Error.withData("Invalid transmission data", e));
+					trace(Error.withData("Invalid transmission data",
+						e));
 				}
 
 			default:
