@@ -78,11 +78,13 @@ interface Api {
 				throw Error.withData("Something went wrong",
 					addressesResult);
 			} else {
-				throw new Error(Unauthorized, "Unauthorized");
+				throw new Error(Unauthorized,
+					"Unauthorized");
 			}
 			}
 			else {
-				throw new Error(Unauthorized, "Unauthorized");
+				throw new Error(Unauthorized,
+					"Unauthorized");
 			}
 			#end
 		}
@@ -107,7 +109,8 @@ interface Api {
 				if (thisSession == null)
 					initiateSession(client, m);
 				else
-					continueSession(client, m, thisSession);
+					continueSession(client, m,
+						thisSession);
 			});
 		}
 
@@ -188,30 +191,26 @@ interface Api {
 			final config:EmailConfig = cast mail;
 			if (session != null) {
 				config.attachments = session.attachments.map(a ->
-					({filename: a, source: Local(a)}));
+					({
+					filename: a,
+					source: Local(a)
+				}));
 			}
-			config.content = {html: mail.body,
-				text: 'DuckJet Express Mail'};
+			config.content = {
+				html: mail.body,
+				text: 'DuckJet Express Mail'
+			};
 			return this.getMailer(config)
-				.send(config).next(_ -> {
-				haxe.Timer.delay(session.attachments.iter.bind(sys.FileSystem.deleteFile),
-					1000 * 60 * 5);
-				Noise;
-			});
+				.send(config)
+				.next(_ -> {
+					haxe.Timer.delay(session.attachments.iter.bind(sys.FileSystem.deleteFile),
+						1000 * 60 * 5);
+					Noise;
+				});
 		}
 
-  // @formatter:off
-  function getMailer(config:EmailConfig)
-    return
-      if (
-        config.from.address
-          .split('@')[1]
-          .toLowerCase() == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase()
-      )
-        duckMailer
-      else
-        jetMailer;
-
-  
-  // @formatter:on
+		function getMailer(config:EmailConfig)
+			return
+				if (config.from.address.split('@')[1].toLowerCase() == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase())
+					duckMailer else jetMailer;
 }

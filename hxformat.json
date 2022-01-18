@@ -1,6 +1,6 @@
 {
   "wrapping": {
-      "maxLineLength": 64,
+      "maxLineLength": 58,
       "callParameter": {
           "rules": [
               {
