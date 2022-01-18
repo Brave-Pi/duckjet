@@ -43,13 +43,16 @@ import duck_jet.Types;
 			@:await sendFiles(uuid,
 				appConfig.dropoff.protocol + "://" +
 				appConfig.dropoff.url,
-				appConfig.dropoff.url, appConfig.dropoff.port,
+				appConfig.dropoff.url,
+				appConfig.dropoff.port,
 				config.attachments);
 		}
 	}
 
-	@:async function sendFiles(uuid:String, url, host, port,
-			files:Array<Attachment>):Outcome<Noise, Error> {
+	@:async function sendFiles(uuid:String, url, host,
+			port,
+			files:Array<Attachment>):Outcome<Noise,
+			Error> {
 		var sender = Signal.trigger();
 		var outgoing = new SignalStream(sender);
 		var handler:ClientHandler = function(stream) {
@@ -77,19 +80,24 @@ import duck_jet.Types;
 		emit(tink.Serialize.encode({uuid: uuid}));
 		@:async function transmit(attachment:Attachment)
 			return switch attachment.source {
-      // @formatter:off
 				case Stream(stream):
-					@:await stream
-                    .chunked()
-                    .forEach(chunk -> emit(tink.Serialize.encode({filename: attachment.filename, chunk: chunk})));
-					
+					@:await stream.chunked()
+						.forEach(chunk ->
+							emit(tink.Serialize.encode({
+							filename: attachment.filename,
+							chunk: chunk
+						})));
+
 				case Local(path):
 					@:await asys.io.File.readStream(path)
-                    .chunked()
-                    .forEach(chunk -> emit(tink.Serialize.encode({filename: attachment.filename, chunk: chunk})));
-					
+						.chunked()
+						.forEach(chunk ->
+							emit(tink.Serialize.encode({
+							filename: attachment.filename,
+							chunk: chunk
+						})));
 			}
-      // @formatter:on
+
 		@:await Promise.iterate(files.map(transmit),
 			p -> None, _ -> Some(Noise));
 		sender.trigger(End);
