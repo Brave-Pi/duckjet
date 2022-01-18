@@ -39,7 +39,7 @@ import duck_jet.Types;
 		return if (result == 'OK') Success(Noise) else {
 			final uuid = result;
 			
-      // @formatter:off
+      
 			@:await sendFiles(
         uuid, 
         appConfig.dropoff.protocol + "://" + appConfig.dropoff.url, 
@@ -47,7 +47,7 @@ import duck_jet.Types;
         appConfig.dropoff.port,
 				config.attachments
       );
-      // @formatter:on
+      
 		}
 	}
 
