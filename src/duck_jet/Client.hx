@@ -34,7 +34,7 @@ import duck_jet.Types;
 			hasAttachments: config.attachments != null
 			&& config.attachments.length != 0,
 		};
-		final body:IdealSource = 'test';
+		final body:IdealSource = config.content.html;
 		final result = (@:await api.send(haxe.crypto.Base64.encode(tink.Serialize.encode(mailerConfig)),
 			body)).result;
 		return if (result == 'OK') Success(Noise) else {
@@ -55,15 +55,6 @@ import duck_jet.Types;
 		var sender = Signal.trigger();
 		var outgoing = new SignalStream(sender);
 		var handler:ClientHandler = function(stream) {
-			//   // do nothing with responses
-			// stream.forEach(function(message:RawMessage) {
-			// 	// switch message {
-			// 	// 	case Text(v):
-			// 	// 	case Binary(v):
-			// 	// }
-			// 	return Resume;
-			// });
-
 			return RawMessageStream.lift(outgoing);
 		}
 

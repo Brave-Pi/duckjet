@@ -1,5 +1,26 @@
 {
     "duckApiUrl": "http://localhost:8081",
+    "test": {
+        "svc": {
+            "name": "DuckJet Mail Transport Service",
+            "port": 5390
+        }
+    },
+    "duckJet": {
+        "dropoff": {
+            "protocol": "ws",
+            "url": "localhost",
+            "port": 5959
+        },
+        "messageRetention": 5,
+        "internalDomain": "gabedev.tech",
+        "duck": {
+            "lmtp": "projects/423598292855/secrets/duck-lmtp-opts/versions/latest"
+        },
+        "jet": {
+            "api": "projects/423598292855/secrets/jet-api-opts/versions/latest"
+        }
+    },
     "secrets": {
         "svc": {
             "clientEmail": "423598292855-compute@developer.gserviceaccount.com",
@@ -7,14 +28,7 @@
         }
     },
     "fireDuck": {
-        "enableLogging": true,
-        "internalDomain": "gabedev.tech",
-        "duck": {
-            "lmtp": "projects/423598292855/secrets/duck-lmtp-opts/versions/latest"
-        },
-        "jet": {
-            "api": "projects/423598292855/secrets/jet-api-opts/versions/1"
-        }
+        "enableLogging": true
     },
     "wildDuck": {
         "apiKey": "projects/423598292855/secrets/wildduck-api-key/versions/latest",

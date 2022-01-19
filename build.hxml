@@ -1,22 +1,5 @@
-# --macro boisly.AppSettings.configureWith("Config"))
-# -D nodejs
---library hxnodejs
---library node-mailjet
---library fireduck
---library tink_tcp
---library mime
---library tink_await
---library tink_macro
---library  asys
---library tink_web
---library hxnodejs-uuid
---library tink_serialize
---library tink_websocket
---library tink_http_middleware
-# -D duckfireEnabled
---library why-email
+dev.hxml
 -cp src
--D analyzer-optimize
 -main DuckJet
 
 --js bin/node/duck-jet.js

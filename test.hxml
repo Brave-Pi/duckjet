@@ -1,0 +1,8 @@
+dev.hxml
+--library tink_unittest
+--library duck_jet
+--library tink_await
+-cp tests
+-main RunTests
+
+--js bin/node/test.js
