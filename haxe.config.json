@@ -1,16 +1,13 @@
 {
     "duckApiUrl": "http://localhost:8081",
-    "test": {
+    "duckJet": {
         "svc": {
             "name": "DuckJet Mail Transport Service",
-            "port": 5390
-        }
-    },
-    "duckJet": {
-        "dropoff": {
-            "protocol": "ws",
             "url": "localhost",
-            "port": 5959
+            "port": 5390
+        },
+        "dropoff": {
+            "protocol": "ws"
         },
         "messageRetention": 5,
         "internalDomain": "gabedev.tech",

@@ -39,11 +39,11 @@ class Test {
 
 	@:async function runServer()
 		return
-			switch @:await DuckJet.run(AppSettings.config.test.svc.port) {
+			switch @:await DuckJet.run(AppSettings.config.duckJet.svc.port) {
 			case Running(state):
-				trace('Starting ${AppSettings.config.test.svc.name}...');
+				trace('Starting ${AppSettings.config.duckJet.svc.name}...');
 				state;
-			case Failed(e): throw Error.withData('Unable to start ${AppSettings.config.test.svc.name}',
+			case Failed(e): throw Error.withData('Unable to start ${AppSettings.config.duckJet.svc.name}',
 					e);
 			case Shutdown: throw Error.withData("Server already shut down",
 						'assert');
@@ -53,7 +53,7 @@ class Test {
 		return {
 			trace('Instantiating DuckJet mailer');
 			var client = new NodeClient();
-			var api = tink.Web.connect(('localhost:${AppSettings.config.test.svc.port}' : duck_jet.Api),
+			var api = tink.Web.connect(('localhost:${AppSettings.config.duckJet.svc.port}' : duck_jet.Api),
 				{
 					client: client
 				});
@@ -65,7 +65,7 @@ class Test {
 	@:teardown
 	@:async public function stopServer() {
 		try {
-			trace('Shutting down ${AppSettings.config.test.svc.name}');
+			trace('Shutting down ${AppSettings.config.duckJet.svc.name}');
 			@:await containerCtl.shutdown(false);
 			trace('Shutdown successful');
 		} catch (e) {
@@ -86,10 +86,5 @@ class Test {
 
 @:config
 class Config extends DuckJet.JetConfig {
-	public var test:{
-		var svc:{
-			var name:String;
-			var port:Int;
-		}
-	}
+	
 }

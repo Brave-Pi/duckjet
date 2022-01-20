@@ -42,9 +42,9 @@ import duck_jet.Types;
 			final appConfig = boisly.AppSettings.config.duckJet;
 			@:await sendFiles(uuid,
 				appConfig.dropoff.protocol + "://" +
-				appConfig.dropoff.url,
-				appConfig.dropoff.url,
-				appConfig.dropoff.port,
+				appConfig.svc.url,
+				appConfig.svc.url,
+				appConfig.svc.port,
 				config.attachments);
 		}
 	}

@@ -59,10 +59,13 @@ import boisly.AppSettings;
 // @:config
 class JetConfig extends fire_duck.Config {
 	public var duckJet:{
+		var svc:{
+			var name:String;
+			var url:String;
+			var port:Int;
+		};
 		var dropoff:{
-			protocol:String,
-			url:String,
-			port:Int
+			protocol:String
 		};
 		@:optional
 		var messageRetention:Int;
