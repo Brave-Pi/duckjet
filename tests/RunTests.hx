@@ -1,4 +1,5 @@
 package;
+
 import tink.http.clients.*;
 import tink.CoreApi;
 import tink.http.Container;
@@ -28,17 +29,14 @@ class Test {
 
 	@:setup
 	@:async public function setup() {
-    containerCtl = @:await runServer();
-    mailer = @:await getMailer();
-    return Noise;
-  }
-
+		containerCtl = @:await runServer();
+		mailer = @:await getMailer();
+		return Noise;
+	}
 
 	/**
 	 * Service setup
 	 */
-
-
 	@:async function runServer()
 		return
 			switch @:await DuckJet.run(AppSettings.config.test.svc.port) {
@@ -50,15 +48,19 @@ class Test {
 			case Shutdown: throw Error.withData("Server already shut down",
 						'assert');
 		}
-  @:async function getMailer() return {
-    trace('Instantiating DuckJet mailer');
-    var client = new NodeClient();
-    var api = tink.Web.connect(('localhost:${AppSettings.config.test.svc.port}' : duck_jet.Api), {client:client});
-    var mailer =  new duck_jet.Client(api);
-    trace('DuckJet mailer created');
-    mailer;
-  }
 
+	@:async function getMailer()
+		return {
+			trace('Instantiating DuckJet mailer');
+			var client = new NodeClient();
+			var api = tink.Web.connect(('localhost:${AppSettings.config.test.svc.port}' : duck_jet.Api),
+				{
+					client: client
+				});
+			var mailer = new duck_jet.Client(api);
+			trace('DuckJet mailer created');
+			mailer;
+		}
 
 	@:teardown
 	@:async public function stopServer() {
@@ -76,8 +78,6 @@ class Test {
 	/**
 	 * Tests
 	 */
-
-  
 	public function test() {
 		asserts.assert(1 == 1);
 		return asserts.done();
