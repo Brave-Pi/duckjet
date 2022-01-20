@@ -27,11 +27,9 @@ class Test {
 	var containerCtl:tink.http.Container.RunningState;
 	var mailer:why.Email;
 
-
-  /**
+	/**
 	 * Service setup
 	 */
-
 	@:setup
 	@:async public function setup() {
 		containerCtl = @:await runServer();
@@ -39,7 +37,6 @@ class Test {
 		return Noise;
 	}
 
-	
 	@:async function runServer()
 		return
 			switch @:await DuckJet.run(AppSettings.config.test.svc.port) {
