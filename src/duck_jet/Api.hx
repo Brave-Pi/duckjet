@@ -35,6 +35,8 @@ interface Api {
 	var pending:Map<String, MailerConfig> = [];
 	var dropoffSessions:Array<DropoffSession> = [];
 
+	public static final EOF = "$_$_$EOF$_$_$";
+
 	public function new(duckCfg:TransporterConfig,
 			jetCfg:JetTransportOptions) {
 		this.duckMailer = new Nodemailer(duckCfg);
@@ -109,13 +111,12 @@ interface Api {
 				if (thisSession == null)
 					initiateSession(client, m);
 				else
-					continueSession(client, m,
-						thisSession);
+					continueSession(client, m, thisSession);
 			});
 		}
 
 		inline function initiateSession(client:ConnectedClient,
-				m:Message) {
+			m:Message) {
 			sess(({
 				var trigger:SignalTrigger<Yield<Chunk,
 					Error>> = Signal.trigger();
@@ -135,14 +136,16 @@ interface Api {
 		static macro function sess(e);
 
 		inline function continueSession(client:ConnectedClient,
-				m:Message, session:DropoffSession) {
+			m:Message,
+				session:DropoffSession) {
 			sess(({
-				if (binData.currentFile != session.currentFile)
+				if (binData.currentFile == EOF)
+					teardown(session);
+				else
+					if (binData.currentFile != session.currentFile)
 					saveAndCreateNew(session,
 						binData.currentFile);
-				if (binData.chunk.length == 0) 
-					teardown(session);
-				 else {
+				else {
 					var chunk = tink.Chunk.ofBytes(binData.chunk);
 					session.channel.trigger(Data(chunk));
 				}

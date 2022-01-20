@@ -89,7 +89,10 @@ import duck_jet.Types;
 			}
 
 		@:await Promise.inSequence(files.map(transmit));
-		emit(Chunk.EMPTY);
+		emit(tink.Serialize.encode({
+      filename: duck_jet.Api.Impl.EOF,
+      chunk: tink.Chunk.EMPTY
+    }));
 		sender.trigger(End);
 		return Success(Noise);
 	}
