@@ -27,8 +27,8 @@ typedef JetTransportOptions = {
 		this.impl = NodeMailjet.connect(cfg.apiKey,
 			cfg.apiSecret, cfg.options);
 
-	function doSend(config:EmailConfig):Promise<Noise>
-		return Promise.lift(impl.post("send",
+	@:async function doSend(config:EmailConfig):Noise {
+		return @:await Promise.lift(impl.post("send",
 			{version: 'v3.1'})
 			.request({
 				Messages: [
@@ -42,11 +42,13 @@ typedef JetTransportOptions = {
 						Bcc: config.bcc.map(mkAddressList),
 						HtmlPart: config.content.html,
 						Subject: config.subject,
-						Attachments: (@:await Promise.inParallel(config.attachments.map(mkAttachment)))
+						Attachments: @:await (if (config.attachments == null)
+							null else
+							(Promise.inParallel(config.attachments.map(mkAttachment))))
 					}
 				]
-			}))
-			.next(_ -> Noise);
+			}));
+	}
 
 	function mkAddressList(?whyAddress:why.email.Address):SendParamsRecipient
 		return if (whyAddress == null) null else ({

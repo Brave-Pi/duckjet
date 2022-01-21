@@ -1,0 +1,13 @@
+{
+  "baz": {
+    "quz": {
+      "qux": {
+        "quuz": [
+          "graply",
+          "waldo",
+          "grault"
+        ]
+      }
+    }
+  }
+}

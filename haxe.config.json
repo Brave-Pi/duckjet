@@ -53,5 +53,36 @@
         "svcAccountEmail": "firebase-adminsdk-5h5m4@boisly.iam.gserviceaccount.com",
         "audience": "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
         "privateKeyFile": "sa.pem"
+    },
+    "test": {
+        "email": {
+            "from": {
+                "address": "webmaster@gabedev.tech",
+                "name": "Dem Call Me Da Webmaster"
+            },
+            "to": [
+                {
+                    "address": "gabe4haxelang@gmail.com",
+                    "name": "Top Daawwwwwgg"
+                }
+            ],
+            "cc": [
+                {
+                    "address": "postmaster@gabedev.tech",
+                    "name": "Postmaster"
+                }
+            ],
+            "bcc": [
+                {
+                    "address": "hostmaster@gabedev.tech",
+                    "name": "Hostmaster"
+                }
+            ],
+            "subject": "Immaculate",
+            "content": "fixtures/content.html",
+            "attachments": [
+                "haxelib.json"
+            ]
+        }
     }
 }

@@ -12,6 +12,7 @@ import tink.websocket.Server;
 typedef DropoffSession = {
 	uuid:String,
 	client:ConnectedClient,
+  directory:String,
 	currentFile:String,
 	tmp:String,
 	channel:SignalTrigger<Yield<Chunk, Error>>,
@@ -19,15 +20,34 @@ typedef DropoffSession = {
 };
 
 typedef SessionInitiation = {uuid:String};
-typedef SessionContinuation = {chunk:haxe.io.Bytes,
-	currentFile:String};
+
+typedef SessionContinuation = {
+	chunk:haxe.io.Bytes,
+	currentFile:String
+};
+
+typedef AddressBase = {
+	?name:String,
+	address:String
+}
+
+//TODO: Actually use this
+enum SessionMessage {
+  Initiation(i:SessionInitiation);
+  Continuation(s:SessionContinuation);
+  Conclusion;
+}
 
 typedef MailerConfig = {
-	from:Address,
-	to:AddressList,
-	?cc:AddressList,
-	?bcc:AddressList,
+	from:AddressBase,
+	to:Array<AddressBase>,
+	?cc:Array<AddressBase>,
+	?bcc:Array<AddressBase>,
 	subject:String,
 	?hasAttachments:Bool,
 	?body:tink.Chunk
+}
+
+enum abstract Response(String) {
+  var Done;
 }

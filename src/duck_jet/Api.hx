@@ -35,6 +35,7 @@ interface Api {
 	var pending:Map<String, MailerConfig> = [];
 	var dropoffSessions:Array<DropoffSession> = [];
 
+	// TODO: use enum for message types
 	public static final EOF = "$_$_$EOF$_$_$";
 
 	public function new(duckCfg:TransporterConfig,
@@ -47,7 +48,8 @@ interface Api {
 	@:params(configData = header["data"])
 	@:async public function send(#if duckfireEnabled user:fire_duck.Session.User,
 	#end
-			configData:String, body:RealSource) {
+			configData:String,
+			body:RealSource):{result:String} {
 		#if duckfireEnabled
 		if (!user.duck.disabled) {
 		#end
@@ -61,7 +63,7 @@ interface Api {
 			#end
 				final uuid = '${js.npm.Uuid.v4()}';
 				email.body = @:await body.all();
-				if (email.hasAttachments) {
+				return if (email.hasAttachments) {
 					pending.set(uuid, email);
 					haxe.Timer.delay(() -> {
 						pending.remove(uuid);
@@ -69,23 +71,24 @@ interface Api {
 						1000 * 60 * (if (boisly.AppSettings.config.duckJet.messageRetention != null)
 							boisly.AppSettings.config.duckJet.messageRetention else
 							10)); // expire pending email after 10 mins
-					return {result: uuid};
+					{result: uuid};
 				} else {
 					@:await fire(email);
-					return {result: "OK"};
+					{result: "OK"};
 				}
 			#if duckfireEnabled
 			}
 			else if (!addressesResult.success) {
-				throw Error.withData("Something went wrong",
+				return
+					Error.withData("Something went wrong",
 					addressesResult);
 			} else {
-				throw new Error(Unauthorized,
+				return new Error(Unauthorized,
 					"Unauthorized");
 			}
 			}
 			else {
-				throw new Error(Unauthorized,
+				return new Error(Unauthorized,
 					"Unauthorized");
 			}
 			#end
@@ -93,18 +96,14 @@ interface Api {
 
 		@:all('/dropoff')
 		public function dropoff(ctx:tink.web.routing.Context) @:privateAccess {
-			trace('droppin off');
 			var wsHandler = DuckJet.handler.applyMiddleware(new WebSocket(Ws.server.handle));
-			trace('processing..');
 			return try wsHandler.process(ctx.request)
 			catch (e) {
-				trace(e);
 				throw Error.withData("dropoff error", e);
 			};
 		}
 
 		public function dropoffSession(client:ConnectedClient) {
-			trace('welcome to the dropoff');
 			client.messageReceived.handle(m -> {
 				var thisSession = dropoffSessions.find(s ->
 					s.client == client);
@@ -121,15 +120,20 @@ interface Api {
 				var trigger:SignalTrigger<Yield<Chunk,
 					Error>> = Signal.trigger();
 				final tmp = '${js.npm.Uuid.v4()}.tmp';
-				dropoffSessions.push({
+				final directory = ensureDirectory('dropoff/${binData.uuid}/');
+				final sess = {
 					client: client,
 					uuid: binData.uuid,
 					currentFile: null,
 					channel: trigger,
 					attachments: [],
-					tmp: ensureDirectory('./dropoff/${binData.uuid}/') +
-					tmp
+					directory: directory,
+					tmp: haxe.io.Path.join([directory, tmp])
+				};
+				client.closed.handle(s -> {
+					teardown(sess);
 				});
+				dropoffSessions.push(sess);
 			} : SessionInitiation));
 		}
 
@@ -139,23 +143,28 @@ interface Api {
 			m:Message,
 				session:DropoffSession) {
 			sess(({
-				if (binData.currentFile == EOF)
-					teardown(session);
-				else
-					if (binData.currentFile != session.currentFile)
+				if (binData.currentFile != session.currentFile)
 					saveAndCreateNew(session,
 						binData.currentFile);
-				else {
-					var chunk = tink.Chunk.ofBytes(binData.chunk);
-					session.channel.trigger(Data(chunk));
-				}
+				// TODO: use enum for message types
+				if (binData.currentFile == EOF)
+					teardown(session);
+				var chunk = tink.Chunk.ofBytes(binData.chunk);
+				session.channel.trigger(Data(chunk));
 			} : SessionContinuation));
 		}
 
-		inline function teardown(session:DropoffSession) {
+		@:await inline function teardown(session:DropoffSession) {
+      if(dropoffSessions.indexOf(session) == -1) return;
+
+      dropoffSessions.remove(session);
+			@:await fire(session);
+
+			session.client.send(Binary(tink.Serialize.encode({
+				done: true
+			})));
+
 			session.client.close();
-			dropoffSessions.remove(session);
-			fire(session);
 		}
 
 		function ensureDirectory(dir:String)
@@ -170,18 +179,24 @@ interface Api {
 				newFile:String) {
 			if (session.currentFile != null) {
 				session.channel.trigger(End);
-				final dest = ensureDirectory('./dropoff/${session.uuid}/')
-					+ session.currentFile;
-				sys.FileSystem.rename(session.tmp, dest);
+				final src = haxe.io.Path.join([session.directory, session.tmp]);
+				final dest = haxe.io.Path.join([session.directory, session.currentFile]);
+				sys.FileSystem.rename(src, dest);
 				session.attachments.push(dest);
 			}
-
-			session.tmp = '${js.npm.Uuid.v4()}.tmp';
 			session.currentFile = newFile;
-			var writeStream = asys.io.File.writeStream(ensureDirectory('./dropoff/${session.uuid}/')
-				+ session.tmp);
-			var inStream:RealSource = new SignalStream(session.channel);
-			inStream.pipeTo(writeStream).eager();
+			// TODO: use enum for message types
+			if (session.currentFile != EOF) {
+				session.tmp = '${js.npm.Uuid.v4()}.tmp';
+				var writeStream = asys.io.File.writeStream(haxe.io.Path.join([session.directory, session.tmp]));
+				var inStream:RealSource = new SignalStream(session.channel);
+				final filename = newFile;
+				inStream.pipeTo(writeStream, {end: true})
+					.next(_ -> {
+						Noise;
+					})
+					.eager();
+			}
 		}
 
 		function fire(?mail:MailerConfig,
@@ -191,29 +206,45 @@ interface Api {
 					mail = pending.get(session.uuid)
 				else
 					throw 'mail config or dropoff session required';
+
 			final config:EmailConfig = cast mail;
 			if (session != null) {
 				config.attachments = session.attachments.map(a ->
+				{
+					final fp = new haxe.io.Path(a);
 					({
-					filename: a,
-					source: Local(a)
-				}));
+						filename: '${fp.file}.${fp.ext}',
+						source: Local(a)
+					});
+				});
 			}
 			config.content = {
 				html: mail.body,
 				text: 'DuckJet Express Mail'
 			};
-			return this.getMailer(config)
-				.send(config)
-				.next(_ -> {
-					haxe.Timer.delay(session.attachments.iter.bind(sys.FileSystem.deleteFile),
-						1000 * 60 * 5);
-					Noise;
-				});
+			final mailer = this.getMailer(config);
+			final sendReq = try mailer.send(config)
+			catch (e) {
+				Promise.lift(null);
+			}
+			return sendReq.next(_ -> {
+				if (session != null) {
+					session.attachments.iter(sys.FileSystem.deleteFile);
+					sys.FileSystem.deleteDirectory(session.directory);
+				}
+
+				Noise;
+			}).recover(e -> {
+				Noise;
+			});
 		}
 
 		function getMailer(config:EmailConfig)
-			return
-				if (config.from.address.split('@')[1].toLowerCase() == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase())
-					duckMailer else jetMailer;
+			return {
+				final domain = config.to[0].address.split('@')[1].toLowerCase();
+				if (domain == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase())
+					duckMailer
+				else
+					jetMailer;
+			}
 }

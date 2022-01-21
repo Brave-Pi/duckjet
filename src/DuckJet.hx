@@ -22,7 +22,7 @@ import boisly.AppSettings;
 
 	@:async public static function run(port)
 		return {
-			// 'testing'._(trace('test'));
+			
 			final container = new NodeContainer(port,
 				{upgradable: true});
 			var lmtpData = (@:await AppSettings.config.duckJet.duck.lmtp)
@@ -56,7 +56,7 @@ import boisly.AppSettings;
 
 // #if !macro
 // #end
-// @:config
+@:config
 class JetConfig extends fire_duck.Config {
 	public var duckJet:{
 		var svc:{
