@@ -30,6 +30,7 @@ interface Api {
 }
 
 @:await class Impl {
+  var plainTextifier:Lazy<html_to_text.CompiledFunction> = HtmlToText.compile.bind(boisly.AppSettings.config.duckJet.htmlToText.options);
 	var duckMailer:Email;
 	var jetMailer:Email;
 	var pending:Map<String, MailerConfig> = [];
@@ -62,7 +63,9 @@ interface Api {
 					r.address == email.from.address) != -1) {
 			#end
 				final uuid = '${js.npm.Uuid.v4()}';
+        
 				email.body = @:await body.all();
+        
 				return if (email.hasAttachments) {
 					pending.set(uuid, email);
 					haxe.Timer.delay(() -> {
@@ -218,9 +221,10 @@ interface Api {
 					});
 				});
 			}
+      final plainTextify = plainTextifier.get();
 			config.content = {
 				html: mail.body,
-				text: 'DuckJet Express Mail'
+				text: plainTextify(mail.body)
 			};
 			final mailer = this.getMailer(config);
 			final sendReq = try mailer.send(config)
@@ -241,9 +245,15 @@ interface Api {
 
 		function getMailer(config:EmailConfig)
 			return {
-				final domain = config.to[0].address.split('@')[1].toLowerCase();
-				if (domain == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase())
-					duckMailer
+				var recipients = config.to;
+        if(config.cc != null) recipients = recipients.concat(config.cc);
+        if(config.bcc != null) recipients = recipients.concat(config.bcc);
+        final needsJet = recipients.exists(r -> r.address.toLowerCase() == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase());
+        
+				if (!needsJet) {
+          trace('duckmail');
+          duckMailer;
+        }
 				else
 					jetMailer;
 			}

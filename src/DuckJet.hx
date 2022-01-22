@@ -13,7 +13,6 @@ import boisly.AppSettings;
 @:await class DuckJet {
 	public static var handler:tink.http.Handler;
 
-	// static var config:boisly.AppSettings;
 	static var client:duck_jet.Client;
 
 	@:await public static function main() {
@@ -22,7 +21,6 @@ import boisly.AppSettings;
 
 	@:async public static function run(port)
 		return {
-			
 			final container = new NodeContainer(port,
 				{upgradable: true});
 			var lmtpData = (@:await AppSettings.config.duckJet.duck.lmtp)
@@ -48,7 +46,7 @@ import boisly.AppSettings;
 			#end
 			Ws.server.clientConnected.handle(controller.dropoffSession);
 			var result = @:await container.run(handler);
-			trace('Running on port $port');
+			Sys.println('${AppSettings.config.duckJet.svc.name} running on port $port');
 			result;
 			// final nodeHandler = #if (tink_http >= "0.10.0") handler.toNodeHandler.bind({}) #else NodeContainer.toNodeHandler.bind(handler, {}) #end;
 		}
@@ -56,6 +54,7 @@ import boisly.AppSettings;
 
 // #if !macro
 // #end
+
 @:config
 class JetConfig extends fire_duck.Config {
 	public var duckJet:{
@@ -75,6 +74,9 @@ class JetConfig extends fire_duck.Config {
 		};
 		var jet:{
 			var api:boisly.Secret;
-		}
+		};
+		public var htmlToText:{
+			var options:Dynamic;
+		};
 	};
 }

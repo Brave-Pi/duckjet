@@ -87,6 +87,7 @@ class Test {
 	@:timeout(15000)
 	@:async public function test() {
 		var dontDoThisKids:Dynamic = AppSettings.config.test.email;
+
 		dontDoThisKids.content = {html: sys.io.File.getContent(dontDoThisKids.content)};
 
 		dontDoThisKids.attachments = dontDoThisKids.attachments.map(filename ->

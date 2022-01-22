@@ -3,6 +3,7 @@
 --library hxnodejs
 --library node-mailjet
 --library fireduck
+--library html-to-text
 --library tink_tcp
 --library mime
 --library tink_await

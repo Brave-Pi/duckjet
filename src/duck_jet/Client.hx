@@ -17,7 +17,7 @@ import duck_jet.Types;
 @:require(tink_tcp)
 @:await class Client extends EmailBase {
 	var api:tink.web.proxy.Remote<duck_jet.Api>;
-
+  
 	public function new(api)
 		this.api = api;
 
@@ -26,28 +26,30 @@ import duck_jet.Types;
 
 	@:async inline function _doSend(config:EmailConfig):Noise {
 		return try {
-			final mailerConfig:MailerConfig = {
+			final mailerConfig:MailerConfig = try ({
 				body: '',
 				from: cast config.from,
 				to: config.to.map(a -> {
 					name: a.name,
 					address: a.address
 				}),
-				cc: config.cc.map(a -> {
+				cc: if(config.cc != null) config.cc.map(a -> {
 					name: a.name,
 					address: a.address
-				}),
-				bcc: config.bcc.map(a -> {
+				}) else null,
+				bcc: if(config.bcc != null) config.bcc.map(a -> {
 					name: a.name,
 					address: a.address
-				}),
+				}) else null,
 				subject: config.subject,
 				hasAttachments: config.attachments != null
 				&& config.attachments.length != 0,
-			};
+			}) catch(e) {
+        return Failure(Error.withData('Unable to build email', e));
+      };
 			final body:IdealSource = config.content.html;
 			final result = (@:await api.send(haxe.crypto.Base64.encode(tink.Serialize.encode(mailerConfig)),
-				body)).result;
+      body)).result;
 			if (result == 'OK')
 				Success(Noise)
 			else {
