@@ -56,14 +56,7 @@ class Test {
 	@:async function getMailer()
 		return {
 			trace('Instantiating DuckJet mailer');
-			var client = new NodeClient();
-			var api = tink.Web.connect(('http://localhost:'
-				+
-				AppSettings.config.duckJet.svc.port : duck_jet.Api),
-				{
-					client: client
-				});
-			var mailer = new duck_jet.Client(api);
+			final mailer = duck_jet.Client.get();
 			trace('DuckJet mailer created');
 			mailer;
 		}
