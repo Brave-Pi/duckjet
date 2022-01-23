@@ -1,6 +1,7 @@
 dev.hxml
 --library tink_unittest
 --library duck_jet
+# -D duckfireEnabled
 --library tink_await
 -cp tests
 -main RunTests

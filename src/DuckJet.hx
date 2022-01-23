@@ -16,11 +16,17 @@ import boisly.AppSettings;
 	static var client:duck_jet.Client;
 
 	@:await public static function main() {
-		@:await run(Sys.args()[0]);
+    try {
+
+      @:await run(Sys.args()[0]);
+    } catch(e) {
+      trace(e.details());
+      throw Error.withData('Unable to start service', e);
+    }
 	}
 
 	@:async public static function run(port)
-		return {
+		return try {
 			final container = new NodeContainer(port,
 				{upgradable: true});
 			var lmtpData = (@:await AppSettings.config.duckJet.duck.lmtp)
@@ -49,7 +55,7 @@ import boisly.AppSettings;
 			Sys.println('${AppSettings.config.duckJet.svc.name} running on port $port');
 			result;
 			// final nodeHandler = #if (tink_http >= "0.10.0") handler.toNodeHandler.bind({}) #else NodeContainer.toNodeHandler.bind(handler, {}) #end;
-		}
+		} catch(e) throw Error.withData('Unable to run on port $port', e);
 }
 
 // #if !macro
@@ -59,6 +65,7 @@ import boisly.AppSettings;
 class JetConfig extends fire_duck.Config {
 	public var duckJet:{
 		var svc:{
+      var https:Bool;
 			var name:String;
 			var url:String;
 			var port:Int;

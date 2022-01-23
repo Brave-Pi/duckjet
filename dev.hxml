@@ -1,5 +1,6 @@
 # --macro boisly.AppSettings.configureWith("Config"))
 # -D nodejs
+-D boisly.appSettings.configFile=config/haxe.config.json
 --library hxnodejs
 --library node-mailjet
 --library fireduck

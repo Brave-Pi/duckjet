@@ -1,0 +1,46 @@
+{
+  "name": "mail-sender",
+  "version": "1.0.0",
+  "description": "WildDuck+MailJet Mail Transport Service",
+  "main": "app/duck-jet.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^3.10.1",
+    "firebase-admin": "^10.0.2",
+    "html-to-text": "^8.1.0",
+    "node-mailjet": "^3.3.4",
+    "nodemailer": "^6.7.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "bin/node/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brave-pi/duckjet.git"
+  },
+  "keywords": [
+    "duck",
+    "jet",
+    "duckjet",
+    "mail",
+    "sender",
+    "mailsender",
+    "wildduck",
+    "mailjet",
+    "mail",
+    "email",
+    "wild",
+    "duck",
+    "jet",
+    "lmtp"
+  ],
+  "author": "piboistudios",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brave-pi/duckjet/issues"
+  },
+  "homepage": "https://github.com/brave-pi/duckjet#readme"
+}

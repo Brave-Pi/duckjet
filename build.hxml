@@ -1,5 +1,6 @@
 dev.hxml
 -cp src
 -main DuckJet
+--dce full
 
---js bin/node/duck-jet.js
+--js app/duck-jet.js

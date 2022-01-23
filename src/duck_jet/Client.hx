@@ -17,27 +17,29 @@ import duck_jet.Types;
 @:require(tink_tcp)
 @:await class Client extends EmailBase {
 	var api:tink.web.proxy.Remote<duck_jet.Api>;
+	var client:tink.http.Client;
 
-	public function new(api)
-		this.api = api;
+	public function new(client) {
+		this.client = client;
+		this.api = tink.Web.connect(('${boisly.AppSettings.config.duckJet.svc.https ? 'https' : 'http'}://${boisly.AppSettings.config.duckJet.svc.url}:'
+			+
+			boisly.AppSettings.config.duckJet.svc.port : duck_jet.Api),
+			{
+				client: client
+			});
+	}
 
 	public static inline function get()
 		return {
 			var client = new tink.http.clients.NodeClient();
-			var api = tink.Web.connect(('${boisly.AppSettings.config.duckJet.svc.url}:'
-				+
-				boisly.AppSettings.config.duckJet.svc.port : duck_jet.Api),
-				{
-					client: client
-				});
-			new duck_jet.Client(api);
+			new duck_jet.Client(client);
 		}
 
 	function doSend(config:EmailConfig):Promise<Noise>
 		return _doSend(config);
 
-	@:async inline function _doSend(config:EmailConfig):Noise {
-		return try {
+	@:async inline function _doSend(config:EmailConfig)/* :Outcome<Noise,Error> */ {
+		
 			final mailerConfig:MailerConfig = try ({
 				body: '',
 				from: cast config.from,
@@ -59,28 +61,26 @@ import duck_jet.Types;
 				hasAttachments: config.attachments != null
 				&& config.attachments.length != 0,
 			}) catch (e) {
-				return
-					Failure(Error.withData('Unable to build email',
-						e));
+				throw
+					Error.withData('Unable to build email',
+						e);
 			};
 			final body:IdealSource = config.content.html;
 			final result = (@:await api.send(haxe.crypto.Base64.encode(tink.Serialize.encode(mailerConfig)),
 				body)).result;
-			if (result == 'OK')
-				Success(Noise)
-			else {
+			trace('result');
+			trace(result);
+			return if (result == 'OK') Noise else {
 				final uuid = result;
 				final appConfig = boisly.AppSettings.config.duckJet;
-				@:await sendFiles(uuid,
+        final result = @:await sendFiles(uuid,
 					appConfig.dropoff.protocol + "://" +
 					appConfig.svc.url + '/dropoff',
 					appConfig.svc.url, appConfig.svc.port,
 					config.attachments);
+				result;
 			}
-		} catch (e) {
-			Failure(Error.withData('Failure sending email',
-				e));
-		}
+	
 	}
 
 	@:async inline function sendFiles(uuid:String, url,
@@ -145,7 +145,7 @@ import duck_jet.Types;
 			filename: duck_jet.Api.Impl.EOF,
 			chunk: tink.Chunk.EMPTY
 		}));
-		final ret = Success(@:await trigger);
+		final ret = @:await trigger;
 		sender.trigger(End);
 		return ret;
 	}

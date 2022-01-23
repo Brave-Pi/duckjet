@@ -2,6 +2,7 @@
 .vscode/**
 node_modules/**
 bin/**
-*.pem
-dropoff/**
+**/*.pem
+dropoff/**g
 out
+config/**

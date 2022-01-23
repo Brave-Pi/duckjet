@@ -2,6 +2,7 @@
     "duckApiUrl": "http://localhost:8081",
     "duckJet": {
         "svc": {
+            "https": false,
             "name": "DuckJet Mail Transport Service",
             "url": "localhost",
             "port": 5390
@@ -73,15 +74,19 @@
                 {
                     "address": "hostmaster@gabedev.tech",
                     "name": "Hostmaster"
+                },
+                {
+                    "address": "changedhusband@gmail.com",
+                    "name": "Boisly Cybersecurity Admin"
                 }
             ],
-            "cc": [
+            "bcc": [
                 {
                     "address": "topboy@gabedev.tech",
                     "name": "TOP DAWWWWWWWWG"
                 }
             ],
-            "bcc": [
+            "cc": [
                 {
                     "address": "webmaster@gabedev.tech",
                     "name": "Dem Call Me Da Webmaster"

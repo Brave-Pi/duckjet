@@ -25,12 +25,15 @@ using Lambda;
 interface Api {
 	@:post('/send')
 	@:params(configData = header['data'])
-	function send(configData:String,
-		body:IdealSource):{result:String};
+	@:params()
+	function send(configData:String, ?accessToken:String,
+		body:IdealSource):{
+		result:String
+	};
 }
 
 @:await class Impl {
-  var plainTextifier:Lazy<html_to_text.CompiledFunction> = HtmlToText.compile.bind(boisly.AppSettings.config.duckJet.htmlToText.options);
+	var plainTextifier:Lazy<html_to_text.CompiledFunction> = HtmlToText.compile.bind(boisly.AppSettings.config.duckJet.htmlToText.options);
 	var duckMailer:Email;
 	var jetMailer:Email;
 	var pending:Map<String, MailerConfig> = [];
@@ -63,9 +66,9 @@ interface Api {
 					r.address == email.from.address) != -1) {
 			#end
 				final uuid = '${js.npm.Uuid.v4()}';
-        
+
 				email.body = @:await body.all();
-        
+
 				return if (email.hasAttachments) {
 					pending.set(uuid, email);
 					haxe.Timer.delay(() -> {
@@ -82,16 +85,15 @@ interface Api {
 			#if duckfireEnabled
 			}
 			else if (!addressesResult.success) {
-				return
-					Error.withData("Something went wrong",
+				throw Error.withData("Something went wrong",
 					addressesResult);
 			} else {
-				return new Error(Unauthorized,
+				throw new Error(Unauthorized,
 					"Unauthorized");
 			}
 			}
 			else {
-				return new Error(Unauthorized,
+				throw new Error(Unauthorized,
 					"Unauthorized");
 			}
 			#end
@@ -158,9 +160,10 @@ interface Api {
 		}
 
 		@:await inline function teardown(session:DropoffSession) {
-      if(dropoffSessions.indexOf(session) == -1) return;
+			if (dropoffSessions.indexOf(session) == -1)
+				return;
 
-      dropoffSessions.remove(session);
+			dropoffSessions.remove(session);
 			@:await fire(session);
 
 			session.client.send(Binary(tink.Serialize.encode({
@@ -221,7 +224,7 @@ interface Api {
 					});
 				});
 			}
-      final plainTextify = plainTextifier.get();
+			final plainTextify = plainTextifier.get();
 			config.content = {
 				html: mail.body,
 				text: plainTextify(mail.body)
@@ -246,15 +249,16 @@ interface Api {
 		function getMailer(config:EmailConfig)
 			return {
 				var recipients = config.to;
-        if(config.cc != null) recipients = recipients.concat(config.cc);
-        if(config.bcc != null) recipients = recipients.concat(config.bcc);
-        final needsJet = recipients.exists(r -> r.address.toLowerCase() == boisly.AppSettings.config.duckJet.internalDomain.toLowerCase());
-        
+				if (config.cc != null)
+					recipients = recipients.concat(config.cc);
+				if (config.bcc != null)
+					recipients = recipients.concat(config.bcc);
+				final needsJet = recipients.exists(r ->
+					r.address.toLowerCase() != boisly.AppSettings.config.duckJet.internalDomain.toLowerCase());
 				if (!needsJet) {
-          trace('duckmail');
-          duckMailer;
-        }
-				else
+					trace('duckmail');
+					duckMailer;
+				} else
 					jetMailer;
 			}
 }
