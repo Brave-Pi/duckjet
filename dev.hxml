@@ -1,20 +1,14 @@
 # --macro boisly.AppSettings.configureWith("Config"))
 # -D nodejs
--D boisly.appSettings.configFile=config/haxe.config.json
---library hxnodejs
---library node-mailjet
---library fireduck
---library html-to-text
---library tink_tcp
---library mime
---library tink_await
---library tink_macro
---library  asys
 --library tink_web
---library hxnodejs-uuid
 --library tink_serialize
+--library  asys
+--library fireduck
+--library tink_http
+-D boisly.appSettings.configFile=config/haxe.config.json
+
 --library tink_websocket
---library tink_http_middleware
+
 # -D duckfireEnabled
 --library why-email
 

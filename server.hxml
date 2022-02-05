@@ -1,0 +1,14 @@
+--library node-mailjet
+--library html-to-text
+--library tink_tcp
+--library google-cloud-secret-manager
+--library firebase-admin
+--library dts2hx_aliases
+--library tink_http_middleware
+--library mime
+--library tink_await
+--library tink_macro
+--library hxnodejs-uuid
+--library tink_http_middleware
+--library hxnodejs
+dev.hxml

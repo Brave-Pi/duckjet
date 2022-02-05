@@ -3,6 +3,10 @@
 node_modules/**
 bin/**
 **/*.pem
-dropoff/**g
+dropoff/**
+fixtures/**
+bin/**
+app/**
+keys/**
 out
 config/**

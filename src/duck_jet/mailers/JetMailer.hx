@@ -47,7 +47,7 @@ typedef JetTransportOptions = {
 						HtmlPart: config.content.html,
 						Subject: config.subject,
 						Attachments: @:await (if (config.attachments == null)
-							null else
+							[] else
 							(Promise.inParallel(config.attachments.map(mkAttachment))))
 					}
 				]

@@ -1,4 +1,5 @@
-(function ($global) { "use strict";
+(function ($hx_exports, $global) { "use strict";
+$hx_exports["duck_jet"] = $hx_exports["duck_jet"] || {};
 var $hxClasses = {},$estr = function() { return js_Boot.__string_rec(this,''); },$hxEnums = $hxEnums || {},$_;
 function $extend(from, fields) {
 	var proto = Object.create(from);
@@ -10,21 +11,22 @@ var DuckJet = function() { };
 $hxClasses["DuckJet"] = DuckJet;
 DuckJet.__name__ = true;
 DuckJet.main = function() {
-	var __t65 = function(e) {
+	var __t66 = function(e) {
 		try {
 			var e1 = e;
 			throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
 		} catch( _g ) {
 			var _g1 = haxe_Exception.caught(_g);
-			console.log("src/DuckJet.hx:23:",_g1.details());
+			haxe_Log.trace(_g1.details(),{ fileName : "src/DuckJet.hx", lineNumber : 23, className : "DuckJet", methodName : "main"});
 			var e = tink_core_TypedError.withData(null,"Unable to start service",_g1,{ fileName : "src/DuckJet.hx", lineNumber : 24, className : "DuckJet", methodName : "main"});
 			throw haxe_Exception.thrown(e.code == 0 ? e.data : e);
 		}
 	};
 	try {
-		DuckJet.run(process.argv.slice(2)[0]).handle(function(__t66) {
+		haxe_Log.trace(boisly_AppSettings.get_config(),{ fileName : "src/DuckJet.hx", lineNumber : 20, className : "DuckJet", methodName : "main"});
+		DuckJet.run(Std.parseInt(process.argv.slice(2)[0])).handle(function(__t67) {
 			try {
-				var _g = tink_await_OutcomeTools.getOutcome(__t66);
+				var _g = tink_await_OutcomeTools.getOutcome(__t67);
 				switch(_g._hx_index) {
 				case 0:
 					break;
@@ -33,62 +35,73 @@ DuckJet.main = function() {
 				}
 			} catch( _g ) {
 				var _g1 = haxe_Exception.caught(_g).unwrap();
-				__t65(_g1);
+				__t66(_g1);
 			}
 		});
 	} catch( _g ) {
 		var _g1 = haxe_Exception.caught(_g).unwrap();
-		__t65(_g1);
+		__t66(_g1);
 	}
 };
 DuckJet.run = function(port) {
+	if(port == null) {
+		port = 8080;
+	}
 	return tink_core_Future.irreversible(function(__return) {
 		try {
-			var __t67 = function(__t68) {
-				__return(tink_core_Outcome.Success(__t68));
+			var __t68 = function(__t69) {
+				__return(tink_core_Outcome.Success(__t69));
 			};
-			var __t69 = function(e) {
+			var __t70 = function(e) {
 				try {
 					var e1 = e;
 					throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
 				} catch( _g ) {
 					var _g1 = haxe_Exception.caught(_g);
-					__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to run on port " + port,_g1,{ fileName : "src/DuckJet.hx", lineNumber : 58, className : "DuckJet", methodName : "run"}))));
+					__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to run on port " + port,_g1,{ fileName : "src/DuckJet.hx", lineNumber : 66, className : "DuckJet", methodName : "run"}))));
 					return;
 				}
 			};
 			try {
-				var container = new tink_http_containers_NodeContainer(tink_http_containers__$NodeContainer_ServerKindBase.Path(port),{ upgradable : true});
-				boisly_Secret.reveal(boisly_AppSettings.get_config().duckJet.duck.lmtp).handle(function(__t70) {
+				var container = new tink_http_containers_NodeContainer(tink_http_containers__$NodeContainer_ServerKindBase.Port(port),{ upgradable : true});
+				boisly_Secret.reveal(boisly_AppSettings.get_config().duckJet.duck.lmtp).handle(function(__t71) {
 					try {
-						var __t70_result;
-						var _g = tink_await_OutcomeTools.getOutcome(__t70);
+						var __t71_result;
+						var _g = tink_await_OutcomeTools.getOutcome(__t71);
 						switch(_g._hx_index) {
 						case 0:
-							__t70_result = _g.data;
+							__t71_result = _g.data;
 							break;
 						case 1:
-							__t69(_g.failure);
+							__t70(_g.failure);
 							return;
 						}
-						var lmtpData = __t70_result.toString();
-						boisly_Secret.reveal(boisly_AppSettings.get_config().duckJet.jet.api).handle(function(__t71) {
+						var lmtpData = __t71_result.toString();
+						boisly_Secret.reveal(boisly_AppSettings.get_config().duckJet.jet.api).handle(function(__t72) {
 							try {
-								var __t71_result;
-								var _g = tink_await_OutcomeTools.getOutcome(__t71);
+								var __t72_result;
+								var _g = tink_await_OutcomeTools.getOutcome(__t72);
 								switch(_g._hx_index) {
 								case 0:
-									__t71_result = _g.data;
+									__t72_result = _g.data;
 									break;
 								case 1:
-									__t69(_g.failure);
+									__t70(_g.failure);
 									return;
 								}
-								var apiData = __t71_result.toString();
-								var controller = new duck_$jet_Impl(new tink_json_Parser2().parse(lmtpData),new tink_json_Parser3().parse(apiData));
+								var apiData = __t72_result.toString();
+								var controller = new duck_$jet_Impl(new tink_json_Parser32().parse(lmtpData),new tink_json_Parser33().parse(apiData));
 								var router = new tink_web_routing_Router0(controller);
 								DuckJet.handler = new tink_http_SimpleHandler(function(req) {
-									var this1 = router.route(tink_web_routing_Context.ofRequest(req));
+									var this1 = tink_core_Promise.next(router.route(tink_web_routing_Context.authed(req,function(header) {
+										return new fire_$duck_Session(header);
+									})),function(res) {
+										haxe_Log.trace(req.header,{ fileName : "src/DuckJet.hx", lineNumber : 47, className : "DuckJet", methodName : "run"});
+										haxe_Log.trace(req.body,{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "DuckJet", methodName : "run"});
+										haxe_Log.trace(res.header,{ fileName : "src/DuckJet.hx", lineNumber : 49, className : "DuckJet", methodName : "run"});
+										haxe_Log.trace(tink_io_IdealSourceTools.all(res.body),{ fileName : "src/DuckJet.hx", lineNumber : 50, className : "DuckJet", methodName : "run"});
+										return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(res)));
+									});
 									var f = tink_core_Recover.ofSync(tink_http_OutgoingResponse.reportError);
 									return tink_core_Future.flatMap(this1,function(o) {
 										switch(o._hx_index) {
@@ -99,41 +112,43 @@ DuckJet.run = function(port) {
 										}
 									});
 								});
+								var this1 = DuckJet.handler;
+								DuckJet.handler = new tink_http_middleware_CrossOriginResourceSharing(tink_http_middleware_CorsProcessor.regex(new EReg(".*","gi"),false)).apply(this1);
 								duck_$jet_Ws.server.clientConnected.listen($bind(controller,controller.dropoffSession));
-								tink_core_Future.map(container.run(DuckJet.handler),tink_core_Outcome.Success).handle(function(__t72) {
+								tink_core_Future.map(container.run(DuckJet.handler),tink_core_Outcome.Success).handle(function(__t73) {
 									try {
-										var __t72_result;
-										var _g = tink_await_OutcomeTools.getOutcome(__t72);
+										var __t73_result;
+										var _g = tink_await_OutcomeTools.getOutcome(__t73);
 										switch(_g._hx_index) {
 										case 0:
-											__t72_result = _g.data;
+											__t73_result = _g.data;
 											break;
 										case 1:
-											__t69(_g.failure);
+											__t70(_g.failure);
 											return;
 										}
 										var v = "" + boisly_AppSettings.get_config().duckJet.svc.name + " running on port " + port;
 										process.stdout.write(Std.string(v));
 										process.stdout.write("\n");
-										__t67(__t72_result);
+										__t68(__t73_result);
 									} catch( _g ) {
 										var _g1 = haxe_Exception.caught(_g).unwrap();
-										__t69(_g1);
+										__t70(_g1);
 									}
 								});
 							} catch( _g ) {
 								var _g1 = haxe_Exception.caught(_g).unwrap();
-								__t69(_g1);
+								__t70(_g1);
 							}
 						});
 					} catch( _g ) {
 						var _g1 = haxe_Exception.caught(_g).unwrap();
-						__t69(_g1);
+						__t70(_g1);
 					}
 				});
 			} catch( _g ) {
 				var _g1 = haxe_Exception.caught(_g).unwrap();
-				__t69(_g1);
+				__t70(_g1);
 			}
 		} catch( _g ) {
 			var _g1 = haxe_Exception.caught(_g).unwrap();
@@ -178,6 +193,7 @@ EReg.prototype = {
 		}
 	}
 };
+var FirebaseAdmin = require("firebase-admin");
 var HtmlToText = require("html-to-text");
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
@@ -241,6 +257,17 @@ Lambda.find = function(it,f) {
 	}
 	return null;
 };
+Lambda.findIndex = function(it,f) {
+	var i = 0;
+	var v = $getIterator(it);
+	while(v.hasNext()) {
+		if(f(v.next())) {
+			return i;
+		}
+		++i;
+	}
+	return -1;
+};
 Math.__name__ = true;
 var NodeMailjet = require("node-mailjet");
 var Reflect = function() { };
@@ -283,6 +310,13 @@ Std.parseInt = function(x) {
 		}
 	}
 	return null;
+};
+Std.random = function(x) {
+	if(x <= 0) {
+		return 0;
+	} else {
+		return Math.floor(Math.random() * x);
+	}
 };
 var StringBuf = function() {
 	this.b = "";
@@ -355,25 +389,6 @@ StringTools.hex = function(n,digits) {
 		while(s.length < digits) s = "0" + s;
 	}
 	return s;
-};
-var haxe_io_Input = function() { };
-$hxClasses["haxe.io.Input"] = haxe_io_Input;
-haxe_io_Input.__name__ = true;
-haxe_io_Input.prototype = {
-	readByte: function() {
-		throw new haxe_exceptions_NotImplementedException(null,null,{ fileName : "haxe/io/Input.hx", lineNumber : 53, className : "haxe.io.Input", methodName : "readByte"});
-	}
-	,readInt32: function() {
-		var ch1 = this.readByte();
-		var ch2 = this.readByte();
-		var ch3 = this.readByte();
-		var ch4 = this.readByte();
-		if(this.bigEndian) {
-			return ch4 | ch3 << 8 | ch2 << 16 | ch1 << 24;
-		} else {
-			return ch1 | ch2 << 8 | ch3 << 16 | ch4 << 24;
-		}
-	}
 };
 var asys_io_File = function() { };
 $hxClasses["asys.io.File"] = asys_io_File;
@@ -1167,6 +1182,8 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 		var v_jet = null;
 		var hasv_jet = false;
 		var v_messageRetention = null;
+		var v_sessionTimeout = 0;
+		var hasv_sessionTimeout = false;
 		var v_svc = null;
 		var hasv_svc = false;
 		var __start__ = this.pos;
@@ -1559,19 +1576,89 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 					break;
 				case 115:
 					cur = this.source.charCodeAt(this.pos++);
-					if(cur == 118) {
+					switch(cur) {
+					case 101:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 115) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 105) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 111) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 110) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 84) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 105) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 109) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 101) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 111) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 117) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 116) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 34) {
+																			while(true) {
+																				var _g7 = this.source.charCodeAt(this.pos++);
+																				var _hx_tmp7;
+																				if(_g7 == 58 == true) {
+																					break;
+																				} else {
+																					_hx_tmp7 = _g7 < 33;
+																					if(_hx_tmp7 != true) {
+																						this.die("expected " + ":");
+																					}
+																				}
+																			}
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			v_sessionTimeout = parseInt(this.parseNumber());
+																			hasv_sessionTimeout = true;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var tmp6;
+																			if(this.source.charCodeAt(this.pos) == 44) {
+																				this.pos += 1;
+																				tmp6 = true;
+																			} else {
+																				tmp6 = false;
+																			}
+																			if(!tmp6) {
+																				break _hx_loop4;
+																			} else {
+																				continue;
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 118:
 						cur = this.source.charCodeAt(this.pos++);
 						if(cur == 99) {
 							cur = this.source.charCodeAt(this.pos++);
 							if(cur == 34) {
 								while(true) {
-									var _g7 = this.source.charCodeAt(this.pos++);
-									var _hx_tmp7;
-									if(_g7 == 58 == true) {
+									var _g8 = this.source.charCodeAt(this.pos++);
+									var _hx_tmp8;
+									if(_g8 == 58 == true) {
 										break;
 									} else {
-										_hx_tmp7 = _g7 < 33;
-										if(_hx_tmp7 != true) {
+										_hx_tmp8 = _g8 < 33;
+										if(_hx_tmp8 != true) {
 											this.die("expected " + ":");
 										}
 									}
@@ -1580,20 +1667,21 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 								v_svc = this.process6();
 								hasv_svc = true;
 								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-								var tmp6;
+								var tmp7;
 								if(this.source.charCodeAt(this.pos) == 44) {
 									this.pos += 1;
-									tmp6 = true;
+									tmp7 = true;
 								} else {
-									tmp6 = false;
+									tmp7 = false;
 								}
-								if(!tmp6) {
+								if(!tmp7) {
 									break _hx_loop4;
 								} else {
 									continue;
 								}
 							}
 						}
+						break;
 					}
 					break;
 				}
@@ -1601,13 +1689,13 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 					this.skipString();
 				}
 				while(true) {
-					var _g8 = this.source.charCodeAt(this.pos++);
-					var _hx_tmp8;
-					if(_g8 == 58 == true) {
+					var _g9 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp9;
+					if(_g9 == 58 == true) {
 						break;
 					} else {
-						_hx_tmp8 = _g8 < 33;
-						if(_hx_tmp8 != true) {
+						_hx_tmp9 = _g9 < 33;
+						if(_hx_tmp9 != true) {
 							this.die("expected " + ":");
 						}
 					}
@@ -1615,14 +1703,14 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
 				this.skipValue();
 				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-				var tmp7;
+				var tmp8;
 				if(this.source.charCodeAt(this.pos) == 44) {
 					this.pos += 1;
-					tmp7 = true;
+					tmp8 = true;
 				} else {
-					tmp7 = false;
+					tmp8 = false;
 				}
-				if(!tmp7) {
+				if(!tmp8) {
 					break;
 				}
 			}
@@ -1642,7 +1730,7 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 		var __missing__ = function(field) {
 			return _gthis.die("missing field \"" + field + "\"",__start__);
 		};
-		return { dropoff : hasv_dropoff ? v_dropoff : __missing__("dropoff"), duck : hasv_duck ? v_duck : __missing__("duck"), htmlToText : hasv_htmlToText ? v_htmlToText : __missing__("htmlToText"), internalDomain : hasv_internalDomain ? v_internalDomain : __missing__("internalDomain"), jet : hasv_jet ? v_jet : __missing__("jet"), messageRetention : v_messageRetention, svc : hasv_svc ? v_svc : __missing__("svc")};
+		return { dropoff : hasv_dropoff ? v_dropoff : __missing__("dropoff"), duck : hasv_duck ? v_duck : __missing__("duck"), htmlToText : hasv_htmlToText ? v_htmlToText : __missing__("htmlToText"), internalDomain : hasv_internalDomain ? v_internalDomain : __missing__("internalDomain"), jet : hasv_jet ? v_jet : __missing__("jet"), messageRetention : v_messageRetention, sessionTimeout : hasv_sessionTimeout ? v_sessionTimeout : __missing__("sessionTimeout"), svc : hasv_svc ? v_svc : __missing__("svc")};
 	}
 	,process2: function() {
 		var _gthis = this;
@@ -2619,10 +2707,16 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 		var cur = 0;
 		var v_audience = null;
 		var hasv_audience = false;
+		var v_databaseURL = null;
+		var hasv_databaseURL = false;
 		var v_privateKeyFile = null;
 		var hasv_privateKeyFile = false;
+		var v_standalone = false;
+		var hasv_standalone = false;
 		var v_svcAccountEmail = null;
 		var hasv_svcAccountEmail = false;
+		var v_svcCfg = null;
+		var hasv_svcCfg = false;
 		var __start__ = this.pos;
 		while(true) {
 			var _g = this.source.charCodeAt(this.pos++);
@@ -2716,6 +2810,70 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 						}
 					}
 					break;
+				case 100:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 116) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 97) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 98) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 97) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 101) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 85) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 82) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 76) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 34) {
+																while(true) {
+																	var _g2 = this.source.charCodeAt(this.pos++);
+																	var _hx_tmp2;
+																	if(_g2 == 58 == true) {
+																		break;
+																	} else {
+																		_hx_tmp2 = _g2 < 33;
+																		if(_hx_tmp2 != true) {
+																			this.die("expected " + ":");
+																		}
+																	}
+																}
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var this2 = this.parseString();
+																v_databaseURL = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+																hasv_databaseURL = true;
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var tmp1;
+																if(this.source.charCodeAt(this.pos) == 44) {
+																	this.pos += 1;
+																	tmp1 = true;
+																} else {
+																	tmp1 = false;
+																}
+																if(!tmp1) {
+																	break _hx_loop4;
+																} else {
+																	continue;
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
 				case 112:
 					cur = this.source.charCodeAt(this.pos++);
 					if(cur == 114) {
@@ -2746,30 +2904,30 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 																		cur = this.source.charCodeAt(this.pos++);
 																		if(cur == 34) {
 																			while(true) {
-																				var _g2 = this.source.charCodeAt(this.pos++);
-																				var _hx_tmp2;
-																				if(_g2 == 58 == true) {
+																				var _g3 = this.source.charCodeAt(this.pos++);
+																				var _hx_tmp3;
+																				if(_g3 == 58 == true) {
 																					break;
 																				} else {
-																					_hx_tmp2 = _g2 < 33;
-																					if(_hx_tmp2 != true) {
+																					_hx_tmp3 = _g3 < 33;
+																					if(_hx_tmp3 != true) {
 																						this.die("expected " + ":");
 																					}
 																				}
 																			}
 																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-																			var this2 = this.parseString();
-																			v_privateKeyFile = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+																			var this3 = this.parseString();
+																			v_privateKeyFile = this3.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this3 : JSON.parse("\"" + this3 + "\"");
 																			hasv_privateKeyFile = true;
 																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-																			var tmp1;
+																			var tmp2;
 																			if(this.source.charCodeAt(this.pos) == 44) {
 																				this.pos += 1;
-																				tmp1 = true;
+																				tmp2 = true;
 																			} else {
-																				tmp1 = false;
+																				tmp2 = false;
 																			}
-																			if(!tmp1) {
+																			if(!tmp2) {
 																				break _hx_loop4;
 																			} else {
 																				continue;
@@ -2791,11 +2949,70 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 					break;
 				case 115:
 					cur = this.source.charCodeAt(this.pos++);
-					if(cur == 118) {
+					switch(cur) {
+					case 116:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 97) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 110) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 100) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 97) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 108) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 111) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 110) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 101) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 34) {
+															while(true) {
+																var _g4 = this.source.charCodeAt(this.pos++);
+																var _hx_tmp4;
+																if(_g4 == 58 == true) {
+																	break;
+																} else {
+																	_hx_tmp4 = _g4 < 33;
+																	if(_hx_tmp4 != true) {
+																		this.die("expected " + ":");
+																	}
+																}
+															}
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_standalone = this.parseBool();
+															hasv_standalone = true;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var tmp3;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																tmp3 = true;
+															} else {
+																tmp3 = false;
+															}
+															if(!tmp3) {
+																break _hx_loop4;
+															} else {
+																continue;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 118:
 						cur = this.source.charCodeAt(this.pos++);
 						if(cur == 99) {
 							cur = this.source.charCodeAt(this.pos++);
-							if(cur == 65) {
+							switch(cur) {
+							case 65:
 								cur = this.source.charCodeAt(this.pos++);
 								if(cur == 99) {
 									cur = this.source.charCodeAt(this.pos++);
@@ -2821,30 +3038,30 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 																			cur = this.source.charCodeAt(this.pos++);
 																			if(cur == 34) {
 																				while(true) {
-																					var _g3 = this.source.charCodeAt(this.pos++);
-																					var _hx_tmp3;
-																					if(_g3 == 58 == true) {
+																					var _g5 = this.source.charCodeAt(this.pos++);
+																					var _hx_tmp5;
+																					if(_g5 == 58 == true) {
 																						break;
 																					} else {
-																						_hx_tmp3 = _g3 < 33;
-																						if(_hx_tmp3 != true) {
+																						_hx_tmp5 = _g5 < 33;
+																						if(_hx_tmp5 != true) {
 																							this.die("expected " + ":");
 																						}
 																					}
 																				}
 																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-																				var this3 = this.parseString();
-																				v_svcAccountEmail = this3.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this3 : JSON.parse("\"" + this3 + "\"");
+																				var this4 = this.parseString();
+																				v_svcAccountEmail = this4.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this4 : JSON.parse("\"" + this4 + "\"");
 																				hasv_svcAccountEmail = true;
 																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-																				var tmp2;
+																				var tmp4;
 																				if(this.source.charCodeAt(this.pos) == 44) {
 																					this.pos += 1;
-																					tmp2 = true;
+																					tmp4 = true;
 																				} else {
-																					tmp2 = false;
+																					tmp4 = false;
 																				}
-																				if(!tmp2) {
+																				if(!tmp4) {
 																					break _hx_loop4;
 																				} else {
 																					continue;
@@ -2861,8 +3078,50 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 										}
 									}
 								}
+								break;
+							case 67:
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 102) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 103) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 34) {
+											while(true) {
+												var _g6 = this.source.charCodeAt(this.pos++);
+												var _hx_tmp6;
+												if(_g6 == 58 == true) {
+													break;
+												} else {
+													_hx_tmp6 = _g6 < 33;
+													if(_hx_tmp6 != true) {
+														this.die("expected " + ":");
+													}
+												}
+											}
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var this5 = this.parseString();
+											v_svcCfg = boisly_Secret.ofString(this5.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this5 : JSON.parse("\"" + this5 + "\""));
+											hasv_svcCfg = true;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var tmp5;
+											if(this.source.charCodeAt(this.pos) == 44) {
+												this.pos += 1;
+												tmp5 = true;
+											} else {
+												tmp5 = false;
+											}
+											if(!tmp5) {
+												break _hx_loop4;
+											} else {
+												continue;
+											}
+										}
+									}
+								}
+								break;
 							}
 						}
+						break;
 					}
 					break;
 				}
@@ -2870,13 +3129,13 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 					this.skipString();
 				}
 				while(true) {
-					var _g4 = this.source.charCodeAt(this.pos++);
-					var _hx_tmp4;
-					if(_g4 == 58 == true) {
+					var _g7 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp7;
+					if(_g7 == 58 == true) {
 						break;
 					} else {
-						_hx_tmp4 = _g4 < 33;
-						if(_hx_tmp4 != true) {
+						_hx_tmp7 = _g7 < 33;
+						if(_hx_tmp7 != true) {
 							this.die("expected " + ":");
 						}
 					}
@@ -2884,14 +3143,14 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
 				this.skipValue();
 				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
-				var tmp3;
+				var tmp6;
 				if(this.source.charCodeAt(this.pos) == 44) {
 					this.pos += 1;
-					tmp3 = true;
+					tmp6 = true;
 				} else {
-					tmp3 = false;
+					tmp6 = false;
 				}
-				if(!tmp3) {
+				if(!tmp6) {
 					break;
 				}
 			}
@@ -2911,7 +3170,7 @@ tink_json_Parser0.prototype = $extend(tink_json_BasicParser.prototype,{
 		var __missing__ = function(field) {
 			return _gthis.die("missing field \"" + field + "\"",__start__);
 		};
-		return { audience : hasv_audience ? v_audience : __missing__("audience"), privateKeyFile : hasv_privateKeyFile ? v_privateKeyFile : __missing__("privateKeyFile"), svcAccountEmail : hasv_svcAccountEmail ? v_svcAccountEmail : __missing__("svcAccountEmail")};
+		return { audience : hasv_audience ? v_audience : __missing__("audience"), databaseURL : hasv_databaseURL ? v_databaseURL : __missing__("databaseURL"), privateKeyFile : hasv_privateKeyFile ? v_privateKeyFile : __missing__("privateKeyFile"), standalone : hasv_standalone ? v_standalone : __missing__("standalone"), svcAccountEmail : hasv_svcAccountEmail ? v_svcAccountEmail : __missing__("svcAccountEmail"), svcCfg : hasv_svcCfg ? v_svcCfg : __missing__("svcCfg")};
 	}
 	,process9: function() {
 		var _gthis = this;
@@ -4162,6 +4421,24 @@ boisly_Secret.reveal = function(this1) {
 		return new tink_chunk_nodejs_BufferChunk(buf);
 	}));
 };
+var bp_duck_proxy_QuotaResetProxy = function() { };
+$hxClasses["bp.duck.proxy.QuotaResetProxy"] = bp_duck_proxy_QuotaResetProxy;
+bp_duck_proxy_QuotaResetProxy.__name__ = true;
+var bp_duck_proxy_WildDuckProxy = function() { };
+$hxClasses["bp.duck.proxy.WildDuckProxy"] = bp_duck_proxy_WildDuckProxy;
+bp_duck_proxy_WildDuckProxy.__name__ = true;
+var bp_duck_proxy_UsersProxy = function() { };
+$hxClasses["bp.duck.proxy.UsersProxy"] = bp_duck_proxy_UsersProxy;
+bp_duck_proxy_UsersProxy.__name__ = true;
+var bp_duck_proxy_UserProxy = function() { };
+$hxClasses["bp.duck.proxy.UserProxy"] = bp_duck_proxy_UserProxy;
+bp_duck_proxy_UserProxy.__name__ = true;
+var bp_duck_proxy_UserAddressesProxy = function() { };
+$hxClasses["bp.duck.proxy.UserAddressesProxy"] = bp_duck_proxy_UserAddressesProxy;
+bp_duck_proxy_UserAddressesProxy.__name__ = true;
+var duck_$jet_Api = function() { };
+$hxClasses["duck_jet.Api"] = duck_$jet_Api;
+duck_$jet_Api.__name__ = true;
 var duck_$jet_Impl = function(duckCfg,jetCfg) {
 	this.dropoffSessions = [];
 	this.pending = new haxe_ds_StringMap();
@@ -4175,61 +4452,98 @@ var duck_$jet_Impl = function(duckCfg,jetCfg) {
 $hxClasses["duck_jet.Impl"] = duck_$jet_Impl;
 duck_$jet_Impl.__name__ = true;
 duck_$jet_Impl.prototype = {
-	send: function(configData,body) {
+	send: function(user,configData,body) {
 		var _gthis = this;
 		return tink_core_Future.irreversible(function(__return) {
 			try {
-				var email = new tink_serialize_Decoder0().decode(haxe_crypto_Base64.decode(configData));
-				var uuid = "" + js_npm_Uuid.v4();
-				tink_io_RealSourceTools.all(body).handle(function(__t89) {
-					try {
-						var __t89_result;
-						var _g = tink_await_OutcomeTools.getOutcome(__t89);
-						switch(_g._hx_index) {
-						case 0:
-							__t89_result = _g.data;
-							break;
-						case 1:
-							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
-							return;
-						}
-						email.body = __t89_result;
-						var __t90 = function(__t91) {
-							__return(tink_core_Outcome.Success(__t91));
-						};
-						if(email.hasAttachments) {
-							var __t901 = __t90;
-							_gthis.pending.h[uuid] = email;
-							haxe_Timer.delay(function() {
-								var _this = _gthis.pending;
-								if(Object.prototype.hasOwnProperty.call(_this.h,uuid)) {
-									delete(_this.h[uuid]);
-								}
-							},60000 * (boisly_AppSettings.get_config().duckJet.messageRetention != null ? boisly_AppSettings.get_config().duckJet.messageRetention : 10));
-							__t901({ result : uuid});
-						} else {
-							tink_core_Future.map(_gthis.fire(email),tink_core_Outcome.Success).handle(function(__t92) {
-								try {
-									var _g = tink_await_OutcomeTools.getOutcome(__t92);
-									switch(_g._hx_index) {
-									case 0:
-										break;
-									case 1:
-										__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
-										return;
+				if(!user.duck.disabled) {
+					var email = new tink_json_Parser1().parse(haxe_crypto_Base64.decode(configData).toString());
+					haxe_Log.trace(user,{ fileName : "src/duck_jet/Api.hx", lineNumber : 64, className : "duck_jet.Impl", methodName : "send"});
+					user.duck.api.addresses().list().handle(function(__t94) {
+						try {
+							var __t94_result;
+							var _g = tink_await_OutcomeTools.getOutcome(__t94);
+							switch(_g._hx_index) {
+							case 0:
+								__t94_result = _g.data;
+								break;
+							case 1:
+								__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+								return;
+							}
+							var addressesResult = __t94_result;
+							haxe_Log.trace(addressesResult,{ fileName : "src/duck_jet/Api.hx", lineNumber : 68, className : "duck_jet.Impl", methodName : "send"});
+							haxe_Log.trace(email,{ fileName : "src/duck_jet/Api.hx", lineNumber : 69, className : "duck_jet.Impl", methodName : "send"});
+							if(addressesResult.success && Lambda.findIndex(addressesResult.results,function(r) {
+								return r.address == email.from.address;
+							}) != -1) {
+								var uuid = "" + js_npm_Uuid.v4();
+								tink_io_RealSourceTools.all(body).handle(function(__t97) {
+									try {
+										var __t97_result;
+										var _g = tink_await_OutcomeTools.getOutcome(__t97);
+										switch(_g._hx_index) {
+										case 0:
+											__t97_result = _g.data;
+											break;
+										case 1:
+											__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+											return;
+										}
+										email.body = __t97_result;
+										var __t98 = function(__t99) {
+											__return(tink_core_Outcome.Success(__t99));
+										};
+										if(email.hasAttachments) {
+											var __t981 = __t98;
+											_gthis.pending.h[uuid] = email;
+											haxe_Timer.delay(function() {
+												var _this = _gthis.pending;
+												if(Object.prototype.hasOwnProperty.call(_this.h,uuid)) {
+													delete(_this.h[uuid]);
+												}
+											},60000 * (boisly_AppSettings.get_config().duckJet.messageRetention != null ? boisly_AppSettings.get_config().duckJet.messageRetention : 10));
+											__t981({ result : uuid});
+										} else {
+											tink_core_Future.map(_gthis.fire(email),tink_core_Outcome.Success).handle(function(__t100) {
+												try {
+													var _g = tink_await_OutcomeTools.getOutcome(__t100);
+													switch(_g._hx_index) {
+													case 0:
+														break;
+													case 1:
+														__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+														return;
+													}
+													__t98({ result : "OK"});
+												} catch( _g ) {
+													var _g1 = haxe_Exception.caught(_g).unwrap();
+													__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+												}
+											});
+										}
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g).unwrap();
+										__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
 									}
-									__t90({ result : "OK"});
-								} catch( _g ) {
-									var _g1 = haxe_Exception.caught(_g).unwrap();
-									__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
-								}
-							});
+								});
+							} else if(!addressesResult.success) {
+								__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Something went wrong",addressesResult,{ fileName : "src/duck_jet/Api.hx", lineNumber : 94, className : "duck_jet.Impl", methodName : "send"}))));
+								return;
+							} else {
+								haxe_Log.trace("w0t",{ fileName : "src/duck_jet/Api.hx", lineNumber : 97, className : "duck_jet.Impl", methodName : "send"});
+								__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(new tink_core_TypedError(401,"Unauthorized!!!",{ fileName : "src/duck_jet/Api.hx", lineNumber : 98, className : "duck_jet.Impl", methodName : "send"}))));
+								return;
+							}
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
 						}
-					} catch( _g ) {
-						var _g1 = haxe_Exception.caught(_g).unwrap();
-						__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
-					}
-				});
+					});
+				} else {
+					__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(new tink_core_TypedError(401,"Unauthorized",{ fileName : "src/duck_jet/Api.hx", lineNumber : 103, className : "duck_jet.Impl", methodName : "send"}))));
+					return;
+				}
 			} catch( _g ) {
 				var _g1 = haxe_Exception.caught(_g).unwrap();
 				__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
@@ -4241,84 +4555,135 @@ duck_$jet_Impl.prototype = {
 		try {
 			return wsHandler.process(ctx.request);
 		} catch( _g ) {
-			throw haxe_Exception.thrown(tink_core_TypedError.withData(null,"dropoff error",haxe_Exception.caught(_g),{ fileName : "src/duck_jet/Api.hx", lineNumber : 107, className : "duck_jet.Impl", methodName : "dropoff"}));
+			throw haxe_Exception.thrown(tink_core_TypedError.withData(null,"dropoff error",haxe_Exception.caught(_g),{ fileName : "src/duck_jet/Api.hx", lineNumber : 114, className : "duck_jet.Impl", methodName : "dropoff"}));
 		}
 	}
 	,dropoffSession: function(client) {
 		var _gthis = this;
+		var initiated = false;
 		client.messageReceived.listen(function(m) {
+			initiated = true;
 			var thisSession = Lambda.find(_gthis.dropoffSessions,function(s) {
 				return s.client == client;
 			});
 			if(thisSession == null) {
 				var _gthis1 = _gthis;
-				if(m._hx_index == 1) {
-					var _g = m.b;
+				if(m._hx_index == 0) {
+					var _g = m.v;
 					try {
-						var binData = new tink_serialize_Decoder1().decode(_g.toBytes());
+						var binData = new tink_json_Parser29().parse(_g);
+						haxe_Log.trace(binData,{ fileName : "src/duck_jet/Api.hx", lineNumber : 142, className : "duck_jet.Impl", methodName : "initiateSession"});
 						var trigger = tink_core_Signal.trigger();
 						var tmp = "" + js_npm_Uuid.v4() + ".tmp";
 						var directory = _gthis.ensureDirectory("dropoff/" + binData.uuid + "/");
-						var sess = { client : client, uuid : binData.uuid, currentFile : null, channel : trigger, attachments : [], directory : directory, tmp : haxe_io_Path.join([directory,tmp])};
+						var sess = { client : client, uuid : binData.uuid, currentFile : null, channel : trigger, attachments : [], directory : directory, attachmentsWritten : 0, tmp : haxe_io_Path.join([directory,tmp]), closed : false};
+						haxe_Log.trace("session started",{ fileName : "src/duck_jet/Api.hx", lineNumber : 158, className : "duck_jet.Impl", methodName : "initiateSession"});
 						client.closed.handle(function(s) {
+							haxe_Log.trace("client closed connection",{ fileName : "src/duck_jet/Api.hx", lineNumber : 160, className : "duck_jet.Impl", methodName : "initiateSession"});
+							var _g = $bind(_gthis1,_gthis1.teardown);
 							var session = sess;
-							if(_gthis1.dropoffSessions.indexOf(session) != -1) {
-								HxOverrides.remove(_gthis1.dropoffSessions,session);
-								tink_core_Future.map(_gthis1.fire(null,session),tink_core_Outcome.Success).handle(function(__t93) {
-									var _g = tink_await_OutcomeTools.getOutcome(__t93);
-									switch(_g._hx_index) {
-									case 0:
-										break;
-									case 1:
-										throw haxe_Exception.thrown(_g.failure);
-									}
-									session.client.send(tink_websocket_Message.Binary(tink_chunk_ByteChunk.of(new tink_serialize_Encoder0().encode({ done : true}))));
-									session.client.close();
-								});
-							}
+							haxe_Timer.delay(function() {
+								_g(session,{ fileName : "src/duck_jet/Api.hx", lineNumber : 161, className : "duck_jet.Impl", methodName : "initiateSession"});
+							},boisly_AppSettings.get_config().duckJet.sessionTimeout);
 						});
 						_gthis.dropoffSessions.push(sess);
 					} catch( _g ) {
 						var _g1 = haxe_Exception.caught(_g);
+						haxe_Log.trace(tink_core_TypedError.withData(null,"Invalid transmission data: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 27, className : "duck_jet.Impl", methodName : "initiateSession"}),{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 27, className : "duck_jet.Impl", methodName : "initiateSession"});
 						client.close();
-						console.log("src/duck_jet/Api.macro.hx:29:",tink_core_TypedError.withData(null,"Invalid transmission data: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 29, className : "duck_jet.Impl", methodName : "initiateSession"}));
 					}
 				} else {
-					throw haxe_Exception.thrown("I know not what you speak of");
-				}
-			} else if(m._hx_index == 1) {
-				var _g = m.b;
-				try {
-					var binData = new tink_serialize_Decoder2().decode(_g.toBytes());
-					if(binData.currentFile != thisSession.currentFile) {
-						_gthis.saveAndCreateNew(thisSession,binData.currentFile);
-					}
-					if(binData.currentFile == duck_$jet_Impl.EOF) {
-						var session = thisSession;
-						if(_gthis.dropoffSessions.indexOf(session) != -1) {
-							HxOverrides.remove(_gthis.dropoffSessions,session);
-							tink_core_Future.map(_gthis.fire(null,session),tink_core_Outcome.Success).handle(function(__t93) {
-								var _g = tink_await_OutcomeTools.getOutcome(__t93);
-								switch(_g._hx_index) {
-								case 0:
-									break;
-								case 1:
-									throw haxe_Exception.thrown(_g.failure);
-								}
-								session.client.send(tink_websocket_Message.Binary(tink_chunk_ByteChunk.of(new tink_serialize_Encoder0().encode({ done : true}))));
-								session.client.close();
-							});
-						}
-					}
-					var chunk = tink_chunk_ByteChunk.of(binData.chunk);
-					thisSession.channel.handlers.invoke(tink_streams_Yield.Data(chunk));
-				} catch( _g ) {
-					var _g1 = haxe_Exception.caught(_g);
-					client.close();
-					console.log("src/duck_jet/Api.macro.hx:29:",tink_core_TypedError.withData(null,"Invalid transmission data: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 29, className : "duck_jet.Impl", methodName : "continueSession"}));
+					haxe_Log.trace("ignore",{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 34, className : "duck_jet.Impl", methodName : "initiateSession"});
 				}
 			} else {
-				throw haxe_Exception.thrown("I know not what you speak of");
+				haxe_Log.trace("continuing session",{ fileName : "src/duck_jet/Api.hx", lineNumber : 128, className : "duck_jet.Impl", methodName : "dropoffSession"});
+				haxe_Log.trace("continuation..",{ fileName : "src/duck_jet/Api.hx", lineNumber : 173, className : "duck_jet.Impl", methodName : "continueSession"});
+				if(m._hx_index == 0) {
+					var _g = m.v;
+					try {
+						var binData = new tink_json_Parser30().parse(_g);
+						haxe_Log.trace(binData,{ fileName : "src/duck_jet/Api.hx", lineNumber : 175, className : "duck_jet.Impl", methodName : "continueSession"});
+						if(binData.currentFile != thisSession.currentFile) {
+							_gthis.saveAndCreateNew(thisSession,binData.currentFile);
+						}
+						if(binData.currentFile == duck_$jet_Impl.EOF) {
+							var _g = $bind(_gthis,_gthis.teardown);
+							var session = thisSession;
+							haxe_Timer.delay(function() {
+								_g(session,{ fileName : "src/duck_jet/Api.hx", lineNumber : 181, className : "duck_jet.Impl", methodName : "continueSession"});
+							},boisly_AppSettings.get_config().duckJet.sessionTimeout);
+						}
+						var chunk = tink_chunk_ByteChunk.of(binData.chunk);
+						thisSession.channel.handlers.invoke(tink_streams_Yield.Data(chunk));
+					} catch( _g1 ) {
+						var _g2 = haxe_Exception.caught(_g1);
+						haxe_Log.trace(tink_core_TypedError.withData(null,"Invalid transmission data: " + _g2.details(),_g2,{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 27, className : "duck_jet.Impl", methodName : "continueSession"}),{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 27, className : "duck_jet.Impl", methodName : "continueSession"});
+						client.close();
+					}
+				} else {
+					haxe_Log.trace("ignore",{ fileName : "src/duck_jet/Api.macro.hx", lineNumber : 34, className : "duck_jet.Impl", methodName : "continueSession"});
+				}
+			}
+		});
+		haxe_Timer.delay(function() {
+			if(!initiated) {
+				haxe_Log.trace("killing zombie client",{ fileName : "src/duck_jet/Api.hx", lineNumber : 133, className : "duck_jet.Impl", methodName : "dropoffSession"});
+				client.close();
+			}
+		},boisly_AppSettings.get_config().duckJet.sessionTimeout);
+	}
+	,teardown: function(session,pos) {
+		var _gthis = this;
+		if(session.closed || this.dropoffSessions.indexOf(session) == -1) {
+			return;
+		}
+		haxe_Log.trace("closing file@" + Std.string(pos),{ fileName : "src/duck_jet/Api.hx", lineNumber : 193, className : "duck_jet.Impl", methodName : "teardown"});
+		session.channel.handlers.invoke(tink_streams_Yield.End);
+		session.closed = true;
+		tink_core_Future.map(tink_core_Future.delay(0,new tink_core__$Lazy_LazyFunc(function() {
+			return HxOverrides.remove(_gthis.dropoffSessions,session);
+		})),tink_core_Outcome.Success).handle(function(__t101) {
+			var _g = tink_await_OutcomeTools.getOutcome(__t101);
+			switch(_g._hx_index) {
+			case 0:
+				break;
+			case 1:
+				throw haxe_Exception.thrown(_g.failure);
+			}
+			var __t102 = function() {
+				session.client.send(tink_websocket_Message.Text(new tink_json_Writer22().write({ done : true})));
+				haxe_Log.trace("sent email, closing client cnx",{ fileName : "src/duck_jet/Api.hx", lineNumber : 207, className : "duck_jet.Impl", methodName : "teardown"});
+				session.client.close();
+			};
+			var __t104 = function(e) {
+				try {
+					var e1 = e;
+					throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+				} catch( _g ) {
+					var _g1 = haxe_Exception.caught(_g);
+					var e = tink_core_TypedError.withData(null,"Unable to send email: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Api.hx", lineNumber : 201, className : "duck_jet.Impl", methodName : "teardown"});
+					throw haxe_Exception.thrown(e.code == 0 ? e.data : e);
+				}
+			};
+			try {
+				tink_core_Future.map(_gthis.fire(null,session),tink_core_Outcome.Success).handle(function(__t105) {
+					try {
+						var _g = tink_await_OutcomeTools.getOutcome(__t105);
+						switch(_g._hx_index) {
+						case 0:
+							break;
+						case 1:
+							throw haxe_Exception.thrown(_g.failure);
+						}
+						__t102();
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g).unwrap();
+						__t104(_g1);
+					}
+				});
+			} catch( _g ) {
+				var _g1 = haxe_Exception.caught(_g).unwrap();
+				__t104(_g1);
 			}
 		});
 	}
@@ -4332,18 +4697,77 @@ duck_$jet_Impl.prototype = {
 		},"");
 	}
 	,saveAndCreateNew: function(session,newFile) {
+		var _gthis = this;
 		if(session.currentFile != null) {
+			haxe_Log.trace("closing file",{ fileName : "src/duck_jet/Api.hx", lineNumber : 222, className : "duck_jet.Impl", methodName : "saveAndCreateNew"});
 			session.channel.handlers.invoke(tink_streams_Yield.End);
-			var src = haxe_io_Path.join([session.directory,session.tmp]);
-			var dest = haxe_io_Path.join([session.directory,session.currentFile]);
-			js_node_Fs.renameSync(src,dest);
-			session.attachments.push(dest);
 		}
 		session.currentFile = newFile;
 		if(session.currentFile != duck_$jet_Impl.EOF) {
-			session.tmp = "" + js_npm_Uuid.v4() + ".tmp";
-			var writeStream = asys_io_File.writeStream(haxe_io_Path.join([session.directory,session.tmp]));
+			var tmp = "" + js_npm_Uuid.v4();
+			session.tmp = tmp + ".tmp";
+			var wp = haxe_io_Path.join([session.directory,session.currentFile]);
+			haxe_Log.trace("opening " + wp,{ fileName : "src/duck_jet/Api.hx", lineNumber : 240, className : "duck_jet.Impl", methodName : "saveAndCreateNew"});
+			session.attachments.push(wp);
+			var writeStream = asys_io_File.writeStream(wp);
 			tink_core_Future.flatMap(tink_io_Source.pipeTo(new tink_streams_SignalStream(session.channel),writeStream,{ end : true}),function(_) {
+				haxe_Log.trace("closing " + wp,{ fileName : "src/duck_jet/Api.hx", lineNumber : 247, className : "duck_jet.Impl", methodName : "saveAndCreateNew"});
+				session.attachmentsWritten++;
+				if(session.attachmentsWritten == session.attachments.length) {
+					var session1 = session;
+					var _gthis1 = _gthis;
+					if(!(session1.closed || _gthis.dropoffSessions.indexOf(session1) == -1)) {
+						haxe_Log.trace("closing file@" + Std.string({ fileName : "src/duck_jet/Api.hx", lineNumber : 250, className : "duck_jet.Impl", methodName : "saveAndCreateNew"}),{ fileName : "src/duck_jet/Api.hx", lineNumber : 193, className : "duck_jet.Impl", methodName : "teardown"});
+						session1.channel.handlers.invoke(tink_streams_Yield.End);
+						session1.closed = true;
+						tink_core_Future.map(tink_core_Future.delay(0,new tink_core__$Lazy_LazyFunc(function() {
+							return HxOverrides.remove(_gthis1.dropoffSessions,session1);
+						})),tink_core_Outcome.Success).handle(function(__t101) {
+							var _g = tink_await_OutcomeTools.getOutcome(__t101);
+							switch(_g._hx_index) {
+							case 0:
+								break;
+							case 1:
+								throw haxe_Exception.thrown(_g.failure);
+							}
+							var __t102 = function() {
+								session1.client.send(tink_websocket_Message.Text(new tink_json_Writer22().write({ done : true})));
+								haxe_Log.trace("sent email, closing client cnx",{ fileName : "src/duck_jet/Api.hx", lineNumber : 207, className : "duck_jet.Impl", methodName : "teardown"});
+								session1.client.close();
+							};
+							var __t104 = function(e) {
+								try {
+									var e1 = e;
+									throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+								} catch( _g ) {
+									var _g1 = haxe_Exception.caught(_g);
+									var e = tink_core_TypedError.withData(null,"Unable to send email: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Api.hx", lineNumber : 201, className : "duck_jet.Impl", methodName : "teardown"});
+									throw haxe_Exception.thrown(e.code == 0 ? e.data : e);
+								}
+							};
+							try {
+								tink_core_Future.map(_gthis1.fire(null,session1),tink_core_Outcome.Success).handle(function(__t105) {
+									try {
+										var _g = tink_await_OutcomeTools.getOutcome(__t105);
+										switch(_g._hx_index) {
+										case 0:
+											break;
+										case 1:
+											throw haxe_Exception.thrown(_g.failure);
+										}
+										__t102();
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g).unwrap();
+										__t104(_g1);
+									}
+								});
+							} catch( _g ) {
+								var _g1 = haxe_Exception.caught(_g).unwrap();
+								__t104(_g1);
+							}
+						});
+					}
+				}
 				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(null)));
 			}).eager();
 		}
@@ -4358,6 +4782,7 @@ duck_$jet_Impl.prototype = {
 		}
 		var config = mail;
 		if(session != null) {
+			haxe_Log.trace("setting attachments",{ fileName : "src/duck_jet/Api.hx", lineNumber : 267, className : "duck_jet.Impl", methodName : "fire"});
 			var _this = session.attachments;
 			var result = new Array(_this.length);
 			var _g = 0;
@@ -4377,65 +4802,90 @@ duck_$jet_Impl.prototype = {
 		try {
 			sendReq = mailer.send(config);
 		} catch( _g ) {
+			haxe_Log.trace("Error: " + Std.string(haxe_Exception.caught(_g)),{ fileName : "src/duck_jet/Api.hx", lineNumber : 285, className : "duck_jet.Impl", methodName : "fire"});
 			sendReq = null;
 		}
 		var f = function(e) {
 			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(null));
 		};
-		return tink_core_Future.flatMap(tink_core_Promise.next(sendReq,function(_) {
+		return tink_core_Future.flatMap(tink_core_Promise.next(tink_core_Promise.next(sendReq,function(_) {
 			if(session != null) {
-				Lambda.iter(session.attachments,sys_FileSystem.deleteFile);
-				var path = session.directory;
-				if(sys_FileSystem.exists(path)) {
-					var _g = 0;
-					var _g1 = js_node_Fs.readdirSync(path);
-					while(_g < _g1.length) {
-						var curPath = path + "/" + _g1[_g++];
-						if(sys_FileSystem.isDirectory(curPath)) {
-							if(sys_FileSystem.exists(curPath)) {
-								var _g2 = 0;
-								var _g3 = js_node_Fs.readdirSync(curPath);
-								while(_g2 < _g3.length) {
-									var curPath1 = curPath + "/" + _g3[_g2++];
-									if(sys_FileSystem.isDirectory(curPath1)) {
-										if(sys_FileSystem.exists(curPath1)) {
-											var _g4 = 0;
-											var _g5 = js_node_Fs.readdirSync(curPath1);
-											while(_g4 < _g5.length) {
-												var curPath2 = curPath1 + "/" + _g5[_g4++];
-												if(sys_FileSystem.isDirectory(curPath2)) {
-													if(sys_FileSystem.exists(curPath2)) {
-														var _g6 = 0;
-														var _g7 = js_node_Fs.readdirSync(curPath2);
-														while(_g6 < _g7.length) {
-															var curPath3 = curPath2 + "/" + _g7[_g6++];
-															if(sys_FileSystem.isDirectory(curPath3)) {
-																sys_FileSystem.deleteDirectory(curPath3);
-															} else {
-																js_node_Fs.unlinkSync(curPath3);
-															}
-														}
-														js_node_Fs.rmdirSync(curPath2);
-													}
-												} else {
-													js_node_Fs.unlinkSync(curPath2);
-												}
-											}
-											js_node_Fs.rmdirSync(curPath1);
-										}
-									} else {
-										js_node_Fs.unlinkSync(curPath1);
-									}
-								}
-								js_node_Fs.rmdirSync(curPath);
-							}
-						} else {
-							js_node_Fs.unlinkSync(curPath);
-						}
-					}
-					js_node_Fs.rmdirSync(path);
+				var messageRetention = 1;
+				if(boisly_AppSettings.get_config().duckJet.messageRetention != null) {
+					messageRetention = boisly_AppSettings.get_config().duckJet.messageRetention;
 				}
+				return tink_core_Future.map(tink_core_Future.delay(messageRetention * 1000,new tink_core__$Lazy_LazyFunc(function() {
+					haxe_Log.trace("deleting files",{ fileName : "src/duck_jet/Api.hx", lineNumber : 295, className : "duck_jet.Impl", methodName : "fire"});
+					Lambda.iter(session.attachments,sys_FileSystem.deleteFile);
+					var path = session.directory;
+					if(sys_FileSystem.exists(path)) {
+						var _g = 0;
+						var _g1 = js_node_Fs.readdirSync(path);
+						while(_g < _g1.length) {
+							var curPath = path + "/" + _g1[_g++];
+							if(sys_FileSystem.isDirectory(curPath)) {
+								if(sys_FileSystem.exists(curPath)) {
+									var _g2 = 0;
+									var _g3 = js_node_Fs.readdirSync(curPath);
+									while(_g2 < _g3.length) {
+										var curPath1 = curPath + "/" + _g3[_g2++];
+										if(sys_FileSystem.isDirectory(curPath1)) {
+											if(sys_FileSystem.exists(curPath1)) {
+												var _g4 = 0;
+												var _g5 = js_node_Fs.readdirSync(curPath1);
+												while(_g4 < _g5.length) {
+													var curPath2 = curPath1 + "/" + _g5[_g4++];
+													if(sys_FileSystem.isDirectory(curPath2)) {
+														if(sys_FileSystem.exists(curPath2)) {
+															var _g6 = 0;
+															var _g7 = js_node_Fs.readdirSync(curPath2);
+															while(_g6 < _g7.length) {
+																var curPath3 = curPath2 + "/" + _g7[_g6++];
+																if(sys_FileSystem.isDirectory(curPath3)) {
+																	if(sys_FileSystem.exists(curPath3)) {
+																		var _g8 = 0;
+																		var _g9 = js_node_Fs.readdirSync(curPath3);
+																		while(_g8 < _g9.length) {
+																			var curPath4 = curPath3 + "/" + _g9[_g8++];
+																			if(sys_FileSystem.isDirectory(curPath4)) {
+																				sys_FileSystem.deleteDirectory(curPath4);
+																			} else {
+																				js_node_Fs.unlinkSync(curPath4);
+																			}
+																		}
+																		js_node_Fs.rmdirSync(curPath3);
+																	}
+																} else {
+																	js_node_Fs.unlinkSync(curPath3);
+																}
+															}
+															js_node_Fs.rmdirSync(curPath2);
+														}
+													} else {
+														js_node_Fs.unlinkSync(curPath2);
+													}
+												}
+												js_node_Fs.rmdirSync(curPath1);
+											}
+										} else {
+											js_node_Fs.unlinkSync(curPath1);
+										}
+									}
+									js_node_Fs.rmdirSync(curPath);
+								}
+							} else {
+								js_node_Fs.unlinkSync(curPath);
+							}
+						}
+						js_node_Fs.rmdirSync(path);
+					}
+					return null;
+				})),tink_core_Outcome.Success);
+			} else {
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(null)));
 			}
+		}),function(_) {
+			haxe_Log.trace("w0t",{ fileName : "src/duck_jet/Api.hx", lineNumber : 303, className : "duck_jet.Impl", methodName : "fire"});
 			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(null)));
 		}),function(o) {
 			switch(o._hx_index) {
@@ -4455,9 +4905,9 @@ duck_$jet_Impl.prototype = {
 			recipients = recipients.concat(config.bcc);
 		}
 		if(!Lambda.exists(recipients,function(r) {
-			return r.address.toLowerCase() != boisly_AppSettings.get_config().duckJet.internalDomain.toLowerCase();
+			return r.address.substring(r.address.indexOf("@") + 1).toLowerCase() != boisly_AppSettings.get_config().duckJet.internalDomain.toLowerCase();
 		})) {
-			console.log("src/duck_jet/Api.hx:259:","duckmail");
+			haxe_Log.trace("duckmail",{ fileName : "src/duck_jet/Api.hx", lineNumber : 322, className : "duck_jet.Impl", methodName : "getMailer"});
 			return this.duckMailer;
 		} else {
 			return this.jetMailer;
@@ -4494,6 +4944,680 @@ why_email_EmailBase.prototype = {
 		}
 	}
 };
+var duck_$jet_Client = $hx_exports["duck_jet"]["Client"] = function(client,config) {
+	this.config = config;
+	this.client = client;
+	this.api = new tink_web_proxy_Remote19(client,tink_web_proxy_RemoteEndpoint.ofUrl(tink_Url.fromString("" + (config.duckJet.svc.https ? "https" : "http") + "://" + config.duckJet.svc.url + ":" + config.duckJet.svc.port)));
+};
+$hxClasses["duck_jet.Client"] = duck_$jet_Client;
+duck_$jet_Client.__name__ = true;
+duck_$jet_Client.get = function() {
+	return new duck_$jet_Client(new tink_http_clients_NodeClient(),boisly_AppSettings.get_config());
+};
+duck_$jet_Client.fromAccessToken = function(tkn,cfg) {
+	var pipeline = { before : [function(req) {
+		req.header.fields.push(new tink_http_HeaderField("x-access-token".toLowerCase(),tkn));
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(req)));
+	}]};
+	return new duck_$jet_Client(tink_http__$Client_CustomClient.create(new tink_http_clients_NodeClient(),pipeline.before,pipeline.after),cfg);
+};
+duck_$jet_Client.__super__ = why_email_EmailBase;
+duck_$jet_Client.prototype = $extend(why_email_EmailBase.prototype,{
+	doSend: function(config) {
+		var config1 = config;
+		var _gthis = this;
+		return tink_core_Future.irreversible(function(__return) {
+			try {
+				var __t74 = function(__t75) {
+					var body = new tink_streams_Single(new tink_core__$Lazy_LazyConst(tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(config1.content.html))));
+					_gthis.api.send(haxe_crypto_Base64.encode(haxe_io_Bytes.ofString(new tink_json_Writer23().write(__t75))),null,body).handle(function(__t76) {
+						try {
+							var __t76_result;
+							var _g = tink_await_OutcomeTools.getOutcome(__t76);
+							switch(_g._hx_index) {
+							case 0:
+								__t76_result = _g.data;
+								break;
+							case 1:
+								__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+								return;
+							}
+							var result = __t76_result.result;
+							haxe_Log.trace("result",{ fileName : "src/duck_jet/Client.hx", lineNumber : 96, className : "duck_jet.Client", methodName : "_doSend"});
+							haxe_Log.trace(result,{ fileName : "src/duck_jet/Client.hx", lineNumber : 97, className : "duck_jet.Client", methodName : "_doSend"});
+							var __t77 = function(__t78) {
+								__return(tink_core_Outcome.Success(__t78));
+							};
+							if(result == "OK") {
+								__t77(null);
+							} else {
+								var appConfig = _gthis.config.duckJet;
+								var __t79 = function(__t80) {
+									__t77(__t80);
+								};
+								var __t81 = function(e) {
+									try {
+										var e1 = e;
+										throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g);
+										__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to send attachments: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Client.hx", lineNumber : 107, className : "duck_jet.Client", methodName : "_doSend"}))));
+										return;
+									}
+								};
+								try {
+									var uuid = result;
+									var url = tink_Url.fromString(appConfig.dropoff.protocol + "://" + appConfig.svc.url + (":" + appConfig.svc.port) + "/dropoff");
+									var files = config1.attachments;
+									tink_core_Future.irreversible(function(__return) {
+										try {
+											var sender = tink_core_Signal.trigger();
+											var trigger = new tink_core_FutureTrigger();
+											var _e = trigger;
+											var _g = function(v) {
+												return _e.trigger(tink_core_Outcome.Success(v));
+											};
+											var v = null;
+											var conclude = function() {
+												return _g(v);
+											};
+											var outgoing = new tink_streams_SignalStream(sender);
+											var connectorFactory = function(url) {
+												return new tink_websocket_clients_TcpConnector(url);
+											};
+											haxe_Log.trace(url,{ fileName : "src/duck_jet/Client.hx", lineNumber : 122, className : "duck_jet.Client", methodName : "sendFiles"});
+											connectorFactory(url).connect(outgoing).forEach(tink_streams_Handler.ofSafe(function(m) {
+												switch(m._hx_index) {
+												case 0:
+													throw haxe_Exception.thrown("assert");
+												case 1:
+													break;
+												case 2:
+													return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Finish));
+												default:
+												}
+												haxe_Log.trace("got message " + Std.string(m),{ fileName : "src/duck_jet/Client.hx", lineNumber : 134, className : "duck_jet.Client", methodName : "sendFiles"});
+												return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+											})).handle(function(_) {
+												haxe_Log.trace("concluding",{ fileName : "src/duck_jet/Client.hx", lineNumber : 138, className : "duck_jet.Client", methodName : "sendFiles"});
+												conclude();
+											});
+											var d = new tink_json_Writer24().write({ uuid : uuid});
+											sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+											var transmit = function(attachment) {
+												return tink_core_Future.irreversible(function(__return) {
+													try {
+														var __t84 = function(__t85) {
+															__return(tink_core_Outcome.Success(__t85));
+														};
+														var _g = attachment.source;
+														switch(_g._hx_index) {
+														case 0:
+															__return(tink_core_Outcome.Failure(tink_await_Error.fromAny("not implemented")));
+															return;
+														case 1:
+															tink_core_Future.map(tink_io_Source.chunked(_g.source).forEach(tink_streams_Handler.ofSafe(function(chunk) {
+																var d = new tink_json_Writer25().write({ currentFile : attachment.filename, chunk : chunk});
+																sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+																return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+															})),tink_core_Outcome.Success).handle(function(__t86) {
+																try {
+																	var __t86_result;
+																	var _g = tink_await_OutcomeTools.getOutcome(__t86);
+																	switch(_g._hx_index) {
+																	case 0:
+																		__t86_result = _g.data;
+																		break;
+																	case 1:
+																		__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+																		return;
+																	}
+																	__t84(__t86_result);
+																} catch( _g ) {
+																	var _g1 = haxe_Exception.caught(_g).unwrap();
+																	__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+																}
+															});
+															break;
+														}
+													} catch( _g ) {
+														var _g1 = haxe_Exception.caught(_g).unwrap();
+														__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+													}
+												});
+											};
+											var result = new Array(files.length);
+											var _g1 = 0;
+											var _g2 = files.length;
+											while(_g1 < _g2) {
+												var i = _g1++;
+												result[i] = transmit(files[i]);
+											}
+											tink_core_Promise.inSequence(result).handle(function(__t87) {
+												try {
+													var _g = tink_await_OutcomeTools.getOutcome(__t87);
+													switch(_g._hx_index) {
+													case 0:
+														break;
+													case 1:
+														__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+														return;
+													}
+													var d = new tink_json_Writer25().write({ currentFile : duck_$jet_Client.EOF, chunk : tink_Chunk.EMPTY});
+													sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+													trigger.handle(function(__t88) {
+														try {
+															var __t88_result;
+															var _g = tink_await_OutcomeTools.getOutcome(__t88);
+															switch(_g._hx_index) {
+															case 0:
+																__t88_result = _g.data;
+																break;
+															case 1:
+																__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+																return;
+															}
+															sender.handlers.invoke(tink_streams_Yield.End);
+															__return(tink_core_Outcome.Success(__t88_result));
+															return;
+														} catch( _g ) {
+															var _g1 = haxe_Exception.caught(_g).unwrap();
+															__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+														}
+													});
+												} catch( _g ) {
+													var _g1 = haxe_Exception.caught(_g).unwrap();
+													__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+												}
+											});
+										} catch( _g1 ) {
+											var _g2 = haxe_Exception.caught(_g1).unwrap();
+											__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g2)));
+										}
+									}).handle(function(__t82) {
+										try {
+											var __t82_result;
+											var _g = tink_await_OutcomeTools.getOutcome(__t82);
+											switch(_g._hx_index) {
+											case 0:
+												__t82_result = _g.data;
+												break;
+											case 1:
+												__t81(_g.failure);
+												return;
+											}
+											__t79(__t82_result);
+										} catch( _g ) {
+											var _g1 = haxe_Exception.caught(_g).unwrap();
+											__t81(_g1);
+										}
+									});
+								} catch( _g ) {
+									var _g1 = haxe_Exception.caught(_g).unwrap();
+									__t81(_g1);
+								}
+							}
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+						}
+					});
+				};
+				var __t83 = function(e) {
+					try {
+						var e1 = e;
+						throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g);
+						__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to build email",_g1,{ fileName : "src/duck_jet/Client.hx", lineNumber : 90, className : "duck_jet.Client", methodName : "_doSend"}))));
+						return;
+					}
+				};
+				try {
+					var __t741 = __t74;
+					var p = tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(""));
+					var config = config1.from;
+					var _this = config1.to;
+					var result = new Array(_this.length);
+					var _g = 0;
+					var _g1 = _this.length;
+					while(_g < _g1) {
+						var i = _g++;
+						var a = _this[i];
+						result[i] = { name : a.name, address : a.address};
+					}
+					var p1;
+					if(config1.cc != null) {
+						var _this = config1.cc;
+						var result1 = new Array(_this.length);
+						var _g = 0;
+						var _g1 = _this.length;
+						while(_g < _g1) {
+							var i = _g++;
+							var a = _this[i];
+							result1[i] = { name : a.name, address : a.address};
+						}
+						p1 = result1;
+					} else {
+						p1 = null;
+					}
+					var p2;
+					if(config1.bcc != null) {
+						var _this = config1.bcc;
+						var result1 = new Array(_this.length);
+						var _g = 0;
+						var _g1 = _this.length;
+						while(_g < _g1) {
+							var i = _g++;
+							var a = _this[i];
+							result1[i] = { name : a.name, address : a.address};
+						}
+						p2 = result1;
+					} else {
+						p2 = null;
+					}
+					__t741({ body : p, from : config, to : result, cc : p1, bcc : p2, subject : config1.subject, hasAttachments : config1.attachments != null && config1.attachments.length != 0});
+				} catch( _g ) {
+					__t83(haxe_Exception.caught(_g).unwrap());
+				}
+			} catch( _g ) {
+				var _g1 = haxe_Exception.caught(_g).unwrap();
+				__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+			}
+		});
+	}
+	,_doSend: function(config) {
+		var _gthis = this;
+		return tink_core_Future.irreversible(function(__return) {
+			try {
+				var __t74 = function(__t75) {
+					var body = new tink_streams_Single(new tink_core__$Lazy_LazyConst(tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(config.content.html))));
+					_gthis.api.send(haxe_crypto_Base64.encode(haxe_io_Bytes.ofString(new tink_json_Writer23().write(__t75))),null,body).handle(function(__t76) {
+						try {
+							var __t76_result;
+							var _g = tink_await_OutcomeTools.getOutcome(__t76);
+							switch(_g._hx_index) {
+							case 0:
+								__t76_result = _g.data;
+								break;
+							case 1:
+								__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+								return;
+							}
+							var result = __t76_result.result;
+							haxe_Log.trace("result",{ fileName : "src/duck_jet/Client.hx", lineNumber : 96, className : "duck_jet.Client", methodName : "_doSend"});
+							haxe_Log.trace(result,{ fileName : "src/duck_jet/Client.hx", lineNumber : 97, className : "duck_jet.Client", methodName : "_doSend"});
+							var __t77 = function(__t78) {
+								__return(tink_core_Outcome.Success(__t78));
+							};
+							if(result == "OK") {
+								__t77(null);
+							} else {
+								var appConfig = _gthis.config.duckJet;
+								var __t79 = function(__t80) {
+									__t77(__t80);
+								};
+								var __t81 = function(e) {
+									try {
+										var e1 = e;
+										throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g);
+										__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to send attachments: " + _g1.details(),_g1,{ fileName : "src/duck_jet/Client.hx", lineNumber : 107, className : "duck_jet.Client", methodName : "_doSend"}))));
+										return;
+									}
+								};
+								try {
+									var uuid = result;
+									var url = tink_Url.fromString(appConfig.dropoff.protocol + "://" + appConfig.svc.url + (":" + appConfig.svc.port) + "/dropoff");
+									var files = config.attachments;
+									tink_core_Future.irreversible(function(__return) {
+										try {
+											var sender = tink_core_Signal.trigger();
+											var trigger = new tink_core_FutureTrigger();
+											var _e = trigger;
+											var _g = function(v) {
+												return _e.trigger(tink_core_Outcome.Success(v));
+											};
+											var v = null;
+											var conclude = function() {
+												return _g(v);
+											};
+											var outgoing = new tink_streams_SignalStream(sender);
+											var connectorFactory = function(url) {
+												return new tink_websocket_clients_TcpConnector(url);
+											};
+											haxe_Log.trace(url,{ fileName : "src/duck_jet/Client.hx", lineNumber : 122, className : "duck_jet.Client", methodName : "sendFiles"});
+											connectorFactory(url).connect(outgoing).forEach(tink_streams_Handler.ofSafe(function(m) {
+												switch(m._hx_index) {
+												case 0:
+													throw haxe_Exception.thrown("assert");
+												case 1:
+													break;
+												case 2:
+													return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Finish));
+												default:
+												}
+												haxe_Log.trace("got message " + Std.string(m),{ fileName : "src/duck_jet/Client.hx", lineNumber : 134, className : "duck_jet.Client", methodName : "sendFiles"});
+												return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+											})).handle(function(_) {
+												haxe_Log.trace("concluding",{ fileName : "src/duck_jet/Client.hx", lineNumber : 138, className : "duck_jet.Client", methodName : "sendFiles"});
+												conclude();
+											});
+											var d = new tink_json_Writer24().write({ uuid : uuid});
+											sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+											var transmit = function(attachment) {
+												return tink_core_Future.irreversible(function(__return) {
+													try {
+														var __t84 = function(__t85) {
+															__return(tink_core_Outcome.Success(__t85));
+														};
+														var _g = attachment.source;
+														switch(_g._hx_index) {
+														case 0:
+															__return(tink_core_Outcome.Failure(tink_await_Error.fromAny("not implemented")));
+															return;
+														case 1:
+															tink_core_Future.map(tink_io_Source.chunked(_g.source).forEach(tink_streams_Handler.ofSafe(function(chunk) {
+																var d = new tink_json_Writer25().write({ currentFile : attachment.filename, chunk : chunk});
+																sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+																return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+															})),tink_core_Outcome.Success).handle(function(__t86) {
+																try {
+																	var __t86_result;
+																	var _g = tink_await_OutcomeTools.getOutcome(__t86);
+																	switch(_g._hx_index) {
+																	case 0:
+																		__t86_result = _g.data;
+																		break;
+																	case 1:
+																		__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+																		return;
+																	}
+																	__t84(__t86_result);
+																} catch( _g ) {
+																	var _g1 = haxe_Exception.caught(_g).unwrap();
+																	__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+																}
+															});
+															break;
+														}
+													} catch( _g ) {
+														var _g1 = haxe_Exception.caught(_g).unwrap();
+														__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+													}
+												});
+											};
+											var result = new Array(files.length);
+											var _g1 = 0;
+											var _g2 = files.length;
+											while(_g1 < _g2) {
+												var i = _g1++;
+												result[i] = transmit(files[i]);
+											}
+											tink_core_Promise.inSequence(result).handle(function(__t87) {
+												try {
+													var _g = tink_await_OutcomeTools.getOutcome(__t87);
+													switch(_g._hx_index) {
+													case 0:
+														break;
+													case 1:
+														__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+														return;
+													}
+													var d = new tink_json_Writer25().write({ currentFile : duck_$jet_Client.EOF, chunk : tink_Chunk.EMPTY});
+													sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+													trigger.handle(function(__t88) {
+														try {
+															var __t88_result;
+															var _g = tink_await_OutcomeTools.getOutcome(__t88);
+															switch(_g._hx_index) {
+															case 0:
+																__t88_result = _g.data;
+																break;
+															case 1:
+																__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+																return;
+															}
+															sender.handlers.invoke(tink_streams_Yield.End);
+															__return(tink_core_Outcome.Success(__t88_result));
+															return;
+														} catch( _g ) {
+															var _g1 = haxe_Exception.caught(_g).unwrap();
+															__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+														}
+													});
+												} catch( _g ) {
+													var _g1 = haxe_Exception.caught(_g).unwrap();
+													__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+												}
+											});
+										} catch( _g1 ) {
+											var _g2 = haxe_Exception.caught(_g1).unwrap();
+											__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g2)));
+										}
+									}).handle(function(__t82) {
+										try {
+											var __t82_result;
+											var _g = tink_await_OutcomeTools.getOutcome(__t82);
+											switch(_g._hx_index) {
+											case 0:
+												__t82_result = _g.data;
+												break;
+											case 1:
+												__t81(_g.failure);
+												return;
+											}
+											__t79(__t82_result);
+										} catch( _g ) {
+											var _g1 = haxe_Exception.caught(_g).unwrap();
+											__t81(_g1);
+										}
+									});
+								} catch( _g ) {
+									var _g1 = haxe_Exception.caught(_g).unwrap();
+									__t81(_g1);
+								}
+							}
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+						}
+					});
+				};
+				var __t83 = function(e) {
+					try {
+						var e1 = e;
+						throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g);
+						__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to build email",_g1,{ fileName : "src/duck_jet/Client.hx", lineNumber : 90, className : "duck_jet.Client", methodName : "_doSend"}))));
+						return;
+					}
+				};
+				try {
+					var __t741 = __t74;
+					var p = tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(""));
+					var config1 = config.from;
+					var _this = config.to;
+					var result = new Array(_this.length);
+					var _g = 0;
+					var _g1 = _this.length;
+					while(_g < _g1) {
+						var i = _g++;
+						var a = _this[i];
+						result[i] = { name : a.name, address : a.address};
+					}
+					var p1;
+					if(config.cc != null) {
+						var _this = config.cc;
+						var result1 = new Array(_this.length);
+						var _g = 0;
+						var _g1 = _this.length;
+						while(_g < _g1) {
+							var i = _g++;
+							var a = _this[i];
+							result1[i] = { name : a.name, address : a.address};
+						}
+						p1 = result1;
+					} else {
+						p1 = null;
+					}
+					var p2;
+					if(config.bcc != null) {
+						var _this = config.bcc;
+						var result1 = new Array(_this.length);
+						var _g = 0;
+						var _g1 = _this.length;
+						while(_g < _g1) {
+							var i = _g++;
+							var a = _this[i];
+							result1[i] = { name : a.name, address : a.address};
+						}
+						p2 = result1;
+					} else {
+						p2 = null;
+					}
+					__t741({ body : p, from : config1, to : result, cc : p1, bcc : p2, subject : config.subject, hasAttachments : config.attachments != null && config.attachments.length != 0});
+				} catch( _g ) {
+					var _g1 = haxe_Exception.caught(_g).unwrap();
+					__t83(_g1);
+				}
+			} catch( _g ) {
+				var _g1 = haxe_Exception.caught(_g).unwrap();
+				__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+			}
+		});
+	}
+	,sendFiles: function(uuid,url,host,port,files) {
+		return tink_core_Future.irreversible(function(__return) {
+			try {
+				var sender = tink_core_Signal.trigger();
+				var trigger = new tink_core_FutureTrigger();
+				var _e = trigger;
+				var _g = function(v) {
+					return _e.trigger(tink_core_Outcome.Success(v));
+				};
+				var v = null;
+				var conclude = function() {
+					return _g(v);
+				};
+				var outgoing = new tink_streams_SignalStream(sender);
+				var connectorFactory = function(url) {
+					return new tink_websocket_clients_TcpConnector(url);
+				};
+				haxe_Log.trace(url,{ fileName : "src/duck_jet/Client.hx", lineNumber : 122, className : "duck_jet.Client", methodName : "sendFiles"});
+				connectorFactory(url).connect(outgoing).forEach(tink_streams_Handler.ofSafe(function(m) {
+					switch(m._hx_index) {
+					case 0:
+						throw haxe_Exception.thrown("assert");
+					case 1:
+						break;
+					case 2:
+						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Finish));
+					default:
+					}
+					haxe_Log.trace("got message " + Std.string(m),{ fileName : "src/duck_jet/Client.hx", lineNumber : 134, className : "duck_jet.Client", methodName : "sendFiles"});
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+				})).handle(function(_) {
+					haxe_Log.trace("concluding",{ fileName : "src/duck_jet/Client.hx", lineNumber : 138, className : "duck_jet.Client", methodName : "sendFiles"});
+					conclude();
+				});
+				var d = new tink_json_Writer24().write({ uuid : uuid});
+				sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+				var f = function(attachment) {
+					return tink_core_Future.irreversible(function(__return) {
+						try {
+							var __t84 = function(__t85) {
+								__return(tink_core_Outcome.Success(__t85));
+							};
+							var _g = attachment.source;
+							switch(_g._hx_index) {
+							case 0:
+								__return(tink_core_Outcome.Failure(tink_await_Error.fromAny("not implemented")));
+								return;
+							case 1:
+								tink_core_Future.map(tink_io_Source.chunked(_g.source).forEach(tink_streams_Handler.ofSafe(function(chunk) {
+									var d = new tink_json_Writer25().write({ currentFile : attachment.filename, chunk : chunk});
+									sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+									return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Handled.Resume));
+								})),tink_core_Outcome.Success).handle(function(__t86) {
+									try {
+										var __t86_result;
+										var _g = tink_await_OutcomeTools.getOutcome(__t86);
+										switch(_g._hx_index) {
+										case 0:
+											__t86_result = _g.data;
+											break;
+										case 1:
+											__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+											return;
+										}
+										__t84(__t86_result);
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g).unwrap();
+										__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+									}
+								});
+								break;
+							}
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+						}
+					});
+				};
+				var result = new Array(files.length);
+				var _g1 = 0;
+				var _g2 = files.length;
+				while(_g1 < _g2) {
+					var i = _g1++;
+					result[i] = f(files[i]);
+				}
+				tink_core_Promise.inSequence(result).handle(function(__t87) {
+					try {
+						var _g = tink_await_OutcomeTools.getOutcome(__t87);
+						switch(_g._hx_index) {
+						case 0:
+							break;
+						case 1:
+							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+							return;
+						}
+						var d = new tink_json_Writer25().write({ currentFile : duck_$jet_Client.EOF, chunk : tink_Chunk.EMPTY});
+						sender.handlers.invoke(tink_streams_Yield.Data(tink_websocket_RawMessage.Text(d)));
+						trigger.handle(function(__t88) {
+							try {
+								var __t88_result;
+								var _g = tink_await_OutcomeTools.getOutcome(__t88);
+								switch(_g._hx_index) {
+								case 0:
+									__t88_result = _g.data;
+									break;
+								case 1:
+									__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
+									return;
+								}
+								sender.handlers.invoke(tink_streams_Yield.End);
+								__return(tink_core_Outcome.Success(__t88_result));
+								return;
+							} catch( _g ) {
+								var _g1 = haxe_Exception.caught(_g).unwrap();
+								__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+							}
+						});
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g).unwrap();
+						__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+					}
+				});
+			} catch( _g1 ) {
+				var _g2 = haxe_Exception.caught(_g1).unwrap();
+				__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g2)));
+			}
+		});
+	}
+});
 var tink_websocket_Server = function() { };
 $hxClasses["tink.websocket.Server"] = tink_websocket_Server;
 tink_websocket_Server.__name__ = true;
@@ -4596,9 +5720,11 @@ duck_$jet_mailers_JetMailer.prototype = $extend(why_email_EmailBase.prototype,{
 		var _gthis = this;
 		return tink_core_Promise.noise(tink_core_Future.irreversible(function(__return) {
 			try {
+				haxe_Log.trace("sending",{ fileName : "src/duck_jet/mailers/JetMailer.hx", lineNumber : 32, className : "duck_jet.mailers.JetMailer", methodName : "doSend"});
+				haxe_Log.trace(config,{ fileName : "src/duck_jet/mailers/JetMailer.hx", lineNumber : 33, className : "duck_jet.mailers.JetMailer", methodName : "doSend"});
 				var p;
 				if(config.attachments == null) {
-					p = null;
+					p = new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success([])));
 				} else {
 					var _this = config.attachments;
 					var f = $bind(_gthis,_gthis.mkAttachment);
@@ -4611,13 +5737,13 @@ duck_$jet_mailers_JetMailer.prototype = $extend(why_email_EmailBase.prototype,{
 					}
 					p = tink_core_Promise.inParallel(result);
 				}
-				p.handle(function(__t87) {
+				p.handle(function(__t90) {
 					try {
-						var __t87_result;
-						var _g = tink_await_OutcomeTools.getOutcome(__t87);
+						var __t90_result;
+						var _g = tink_await_OutcomeTools.getOutcome(__t90);
 						switch(_g._hx_index) {
 						case 0:
-							__t87_result = _g.data;
+							__t90_result = _g.data;
 							break;
 						case 1:
 							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
@@ -4664,19 +5790,19 @@ duck_$jet_mailers_JetMailer.prototype = $extend(why_email_EmailBase.prototype,{
 						} else {
 							promise3 = null;
 						}
-						tink_core_Future.ofJsPromise(promise.request({ Messages : [{ From : promise1, To : result, Cc : promise2, Bcc : promise3, HtmlPart : config.content.html, Subject : config.subject, Attachments : __t87_result}]})).handle(function(__t86) {
+						tink_core_Future.ofJsPromise(promise.request({ Messages : [{ From : promise1, To : result, Cc : promise2, Bcc : promise3, HtmlPart : config.content.html, Subject : config.subject, Attachments : __t90_result}]})).handle(function(__t89) {
 							try {
-								var __t86_result;
-								var _g = tink_await_OutcomeTools.getOutcome(__t86);
+								var __t89_result;
+								var _g = tink_await_OutcomeTools.getOutcome(__t89);
 								switch(_g._hx_index) {
 								case 0:
-									__t86_result = _g.data;
+									__t89_result = _g.data;
 									break;
 								case 1:
 									__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
 									return;
 								}
-								__return(tink_core_Outcome.Success(__t86_result));
+								__return(tink_core_Outcome.Success(__t89_result));
 								return;
 							} catch( _g ) {
 								var _g1 = haxe_Exception.caught(_g).unwrap();
@@ -4714,19 +5840,19 @@ duck_$jet_mailers_JetMailer.prototype = $extend(why_email_EmailBase.prototype,{
 					p = _g.source;
 					break;
 				}
-				tink_io_RealSourceTools.all(p).handle(function(__t88) {
+				tink_io_RealSourceTools.all(p).handle(function(__t91) {
 					try {
-						var __t88_result;
-						var _g = tink_await_OutcomeTools.getOutcome(__t88);
+						var __t91_result;
+						var _g = tink_await_OutcomeTools.getOutcome(__t91);
 						switch(_g._hx_index) {
 						case 0:
-							__t88_result = _g.data;
+							__t91_result = _g.data;
 							break;
 						case 1:
 							__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g.failure)));
 							return;
 						}
-						__return(tink_core_Outcome.Success({ Filename : whyAttachment.filename, ContentType : mime_Mime.lookup(whyAttachment.filename), Base64Content : haxe_crypto_Base64.encode(__t88_result.toBytes())}));
+						__return(tink_core_Outcome.Success({ Filename : whyAttachment.filename, ContentType : mime_Mime.lookup(whyAttachment.filename), Base64Content : haxe_crypto_Base64.encode(__t91_result.toBytes())}));
 						return;
 					} catch( _g ) {
 						var _g1 = haxe_Exception.caught(_g).unwrap();
@@ -4998,6 +6124,15 @@ tink_core_Future.irreversible = function(init) {
 		return null;
 	});
 };
+tink_core_Future.delay = function(ms,value) {
+	var this1 = tink_core_Future.irreversible(function(cb) {
+		haxe_Timer.delay(function() {
+			cb(tink_core_Lazy.get(value));
+		},ms);
+	});
+	this1.eager();
+	return this1;
+};
 var tink_core_Outcome = $hxEnums["tink.core.Outcome"] = { __ename__:true,__constructs__:null
 	,Success: ($_=function(data) { return {_hx_index:0,data:data,__enum__:"tink.core.Outcome",toString:$estr}; },$_._hx_name="Success",$_.__params__ = ["data"],$_)
 	,Failure: ($_=function(failure) { return {_hx_index:1,failure:failure,__enum__:"tink.core.Outcome",toString:$estr}; },$_._hx_name="Failure",$_.__params__ = ["failure"],$_)
@@ -5032,6 +6167,9 @@ tink_core_Promise.many = function(a,concurrency) {
 	},function(o) {
 		return o;
 	});
+};
+tink_core_Promise.inSequence = function(a) {
+	return tink_core_Promise.many(a,1);
 };
 var tink_core_Lazy = {};
 tink_core_Lazy.get = function(this1) {
@@ -5356,6 +6494,88 @@ tink_core__$Callback_LinkPair.prototype = {
 		}
 	}
 };
+var tink_http_ClientObject = function() { };
+$hxClasses["tink.http.ClientObject"] = tink_http_ClientObject;
+tink_http_ClientObject.__name__ = true;
+var tink_http_clients_NodeClient = function() {
+};
+$hxClasses["tink.http.clients.NodeClient"] = tink_http_clients_NodeClient;
+tink_http_clients_NodeClient.__name__ = true;
+tink_http_clients_NodeClient.prototype = {
+	request: function(req) {
+		var _g = tink_http_clients_Helpers.checkScheme(req.header.url.scheme);
+		switch(_g._hx_index) {
+		case 0:
+			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(_g.v)));
+		case 1:
+			var options = this.getNodeOptions(req.header);
+			if(req.header.url.scheme == "https") {
+				return this.nodeRequest(js_node_Https,options,req);
+			} else {
+				return this.nodeRequest(js_node_Http,options,req);
+			}
+			break;
+		}
+	}
+	,getNodeOptions: function(header) {
+		var header1 = header.method;
+		var this1 = header.url;
+		var tmp = this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query);
+		var tmp1 = tink_url_Host.get_name(header.url.hosts[0]);
+		var tmp2 = tink_url_Host.get_port(header.url.hosts[0]);
+		var map = { };
+		var _this = header.fields;
+		var _g_current = 0;
+		while(_g_current < _this.length) {
+			var h = _this[_g_current++];
+			if(h.name == "host") {
+				map[h.name] = h.value;
+			} else {
+				var _g = map[h.name];
+				(_g == null ? map[h.name] = [] : _g).push(h.value);
+			}
+		}
+		return { method : header1, path : tmp, host : tmp1, port : tmp2, headers : map, agent : false};
+	}
+	,nodeRequest: function(agent,options,req) {
+		return tink_core_Future.async(function(cb) {
+			var fwd = agent.request(options,function(msg) {
+				var cb1 = cb;
+				var statusCode = msg.statusCode;
+				var reason = msg.statusMessage;
+				var _g = [];
+				var _g1 = 0;
+				var _g2 = msg.rawHeaders.length >> 1;
+				while(_g1 < _g2) {
+					var i = _g1++;
+					_g.push(new tink_http_HeaderField(msg.rawHeaders[2 * i].toLowerCase(),msg.rawHeaders[2 * i + 1]));
+				}
+				var options = null;
+				options = { };
+				cb1(tink_core_Outcome.Success(new tink_http_IncomingResponse(new tink_http_ResponseHeaderBase(statusCode,reason,_g,"HTTP/1.1"),tink_io_nodejs_NodejsSource.wrap("Response from " + (req.header.url == null ? "null" : tink_Url.toString(req.header.url)),msg,options.chunkSize,options.onEnd))));
+			});
+			var fail = function(e) {
+				cb(tink_core_Outcome.Failure(e));
+			};
+			fwd.on("error",function(e) {
+				fail(tink_core_TypedError.withData(null,e.message,e,{ fileName : "tink/http/clients/NodeClient.hx", lineNumber : 83, className : "tink.http.clients.NodeClient", methodName : "nodeRequest"}));
+			});
+			tink_io_Source.pipeTo(req.body,tink_io_nodejs_NodejsSink.wrap("Request to " + (req.header.url == null ? "null" : tink_Url.toString(req.header.url)),fwd)).handle(function(res) {
+				fwd.end();
+				switch(res._hx_index) {
+				case 0:
+					break;
+				case 1:
+					fail(new tink_core_TypedError(502,"Gateway Error",{ fileName : "tink/http/clients/NodeClient.hx", lineNumber : 92, className : "tink.http.clients.NodeClient", methodName : "nodeRequest"}));
+					break;
+				case 2:
+					fail(res.e);
+					break;
+				}
+			});
+		});
+	}
+};
 var google_$cloud_secret_$manager_build_src_v1_index_SecretManagerServiceClient = require("@google-cloud/secret-manager/build/src/v1/index").SecretManagerServiceClient;
 var tink_chunk_ChunkObject = function() { };
 $hxClasses["tink.chunk.ChunkObject"] = tink_chunk_ChunkObject;
@@ -5446,6 +6666,14 @@ tink_core_TypedError.asError = function(v) {
 		return null;
 	}
 };
+tink_core_TypedError.catchExceptions = function(f,report,pos) {
+	try {
+		return tink_core_Outcome.Success(f());
+	} catch( _g ) {
+		var e = tink_core_TypedError.asError(haxe_Exception.caught(_g).unwrap());
+		return tink_core_Outcome.Failure(e == null ? report == null ? tink_core_TypedError.withData(null,"Unexpected Error",e,pos) : report(e) : e);
+	}
+};
 tink_core_TypedError.prototype = {
 	printPos: function() {
 		return this.pos.className + "." + this.pos.methodName + ":" + this.pos.lineNumber;
@@ -5461,6 +6689,36 @@ tink_core_TypedError.prototype = {
 		throw haxe_Exception.thrown(this);
 	}
 };
+var tink_await_OutcomeTools = function() { };
+$hxClasses["tink.await.OutcomeTools"] = tink_await_OutcomeTools;
+tink_await_OutcomeTools.__name__ = true;
+tink_await_OutcomeTools.getOutcome = function(outcome,value) {
+	if(outcome == null) {
+		return tink_core_Outcome.Success(value);
+	} else {
+		switch(outcome._hx_index) {
+		case 0:
+			return outcome;
+		case 1:
+			var _g = outcome.failure;
+			if(((_g) instanceof tink_core_TypedError)) {
+				return outcome;
+			} else {
+				return tink_core_Outcome.Failure(tink_await_Error.fromAny(_g));
+			}
+			break;
+		}
+	}
+};
+var tink_await_Error = {};
+tink_await_Error.fromAny = function(any) {
+	if(((any) instanceof tink_core_TypedError)) {
+		return any;
+	} else {
+		return tink_core_TypedError.withData(0,"Unexpected Error",any,{ fileName : "tink/await/Error.hx", lineNumber : 12, className : "tink.await._Error.Error_Impl_", methodName : "fromAny"});
+	}
+};
+var firebase_$admin_Credential = require("firebase-admin").credential;
 var tink_core_NamedWith = function(name,value) {
 	this.name = name;
 	this.value = value;
@@ -5472,6 +6730,14 @@ var tink_http_HeaderField = function(name,value) {
 };
 $hxClasses["tink.http.HeaderField"] = tink_http_HeaderField;
 tink_http_HeaderField.__name__ = true;
+tink_http_HeaderField.ofString = function(s) {
+	var _g = s.indexOf(":");
+	if(_g == -1) {
+		return new tink_http_HeaderField(s.toLowerCase(),null);
+	} else {
+		return new tink_http_HeaderField(HxOverrides.substr(s,0,_g).toLowerCase(),StringTools.trim(HxOverrides.substr(s,_g + 1,null)));
+	}
+};
 tink_http_HeaderField.__super__ = tink_core_NamedWith;
 tink_http_HeaderField.prototype = $extend(tink_core_NamedWith.prototype,{
 	toString: function() {
@@ -5482,6 +6748,69 @@ tink_http_HeaderField.prototype = $extend(tink_core_NamedWith.prototype,{
 		}
 	}
 });
+var tink_http__$Client_CustomClient = function(preprocessors,postprocessors,real) {
+	this.preprocessors = preprocessors;
+	this.postprocessors = postprocessors;
+	this.real = real;
+};
+$hxClasses["tink.http._Client.CustomClient"] = tink_http__$Client_CustomClient;
+tink_http__$Client_CustomClient.__name__ = true;
+tink_http__$Client_CustomClient.concat = function(a,b) {
+	if(a == null) {
+		return b;
+	} else if(b == null) {
+		return a;
+	} else {
+		return a.concat(b);
+	}
+};
+tink_http__$Client_CustomClient.create = function(c,preprocessors,postprocessors) {
+	var _g = ((c) instanceof tink_http__$Client_CustomClient) ? c : null;
+	if(_g == null) {
+		return new tink_http__$Client_CustomClient(preprocessors,postprocessors,c);
+	} else {
+		var v = _g;
+		return new tink_http__$Client_CustomClient(tink_http__$Client_CustomClient.concat(preprocessors,v.preprocessors),tink_http__$Client_CustomClient.concat(v.postprocessors,postprocessors),v.real);
+	}
+};
+tink_http__$Client_CustomClient.prototype = {
+	pipe: function(value,transforms,index) {
+		if(index == null) {
+			index = 0;
+		}
+		if(transforms != null && index < transforms.length) {
+			var _g = $bind(this,this.pipe);
+			var transforms1 = transforms;
+			var index1 = index + 1;
+			var tmp = function(value) {
+				return _g(value,transforms1,index1);
+			};
+			return tink_core_Promise.next(transforms[index](value),tmp);
+		} else {
+			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(value)));
+		}
+	}
+	,request: function(req) {
+		var _gthis = this;
+		return tink_core_Promise.next(this.pipe(req,this.preprocessors),function(req) {
+			var tmp = _gthis.real.request(req);
+			var _g = $bind(_gthis,_gthis.pipe);
+			var transforms;
+			if(_gthis.postprocessors == null) {
+				transforms = null;
+			} else {
+				var _g1 = [];
+				var _g2 = 0;
+				var _g3 = _gthis.postprocessors;
+				while(_g2 < _g3.length) _g1.push(_g3[_g2++](req));
+				transforms = _g1;
+			}
+			return tink_core_Promise.next(tmp,function(value) {
+				return _g(value,transforms);
+			});
+		});
+	}
+};
 var js_Boot = function() { };
 $hxClasses["js.Boot"] = js_Boot;
 js_Boot.__name__ = true;
@@ -5577,6 +6906,55 @@ js_Boot.__string_rec = function(o,s) {
 		return String(o);
 	}
 };
+var tink_web_proxy_RemoteEndpoint = {};
+tink_web_proxy_RemoteEndpoint._new = function(host,pathSuffix,scheme) {
+	return { host : host, pathSuffix : pathSuffix, scheme : tink_web_proxy__$Remote_Scheme.fromString(scheme)};
+};
+tink_web_proxy_RemoteEndpoint.concat = function(a,b) {
+	if(a == null) {
+		return b;
+	} else if(b == null) {
+		return a;
+	} else {
+		return a.concat(b);
+	}
+};
+tink_web_proxy_RemoteEndpoint.sub = function(this1,options) {
+	return { host : this1.host, scheme : this1.scheme, pathSuffix : this1.pathSuffix, headers : tink_web_proxy_RemoteEndpoint.concat(this1.headers,options.headers), query : tink_web_proxy_RemoteEndpoint.concat(this1.query,options.query), path : tink_web_proxy_RemoteEndpoint.concat(this1.path,options.path)};
+};
+tink_web_proxy_RemoteEndpoint.uri = function(this1) {
+	var _g = this1.path;
+	return "/" + (_g == null ? "" : tink_url_Path.normalize(_g.join("/"))) + (this1.pathSuffix == null ? "" : this1.pathSuffix) + (this1.query == null ? "null" : tink_web_proxy_QueryParams.toString(this1.query));
+};
+tink_web_proxy_RemoteEndpoint.request = function(this1,client,method,body,reader) {
+	return tink_core_Promise.next(client.request(new tink_http_OutgoingRequest(new tink_http_OutgoingRequestHeader(method,tink_Url.fromString("" + this1.scheme + "//" + (this1.host == null ? "null" : this1.host) + tink_web_proxy_RemoteEndpoint.uri(this1)),null,this1.headers),body)),function(response) {
+		return (tink_web_proxy_ResponseReader.withHeader(reader,response.header))(response.body);
+	});
+};
+tink_web_proxy_RemoteEndpoint.ofUrl = function(u) {
+	var tmp = tink_web_proxy_RemoteEndpoint._new(u.hosts[0],u.hash,u.scheme);
+	var _g = u.auth;
+	var tmp1 = _g == null ? null : [new tink_http_HeaderField("authorization",tink_http_HeaderValue.basicAuth(_g == null ? null : _g.split(":")[0],_g == null ? null : _g.split(":")[1]))];
+	var tmp2 = tink_url_Path.parts(u.path);
+	var _g = [];
+	var p = new tink_url__$Query_QueryStringParser(u.query,"&","=",0);
+	while(p.hasNext()) {
+		var p1 = p.next();
+		_g.push(new tink_core_NamedWith(tink_url_Portion.ofString(p1.name),p1.value));
+	}
+	return tink_web_proxy_RemoteEndpoint.sub(tmp,{ headers : tmp1, path : tmp2, query : _g});
+};
+var tink_web_proxy__$Remote_Scheme = {};
+tink_web_proxy__$Remote_Scheme.fromString = function(s) {
+	var s1;
+	if(s == null) {
+		s1 = "";
+	} else {
+		var _g = s.indexOf(":");
+		s1 = _g == -1 ? s + ":" : HxOverrides.substr(s,0,_g + 1);
+	}
+	return s1;
+};
 var tink_http_HeaderValue = {};
 tink_http_HeaderValue.parse = function(this1) {
 	return tink_http_HeaderValue.parseWith(this1,function(_,params) {
@@ -5608,6 +6986,16 @@ tink_http_HeaderValue.parseWith = function(this1,parseExtension) {
 		_g.push({ value : value, extensions : parseExtension(value,new tink_url__$Query_QueryStringParser(v,";","=",pos))});
 	}
 	return _g;
+};
+tink_http_HeaderValue.basicAuth = function(username,password) {
+	return "Basic " + haxe_crypto_Base64.encode(haxe_io_Bytes.ofString("" + username + ":" + password)).toString();
+};
+tink_http_HeaderValue.ofInt = function(i) {
+	if(i == null) {
+		return "null";
+	} else {
+		return "" + i;
+	}
 };
 var haxe_io_Bytes = function(data) {
 	this.length = data.byteLength;
@@ -5952,6 +7340,37 @@ tink_url_Portion.ofString = function(s) {
 	return s == null ? "" : encodeURIComponent(s);
 };
 var tink_Url = {};
+tink_Url.makePayload = function(parts) {
+	var payload = "";
+	var _g = parts.auth;
+	var _g1 = parts.hosts;
+	if(_g == null) {
+		if(_g1.length != 0) {
+			payload = "" + ("//" + _g1.join(","));
+		}
+	} else if(_g1.length == 0) {
+		payload = "" + ("//" + (_g == null ? "null" : _g == null ? "" : "" + _g + "@"));
+	} else {
+		payload = "" + ("//" + (_g == null ? "null" : _g == null ? "" : "" + _g + "@") + _g1.join(","));
+	}
+	payload += parts.path == null ? "null" : parts.path;
+	var _g = parts.query;
+	if(_g != null) {
+		payload += "?" + (_g == null ? "null" : _g);
+	}
+	var _g = parts.hash;
+	if(_g != null) {
+		payload += "#" + _g;
+	}
+	parts.payload = payload.toString();
+};
+tink_Url.toString = function(this1) {
+	if(this1.scheme == null) {
+		return this1.payload;
+	} else {
+		return "" + this1.scheme + ":" + this1.payload;
+	}
+};
 tink_Url.fromString = function(s) {
 	return tink_Url.parse(s);
 };
@@ -6021,6 +7440,11 @@ tink_Url.parse = function(s,onError) {
 		return { scheme : FORMAT.matched(2), payload : FORMAT.matched(3), hosts : hosts, auth : FORMAT.matched(6), path : tink_url_Path.ofString(path), query : FORMAT.matched(10), hash : FORMAT.matched(12)};
 	}
 };
+tink_Url.make = function(parts) {
+	var parts1 = { payload : "", path : parts.path, query : parts.query, hosts : parts.hosts, auth : parts.auth, scheme : parts.scheme, hash : parts.hash};
+	tink_Url.makePayload(parts1);
+	return parts1;
+};
 var tink_url_Host = {};
 tink_url_Host._new = function(name,port) {
 	var this1;
@@ -6074,6 +7498,306 @@ tink_url_Host.get_port = function(this1) {
 			throw haxe_Exception.thrown("assert");
 		}
 	}
+};
+var tink_web_proxy_RemoteBase = function(client,endpoint) {
+	this.client = client;
+	this.endpoint = endpoint;
+};
+$hxClasses["tink.web.proxy.RemoteBase"] = tink_web_proxy_RemoteBase;
+tink_web_proxy_RemoteBase.__name__ = true;
+var tink_web_proxy_Remote20 = function(client,endpoint) {
+	tink_web_proxy_RemoteBase.call(this,client,endpoint);
+};
+$hxClasses["tink.web.proxy.Remote20"] = tink_web_proxy_Remote20;
+tink_web_proxy_Remote20.__name__ = true;
+tink_web_proxy_Remote20.__super__ = tink_web_proxy_RemoteBase;
+tink_web_proxy_Remote20.prototype = $extend(tink_web_proxy_RemoteBase.prototype,{
+	users: function(accessToken) {
+		return new tink_web_proxy_Remote21(this.client,tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : ["users"], query : [], headers : [].concat(new tink_querystring_Builder17().stringify({ _254 : accessToken}))}));
+	}
+});
+var fire_$duck_Connectors = function() { };
+$hxClasses["fire_duck.Connectors"] = fire_$duck_Connectors;
+fire_$duck_Connectors.__name__ = true;
+fire_$duck_Connectors.firebaseInit = function() {
+	boisly_Secret.reveal(boisly_AppSettings.get_config().firebase.svcCfg).handle(function(__t0) {
+		var __t0_result;
+		var _g = tink_await_OutcomeTools.getOutcome(__t0);
+		switch(_g._hx_index) {
+		case 0:
+			__t0_result = _g.data;
+			break;
+		case 1:
+			throw haxe_Exception.thrown(_g.failure);
+		}
+		var cfg = JSON.parse(__t0_result.toString());
+		if(boisly_AppSettings.get_config().firebase.standalone) {
+			FirebaseAdmin.initializeApp({ credential : firebase_$admin_Credential.cert(cfg)});
+		}
+		FirebaseAdmin.initializeApp({ credential : firebase_$admin_Credential.cert(cfg)},"fireduck");
+	});
+};
+var haxe_Log = function() { };
+$hxClasses["haxe.Log"] = haxe_Log;
+haxe_Log.__name__ = true;
+haxe_Log.formatOutput = function(v,infos) {
+	var str = Std.string(v);
+	if(infos == null) {
+		return str;
+	}
+	var pstr = infos.fileName + ":" + infos.lineNumber;
+	if(infos.customParams != null) {
+		var _g = 0;
+		var _g1 = infos.customParams;
+		while(_g < _g1.length) str += ", " + Std.string(_g1[_g++]);
+	}
+	return pstr + ": " + str;
+};
+haxe_Log.trace = function(v,infos) {
+	var str = haxe_Log.formatOutput(v,infos);
+	if(typeof(console) != "undefined" && console.log != null) {
+		console.log(str);
+	}
+};
+var fire_$duck_Logger = function() { };
+$hxClasses["fire_duck.Logger"] = fire_$duck_Logger;
+fire_$duck_Logger.__name__ = true;
+fire_$duck_Logger.log = function(v,p) {
+	if(boisly_AppSettings.get_config().fireDuck.enableLogging) {
+		fire_$duck_Logger._logger.trace(v,p);
+	}
+};
+var fire_$duck_Session = function(header) {
+	this.header = header;
+};
+$hxClasses["fire_duck.Session"] = fire_$duck_Session;
+fire_$duck_Session.__name__ = true;
+fire_$duck_Session.prototype = {
+	getUser: function() {
+		return this.doGetUser();
+	}
+	,doGetUser: function() {
+		var _gthis = this;
+		return tink_core_Future.irreversible(function(__return) {
+			try {
+				var __t50 = function(__t51) {
+					__return(tink_core_Outcome.Success(__t51));
+				};
+				var __t52 = function(e) {
+					try {
+						var e1 = e;
+						throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g);
+						haxe_Log.trace(_g1.details(),{ fileName : "fire_duck/Session.hx", lineNumber : 53, className : "fire_duck.Session", methodName : "doGetUser"});
+						__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"wow",_g1,{ fileName : "fire_duck/Session.hx", lineNumber : 54, className : "fire_duck.Session", methodName : "doGetUser"}))));
+						return;
+					}
+				};
+				try {
+					var __t53 = function(__t54) {
+						__t50(__t54);
+					};
+					var _g = _gthis.header.byName("x-access-token".toLowerCase());
+					switch(_g._hx_index) {
+					case 0:
+						var _g1 = _g.data;
+						var __t55 = function(__t56) {
+							__t53(__t56);
+						};
+						var __t57 = function(e) {
+							try {
+								var e1 = e;
+								throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+							} catch( _g ) {
+								var _g1 = haxe_Exception.caught(_g);
+								fire_$duck_Logger.log(_g1.details(),{ fileName : "fire_duck/Session.hx", lineNumber : 45, className : "fire_duck.Session", methodName : "doGetUser"});
+								__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Unable to authenticate",_g1,{ fileName : "fire_duck/Session.hx", lineNumber : 46, className : "fire_duck.Session", methodName : "doGetUser"}))));
+								return;
+							}
+						};
+						try {
+							var api = null;
+							haxe_Log.trace("getting firebase user...",{ fileName : "fire_duck/Session.hx", lineNumber : 29, className : "fire_duck.Session", methodName : "doGetUser"});
+							fire_$duck_BusinessLogic.getFirebaseUser(_g1).handle(function(__t58) {
+								try {
+									var __t58_result;
+									var _g = tink_await_OutcomeTools.getOutcome(__t58);
+									switch(_g._hx_index) {
+									case 0:
+										__t58_result = _g.data;
+										break;
+									case 1:
+										__t57(_g.failure);
+										return;
+									}
+									var fire = __t58_result;
+									haxe_Log.trace("getting wildduck user...",{ fileName : "fire_duck/Session.hx", lineNumber : 31, className : "fire_duck.Session", methodName : "doGetUser"});
+									var __t59 = function(__t60) {
+										var duck = __t60;
+										haxe_Log.trace("setting api...",{ fileName : "fire_duck/Session.hx", lineNumber : 38, className : "fire_duck.Session", methodName : "doGetUser"});
+										duck.api = api;
+										__t55(haxe_ds_Option.Some({ fire : fire, duck : duck}));
+									};
+									var __t61 = function(e) {
+										try {
+											var e1 = e;
+											throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+										} catch( _g ) {
+											__t59({ });
+										}
+									};
+									try {
+										fire_$duck_Connectors.duck.handle(function(__t63) {
+											try {
+												var __t63_result;
+												var _g = tink_await_OutcomeTools.getOutcome(__t63);
+												switch(_g._hx_index) {
+												case 0:
+													__t63_result = _g.data;
+													break;
+												case 1:
+													__t61(_g.failure);
+													return;
+												}
+												api = __t63_result.users().get(fire.customClaims.wildDuck.userId);
+												api.info().handle(function(__t62) {
+													try {
+														var __t62_result;
+														var _g = tink_await_OutcomeTools.getOutcome(__t62);
+														switch(_g._hx_index) {
+														case 0:
+															__t62_result = _g.data;
+															break;
+														case 1:
+															__t61(_g.failure);
+															return;
+														}
+														__t59(__t62_result);
+													} catch( _g ) {
+														var _g1 = haxe_Exception.caught(_g).unwrap();
+														__t61(_g1);
+													}
+												});
+											} catch( _g ) {
+												var _g1 = haxe_Exception.caught(_g).unwrap();
+												__t61(_g1);
+											}
+										});
+									} catch( _g ) {
+										var _g1 = haxe_Exception.caught(_g).unwrap();
+										__t61(_g1);
+									}
+								} catch( _g ) {
+									var _g1 = haxe_Exception.caught(_g).unwrap();
+									__t57(_g1);
+								}
+							});
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__t57(_g1);
+						}
+						break;
+					case 1:
+						var __t531 = __t53;
+						haxe_Log.trace("ok...",{ fileName : "fire_duck/Session.hx", lineNumber : 50, className : "fire_duck.Session", methodName : "doGetUser"});
+						__t531(haxe_ds_Option.None);
+						break;
+					}
+				} catch( _g ) {
+					var _g1 = haxe_Exception.caught(_g).unwrap();
+					__t52(_g1);
+				}
+			} catch( _g ) {
+				var _g1 = haxe_Exception.caught(_g).unwrap();
+				__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+			}
+		});
+	}
+};
+var fire_$duck_BusinessLogic = function() { };
+$hxClasses["fire_duck.BusinessLogic"] = fire_$duck_BusinessLogic;
+fire_$duck_BusinessLogic.__name__ = true;
+fire_$duck_BusinessLogic.getFirebaseUser = function(firebaseIdToken) {
+	return tink_core_Future.irreversible(function(__return) {
+		try {
+			boisly_AppSettings.get_config();
+			var __t12 = function(__t13) {
+				var __t14 = function(__t15) {
+					__return(tink_core_Outcome.Success(__t15));
+				};
+				var __t16 = function(e) {
+					try {
+						var e1 = e;
+						throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g);
+						__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Firebase User Retrieval Error",_g1,{ fileName : "fire_duck/Utils.hx", lineNumber : 69, className : "fire_duck.BusinessLogic", methodName : "getFirebaseUser"}))));
+						return;
+					}
+				};
+				try {
+					tink_core_Future.ofJsPromise(FirebaseAdmin.auth().getUser(__t13.uid)).handle(function(__t17) {
+						try {
+							var __t17_result;
+							var _g = tink_await_OutcomeTools.getOutcome(__t17);
+							switch(_g._hx_index) {
+							case 0:
+								__t17_result = _g.data;
+								break;
+							case 1:
+								__t16(_g.failure);
+								return;
+							}
+							__t14(__t17_result);
+						} catch( _g ) {
+							var _g1 = haxe_Exception.caught(_g).unwrap();
+							__t16(_g1);
+						}
+					});
+				} catch( _g ) {
+					var _g1 = haxe_Exception.caught(_g).unwrap();
+					__t16(_g1);
+				}
+			};
+			var __t18 = function(e) {
+				try {
+					var e1 = e;
+					throw haxe_Exception.thrown(e1.code == 0 ? e1.data : e1);
+				} catch( _g ) {
+					var _g1 = haxe_Exception.caught(_g);
+					__return(tink_core_Outcome.Failure(tink_await_Error.fromAny(tink_core_TypedError.withData(null,"Firebase Id Verification Error: " + _g1.details(),_g1,{ fileName : "fire_duck/Utils.hx", lineNumber : 67, className : "fire_duck.BusinessLogic", methodName : "getFirebaseUser"}))));
+					return;
+				}
+			};
+			try {
+				tink_core_Future.ofJsPromise(FirebaseAdmin.auth().verifyIdToken(firebaseIdToken)).handle(function(__t19) {
+					try {
+						var __t19_result;
+						var _g = tink_await_OutcomeTools.getOutcome(__t19);
+						switch(_g._hx_index) {
+						case 0:
+							__t19_result = _g.data;
+							break;
+						case 1:
+							__t18(_g.failure);
+							return;
+						}
+						__t12(__t19_result);
+					} catch( _g ) {
+						var _g1 = haxe_Exception.caught(_g).unwrap();
+						__t18(_g1);
+					}
+				});
+			} catch( _g ) {
+				var _g1 = haxe_Exception.caught(_g).unwrap();
+				__t18(_g1);
+			}
+		} catch( _g ) {
+			var _g1 = haxe_Exception.caught(_g).unwrap();
+			__return(tink_core_Outcome.Failure(tink_core_TypedError.asError(_g1)));
+		}
+	});
 };
 var haxe_StackItem = $hxEnums["haxe.StackItem"] = { __ename__:true,__constructs__:null
 	,CFunction: {_hx_name:"CFunction",_hx_index:0,__enum__:"haxe.StackItem",toString:$estr}
@@ -6593,35 +8317,6 @@ haxe_ds__$StringMap_StringMapKeyIterator.prototype = {
 		return this.keys[this.current++];
 	}
 };
-var haxe_exceptions_PosException = function(message,previous,pos) {
-	haxe_Exception.call(this,message,previous);
-	if(pos == null) {
-		this.posInfos = { fileName : "(unknown)", lineNumber : 0, className : "(unknown)", methodName : "(unknown)"};
-	} else {
-		this.posInfos = pos;
-	}
-	this.__skipStack++;
-};
-$hxClasses["haxe.exceptions.PosException"] = haxe_exceptions_PosException;
-haxe_exceptions_PosException.__name__ = true;
-haxe_exceptions_PosException.__super__ = haxe_Exception;
-haxe_exceptions_PosException.prototype = $extend(haxe_Exception.prototype,{
-	toString: function() {
-		return "" + haxe_Exception.prototype.toString.call(this) + " in " + this.posInfos.className + "." + this.posInfos.methodName + " at " + this.posInfos.fileName + ":" + this.posInfos.lineNumber;
-	}
-});
-var haxe_exceptions_NotImplementedException = function(message,previous,pos) {
-	if(message == null) {
-		message = "Not implemented";
-	}
-	haxe_exceptions_PosException.call(this,message,previous,pos);
-	this.__skipStack++;
-};
-$hxClasses["haxe.exceptions.NotImplementedException"] = haxe_exceptions_NotImplementedException;
-haxe_exceptions_NotImplementedException.__name__ = true;
-haxe_exceptions_NotImplementedException.__super__ = haxe_exceptions_PosException;
-haxe_exceptions_NotImplementedException.prototype = $extend(haxe_exceptions_PosException.prototype,{
-});
 var haxe_io_BytesBuffer = function() {
 	this.pos = 0;
 	this.size = 0;
@@ -6669,51 +8364,6 @@ haxe_io_BytesBuffer.prototype = {
 		var b = new haxe_io_Bytes(this.buffer);
 		b.length = this.pos;
 		return b;
-	}
-};
-var haxe_io_BytesInput = function(b,pos,len) {
-	if(pos == null) {
-		pos = 0;
-	}
-	if(len == null) {
-		len = b.length - pos;
-	}
-	if(pos < 0 || len < 0 || pos + len > b.length) {
-		throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
-	}
-	this.b = b.b;
-	this.pos = pos;
-	this.len = len;
-	this.totlen = len;
-};
-$hxClasses["haxe.io.BytesInput"] = haxe_io_BytesInput;
-haxe_io_BytesInput.__name__ = true;
-haxe_io_BytesInput.__super__ = haxe_io_Input;
-haxe_io_BytesInput.prototype = $extend(haxe_io_Input.prototype,{
-	set_position: function(p) {
-		if(p < 0) {
-			p = 0;
-		} else if(p > this.totlen) {
-			p = this.totlen;
-		}
-		this.len = this.totlen - p;
-		return this.pos = p;
-	}
-	,readByte: function() {
-		if(this.len == 0) {
-			throw haxe_Exception.thrown(new haxe_io_Eof());
-		}
-		this.len--;
-		return this.b[this.pos++];
-	}
-});
-var haxe_io_Eof = function() {
-};
-$hxClasses["haxe.io.Eof"] = haxe_io_Eof;
-haxe_io_Eof.__name__ = true;
-haxe_io_Eof.prototype = {
-	toString: function() {
-		return "Eof";
 	}
 };
 var haxe_io_Error = $hxEnums["haxe.io.Error"] = { __ename__:true,__constructs__:null
@@ -7014,7 +8664,11 @@ js_lib__$ArrayBuffer_ArrayBufferCompat.sliceImpl = function(begin,end) {
 	resultArray.set(u);
 	return resultArray.buffer;
 };
+var js_node_Http = require("http");
+var js_node_Https = require("https");
+var js_node_Net = require("net");
 var js_node_Path = require("path");
+var js_node_Tls = require("tls");
 var js_node_buffer_Buffer = require("buffer").Buffer;
 var js_node_buffer__$Buffer_Helper = function() { };
 $hxClasses["js.node.buffer._Buffer.Helper"] = js_node_buffer__$Buffer_Helper;
@@ -7168,35 +8822,6 @@ tink_Chunk.join = function(chunks) {
 			var _g1 = chunks.length;
 			while(_g < _g1) ret = tink_Chunk.concat(ret,chunks[_g++]);
 			return ret;
-		}
-	}
-};
-var tink_await_Error = {};
-tink_await_Error.fromAny = function(any) {
-	if(((any) instanceof tink_core_TypedError)) {
-		return any;
-	} else {
-		return tink_core_TypedError.withData(0,"Unexpected Error",any,{ fileName : "tink/await/Error.hx", lineNumber : 12, className : "tink.await._Error.Error_Impl_", methodName : "fromAny"});
-	}
-};
-var tink_await_OutcomeTools = function() { };
-$hxClasses["tink.await.OutcomeTools"] = tink_await_OutcomeTools;
-tink_await_OutcomeTools.__name__ = true;
-tink_await_OutcomeTools.getOutcome = function(outcome,value) {
-	if(outcome == null) {
-		return tink_core_Outcome.Success(value);
-	} else {
-		switch(outcome._hx_index) {
-		case 0:
-			return outcome;
-		case 1:
-			var _g = outcome.failure;
-			if(((_g) instanceof tink_core_TypedError)) {
-				return outcome;
-			} else {
-				return tink_core_Outcome.Failure(tink_await_Error.fromAny(_g));
-			}
-			break;
 		}
 	}
 };
@@ -7651,6 +9276,34 @@ tink_core_OutcomeTools.sure = function(outcome) {
 		break;
 	}
 };
+tink_core_OutcomeTools.orNull = function(outcome) {
+	switch(outcome._hx_index) {
+	case 0:
+		return outcome.data;
+	case 1:
+		return null;
+	}
+};
+tink_core_OutcomeTools.map = function(outcome,transform) {
+	switch(outcome._hx_index) {
+	case 0:
+		return tink_core_Outcome.Success(transform(outcome.data));
+	case 1:
+		return tink_core_Outcome.Failure(outcome.failure);
+	}
+};
+var tink_core_MPair = function(a,b) {
+	this.a = a;
+	this.b = b;
+};
+$hxClasses["tink.core.MPair"] = tink_core_MPair;
+tink_core_MPair.__name__ = true;
+var tink_core_Next = {};
+tink_core_Next.ofSafeSync = function(f) {
+	return function(x) {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(f(x))));
+	};
+};
 var tink_core_Recover = {};
 tink_core_Recover.ofSync = function(f) {
 	return function(e) {
@@ -7755,12 +9408,130 @@ tink_http_Header.prototype = {
 		return _g.join("\r\n") + "\r\n" + "\r\n";
 	}
 };
+var tink_io_BytewiseParser = function() { };
+$hxClasses["tink.io.BytewiseParser"] = tink_io_BytewiseParser;
+tink_io_BytewiseParser.__name__ = true;
+tink_io_BytewiseParser.prototype = {
+	read: function(char) {
+		throw haxe_Exception.thrown("abstract");
+	}
+	,progress: function(cursor) {
+		while(true) {
+			var _g = this.read(cursor.currentByte);
+			switch(_g._hx_index) {
+			case 0:
+				break;
+			case 1:
+				cursor.next();
+				return tink_io_ParseStep.Done(_g.r);
+			case 2:
+				return tink_io_ParseStep.Failed(_g.e);
+			}
+			if(!cursor.next()) {
+				break;
+			}
+		}
+		return tink_io_ParseStep.Progressed;
+	}
+	,eof: function(rest) {
+		var _g = this.read(-1);
+		switch(_g._hx_index) {
+		case 0:
+			return tink_core_Outcome.Failure(new tink_core_TypedError(422,"Unexpected end of input",{ fileName : "tink/io/StreamParser.hx", lineNumber : 180, className : "tink.io.BytewiseParser", methodName : "eof"}));
+		case 1:
+			return tink_core_Outcome.Success(_g.r);
+		case 2:
+			return tink_core_Outcome.Failure(_g.e);
+		}
+	}
+};
 var tink_io_ParseStep = $hxEnums["tink.io.ParseStep"] = { __ename__:true,__constructs__:null
 	,Progressed: {_hx_name:"Progressed",_hx_index:0,__enum__:"tink.io.ParseStep",toString:$estr}
 	,Done: ($_=function(r) { return {_hx_index:1,r:r,__enum__:"tink.io.ParseStep",toString:$estr}; },$_._hx_name="Done",$_.__params__ = ["r"],$_)
 	,Failed: ($_=function(e) { return {_hx_index:2,e:e,__enum__:"tink.io.ParseStep",toString:$estr}; },$_._hx_name="Failed",$_.__params__ = ["e"],$_)
 };
 tink_io_ParseStep.__constructs__ = [tink_io_ParseStep.Progressed,tink_io_ParseStep.Done,tink_io_ParseStep.Failed];
+var tink_http_HeaderParser = function(makeHeader) {
+	this.last = -1;
+	this.buf = new StringBuf();
+	this.makeHeader = makeHeader;
+};
+$hxClasses["tink.http.HeaderParser"] = tink_http_HeaderParser;
+tink_http_HeaderParser.__name__ = true;
+tink_http_HeaderParser.__super__ = tink_io_BytewiseParser;
+tink_http_HeaderParser.prototype = $extend(tink_io_BytewiseParser.prototype,{
+	read: function(c) {
+		var _g = this.last;
+		switch(c) {
+		case -1:
+			return this.nextLine();
+		case 10:
+			if(_g == 13) {
+				return this.nextLine();
+			} else {
+				var other = c;
+				this.last = other;
+				this.buf.b += String.fromCodePoint(other);
+				return tink_io_ParseStep.Progressed;
+			}
+			break;
+		case 13:
+			if(_g == 13) {
+				var c1 = this.last;
+				this.buf.b += String.fromCodePoint(c1);
+				return tink_io_ParseStep.Progressed;
+			} else {
+				this.last = 13;
+				return tink_io_ParseStep.Progressed;
+			}
+			break;
+		default:
+			if(_g == 13) {
+				var other = c;
+				var c1 = this.last;
+				this.buf.b += String.fromCodePoint(c1);
+				this.buf.b += String.fromCodePoint(other);
+				this.last = -1;
+				return tink_io_ParseStep.Progressed;
+			} else {
+				var other = c;
+				this.last = other;
+				this.buf.b += String.fromCodePoint(other);
+				return tink_io_ParseStep.Progressed;
+			}
+		}
+	}
+	,nextLine: function() {
+		var line = this.buf.b;
+		this.buf = new StringBuf();
+		this.last = -1;
+		if(line == "") {
+			if(this.header == null) {
+				return tink_io_ParseStep.Progressed;
+			} else {
+				return tink_io_ParseStep.Done(this.header);
+			}
+		} else if(this.header == null) {
+			var _g = this.makeHeader(line,this.fields = []);
+			switch(_g._hx_index) {
+			case 0:
+				var _g1 = _g.data;
+				if(_g1 == null) {
+					return tink_io_ParseStep.Done(this.header = null);
+				} else {
+					this.header = _g1;
+					return tink_io_ParseStep.Progressed;
+				}
+				break;
+			case 1:
+				return tink_io_ParseStep.Failed(_g.failure);
+			}
+		} else {
+			this.fields.push(tink_http_HeaderField.ofString(line));
+			return tink_io_ParseStep.Progressed;
+		}
+	}
+});
 var tink_http_Message = function(header,body) {
 	this.header = header;
 	this.body = body;
@@ -7809,6 +9580,45 @@ tink_http_IncomingRequestHeader.fromIncomingMessage = function(req) {
 tink_http_IncomingRequestHeader.__super__ = tink_http_RequestHeader;
 tink_http_IncomingRequestHeader.prototype = $extend(tink_http_RequestHeader.prototype,{
 });
+var tink_http_OutgoingRequestHeader = function(method,url,protocol,fields) {
+	if(protocol == null) {
+		protocol = "HTTP/1.1";
+	}
+	var _g = tink_http_OutgoingRequestHeader.extractAuth(url);
+	if(_g._hx_index == 0) {
+		var _g1 = _g.v;
+		url = _g1.url;
+		fields = fields.concat(_g1.headers);
+	}
+	tink_http_RequestHeader.call(this,method,url,protocol,fields);
+};
+$hxClasses["tink.http.OutgoingRequestHeader"] = tink_http_OutgoingRequestHeader;
+tink_http_OutgoingRequestHeader.__name__ = true;
+tink_http_OutgoingRequestHeader.extractAuth = function(url) {
+	var _g = url.auth;
+	if(_g == null) {
+		return haxe_ds_Option.None;
+	} else {
+		var tmp = [new tink_http_HeaderField("authorization",tink_http_HeaderValue.basicAuth(_g == null ? null : _g.split(":")[0],_g == null ? null : _g.split(":")[1]))];
+		var url1 = url.scheme;
+		var _g = [];
+		var _g1 = 0;
+		var _g2 = url.hosts;
+		while(_g1 < _g2.length) _g.push(_g2[_g1++]);
+		return haxe_ds_Option.Some({ headers : tmp, url : tink_Url.make({ scheme : url1, hosts : _g, path : url.path, query : url.query})});
+	}
+};
+tink_http_OutgoingRequestHeader.__super__ = tink_http_RequestHeader;
+tink_http_OutgoingRequestHeader.prototype = $extend(tink_http_RequestHeader.prototype,{
+});
+var tink_http_OutgoingRequest = function(header,body) {
+	tink_http_Message.call(this,header,body);
+};
+$hxClasses["tink.http.OutgoingRequest"] = tink_http_OutgoingRequest;
+tink_http_OutgoingRequest.__name__ = true;
+tink_http_OutgoingRequest.__super__ = tink_http_Message;
+tink_http_OutgoingRequest.prototype = $extend(tink_http_Message.prototype,{
+});
 var tink_http_IncomingRequest = function(clientIp,header,body) {
 	this.clientIp = clientIp;
 	tink_http_Message.call(this,header,body);
@@ -7834,9 +9644,35 @@ var tink_http_ResponseHeaderBase = function(statusCode,reason,fields,protocol) {
 };
 $hxClasses["tink.http.ResponseHeaderBase"] = tink_http_ResponseHeaderBase;
 tink_http_ResponseHeaderBase.__name__ = true;
+tink_http_ResponseHeaderBase.parser = function() {
+	return new tink_http_HeaderParser(function(line,headers) {
+		var _g = line.split(" ");
+		if(_g.length >= 3) {
+			var statusCode = Std.parseInt(_g[1]);
+			var reason = _g.slice(2).join(" ");
+			var protocol = _g[0];
+			if(protocol == null) {
+				protocol = "HTTP/1.1";
+			}
+			return tink_core_Outcome.Success(new tink_http_ResponseHeaderBase(statusCode,reason,headers,protocol));
+		} else {
+			return tink_core_Outcome.Failure(new tink_core_TypedError(422,"Invalid HTTP response header",{ fileName : "tink/http/Response.hx", lineNumber : 56, className : "tink.http.ResponseHeaderBase", methodName : "parser"}));
+		}
+	});
+};
 tink_http_ResponseHeaderBase.__super__ = tink_http_Header;
 tink_http_ResponseHeaderBase.prototype = $extend(tink_http_Header.prototype,{
-	toString: function() {
+	concat: function(fields) {
+		var statusCode = this.statusCode;
+		var reason = this.reason;
+		var fields1 = this.fields.concat(fields);
+		var protocol = this.protocol;
+		if(protocol == null) {
+			protocol = "HTTP/1.1";
+		}
+		return new tink_http_ResponseHeaderBase(statusCode,reason,fields1,protocol);
+	}
+	,toString: function() {
 		return "" + this.protocol + " " + this.statusCode + " " + this.reason + "\r\n" + tink_http_Header.prototype.toString.call(this);
 	}
 });
@@ -7862,11 +9698,34 @@ tink_http_OutgoingResponse.reportError = function(e) {
 	}
 	return new tink_http__$Response_OutgoingResponseData(new tink_http_ResponseHeaderBase(code,httpstatus_HttpStatusMessage.fromCode(code),[new tink_http_HeaderField("Content-Type".toLowerCase(),"application/json")],"HTTP/1.1"),new tink_streams_Single(new tink_core__$Lazy_LazyConst(tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(JSON.stringify({ error : e.message, details : e.data}))))));
 };
+var tink_http_IncomingResponse = function(header,body) {
+	tink_http_Message.call(this,header,body);
+};
+$hxClasses["tink.http.IncomingResponse"] = tink_http_IncomingResponse;
+tink_http_IncomingResponse.__name__ = true;
+tink_http_IncomingResponse.__super__ = tink_http_Message;
+tink_http_IncomingResponse.prototype = $extend(tink_http_Message.prototype,{
+});
 var tink_http_BodyPart = $hxEnums["tink.http.BodyPart"] = { __ename__:true,__constructs__:null
 	,Value: ($_=function(v) { return {_hx_index:0,v:v,__enum__:"tink.http.BodyPart",toString:$estr}; },$_._hx_name="Value",$_.__params__ = ["v"],$_)
 	,File: ($_=function(handle) { return {_hx_index:1,handle:handle,__enum__:"tink.http.BodyPart",toString:$estr}; },$_._hx_name="File",$_.__params__ = ["handle"],$_)
 };
 tink_http_BodyPart.__constructs__ = [tink_http_BodyPart.Value,tink_http_BodyPart.File];
+var tink_http_clients_Helpers = function() { };
+$hxClasses["tink.http.clients.Helpers"] = tink_http_clients_Helpers;
+tink_http_clients_Helpers.__name__ = true;
+tink_http_clients_Helpers.checkScheme = function(s) {
+	if(s == null) {
+		return haxe_ds_Option.Some(new tink_core_TypedError(400,"Missing Scheme (expected http/https)",{ fileName : "tink/http/clients/Helpers.hx", lineNumber : 14, className : "tink.http.clients.Helpers", methodName : "missingSchemeError"}));
+	} else {
+		switch(s) {
+		case "http":case "https":
+			return haxe_ds_Option.None;
+		default:
+			return haxe_ds_Option.Some(new tink_core_TypedError(400,"Invalid Scheme \"" + s + "\" (expected http/https)",{ fileName : "tink/http/clients/Helpers.hx", lineNumber : 17, className : "tink.http.clients.Helpers", methodName : "invalidSchemeError"}));
+		}
+	}
+};
 var tink_http_containers_NodeContainer = function(kind,opt) {
 	this.kind = kind;
 	this.upgradable = opt != null && opt.upgradable;
@@ -7936,7 +9795,7 @@ tink_http_containers_NodeContainer.prototype = {
 			var onListen = function() {
 				var onListen = tink_http_ContainerResult.Running({ shutdown : function(hard) {
 					if(hard) {
-						console.log("tink/http/containers/NodeContainer.hx:82:","Warning: hard shutdown not implemented");
+						haxe_Log.trace("Warning: hard shutdown not implemented",{ fileName : "tink/http/containers/NodeContainer.hx", lineNumber : 82, className : "tink.http.containers.NodeContainer", methodName : "run"});
 					}
 					return tink_core_Future.map(tink_core_Future.async(function(cb) {
 						server.close(function() {
@@ -7966,6 +9825,68 @@ var tink_http_containers__$NodeContainer_ServerKindBase = $hxEnums["tink.http.co
 	,Fd: ($_=function(fd) { return {_hx_index:4,fd:fd,__enum__:"tink.http.containers._NodeContainer.ServerKindBase",toString:$estr}; },$_._hx_name="Fd",$_.__params__ = ["fd"],$_)
 };
 tink_http_containers__$NodeContainer_ServerKindBase.__constructs__ = [tink_http_containers__$NodeContainer_ServerKindBase.Instance,tink_http_containers__$NodeContainer_ServerKindBase.Port,tink_http_containers__$NodeContainer_ServerKindBase.Host,tink_http_containers__$NodeContainer_ServerKindBase.Path,tink_http_containers__$NodeContainer_ServerKindBase.Fd];
+var tink_http_middleware_CrossOriginResourceSharing = function(processor) {
+	this.processor = processor;
+};
+$hxClasses["tink.http.middleware.CrossOriginResourceSharing"] = tink_http_middleware_CrossOriginResourceSharing;
+tink_http_middleware_CrossOriginResourceSharing.__name__ = true;
+tink_http_middleware_CrossOriginResourceSharing.prototype = {
+	apply: function(handler) {
+		var _gthis = this;
+		return new tink_http_SimpleHandler(function(req) {
+			return tink_core_Future.flatMap(tink_core_Future.map(_gthis.processor({ header : req.header, origin : tink_core_OutcomeTools.orNull(req.header.byName("origin")), requestMethod : tink_core_OutcomeTools.orNull(req.header.byName("access-control-request-method")), requestHeaders : tink_core_OutcomeTools.orNull(tink_core_OutcomeTools.map(req.header.byName("access-control-request-headers"),function(a) {
+				var _this = a.split(",");
+				var f = StringTools.trim;
+				var result = new Array(_this.length);
+				var _g = 0;
+				var _g1 = _this.length;
+				while(_g < _g1) {
+					var i = _g++;
+					result[i] = f(_this[i]);
+				}
+				return result;
+			}))}),function(res) {
+				var headers = [];
+				if(res.allowOrigin != null) {
+					headers.push(new tink_http_HeaderField("access-control-allow-origin",res.allowOrigin));
+					if(res.allowOrigin != "*") {
+						headers.push(new tink_http_HeaderField("vary","Origin"));
+					}
+				}
+				if(res.allowCredentials == true) {
+					headers.push(new tink_http_HeaderField("access-control-allow-credentials","true"));
+				}
+				if(res.exposeHeaders != null) {
+					headers.push(new tink_http_HeaderField("access-control-expose-headers",res.exposeHeaders.join(", ")));
+				}
+				if(res.maxAge != null) {
+					headers.push(new tink_http_HeaderField("access-control-max-age",res.maxAge == null ? "null" : "" + res.maxAge));
+				}
+				if(res.allowMethods != null) {
+					headers.push(new tink_http_HeaderField("access-control-allow-methods",res.allowMethods.join(", ")));
+				}
+				if(res.allowHeaders != null) {
+					headers.push(new tink_http_HeaderField("access-control-allow-headers",res.allowHeaders.join(", ")));
+				}
+				return headers;
+			}),function(headers) {
+				if(req.header.method == "OPTIONS") {
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(new tink_http__$Response_OutgoingResponseData(new tink_http_ResponseHeaderBase(200,httpstatus_HttpStatusMessage.fromCode(200),headers,"HTTP/1.1"),tink_io_Source.EMPTY)));
+				} else {
+					return tink_core_Future.map(handler.process(req),function(res) {
+						return new tink_http__$Response_OutgoingResponseData(res.header.concat(headers),res.body);
+					});
+				}
+			});
+		});
+	}
+};
+var tink_http_middleware_CorsProcessor = {};
+tink_http_middleware_CorsProcessor.regex = function(ex,credentials) {
+	return function(req) {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(req.origin != null && ex.match(req.origin) ? { allowOrigin : req.origin, allowMethods : ["HEAD","GET","POST","PUT","PATCH","DELETE"], allowHeaders : req.requestHeaders, allowCredentials : credentials} : { }));
+	};
+};
 var tink_http_middleware_WebSocket = function(ws,authenticator) {
 	this.ws = ws;
 	if(authenticator != null) {
@@ -7976,7 +9897,7 @@ $hxClasses["tink.http.middleware.WebSocket"] = tink_http_middleware_WebSocket;
 tink_http_middleware_WebSocket.__name__ = true;
 tink_http_middleware_WebSocket.prototype = {
 	authenticate: function(header) {
-		console.log("tink/http/middleware/WebSocket.hx:22:","authin");
+		haxe_Log.trace("authin",{ fileName : "tink/http/middleware/WebSocket.hx", lineNumber : 22, className : "tink.http.middleware.WebSocket", methodName : "authenticate"});
 		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(null)));
 	}
 	,apply: function(handler) {
@@ -7992,7 +9913,7 @@ tink_http_middleware_WebSocket.prototype = {
 						var v;
 						switch(o._hx_index) {
 						case 0:
-							console.log("tink/http/middleware/WebSocket.hx:34:","respondin");
+							haxe_Log.trace("respondin",{ fileName : "tink/http/middleware/WebSocket.hx", lineNumber : 34, className : "tink.http.middleware.WebSocket", methodName : "apply"});
 							v = new tink_http__$Response_OutgoingResponseData(new tink_websocket_OutgoingHandshakeResponseHeader(tink_core_OutcomeTools.sure(header.byName("sec-websocket-key".toLowerCase()))),tink_websocket_RawMessageStream.toMaskedChunkStream(_gthis.ws({ clientIp : req.clientIp, header : header, stream : tink_io_RealSourceTools.parseStream(src,new tink_websocket_Parser()).map(tink_streams_Mapping.ofPlain(tink_websocket_Frame.fromChunk)).regroup(tink_websocket_MessageRegrouper.get())}),function() {
 								return null;
 							}));
@@ -8004,11 +9925,11 @@ tink_http_middleware_WebSocket.prototype = {
 						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(v));
 					});
 				} else {
-					console.log("tink/http/middleware/WebSocket.hx:48:","processin");
+					haxe_Log.trace("processin",{ fileName : "tink/http/middleware/WebSocket.hx", lineNumber : 48, className : "tink.http.middleware.WebSocket", methodName : "apply"});
 					return handler.process(req);
 				}
 			} else {
-				console.log("tink/http/middleware/WebSocket.hx:48:","processin");
+				haxe_Log.trace("processin",{ fileName : "tink/http/middleware/WebSocket.hx", lineNumber : 48, className : "tink.http.middleware.WebSocket", methodName : "apply"});
 				return handler.process(req);
 			}
 		});
@@ -8065,6 +9986,9 @@ tink_streams_StreamBase.prototype = {
 	get_depleted: function() {
 		return false;
 	}
+	,next: function() {
+		throw haxe_Exception.thrown("not implemented");
+	}
 	,regroup: function(f) {
 		return new tink_streams__$Stream_RegroupStream(this,f);
 	}
@@ -8078,9 +10002,23 @@ tink_streams_StreamBase.prototype = {
 			return tink_streams__$Stream_CompoundStream.of([other,this]);
 		}
 	}
+	,blend: function(other) {
+		if(this.get_depleted()) {
+			return other;
+		} else {
+			return new tink_streams_BlendStream(this,other);
+		}
+	}
 	,decompose: function(into) {
 		if(!this.get_depleted()) {
 			into.push(this);
+		}
+	}
+	,idealize: function(rescue) {
+		if(this.get_depleted()) {
+			return tink_streams_Empty.inst;
+		} else {
+			return new tink_streams_IdealizeStream(this,rescue);
 		}
 	}
 	,reduce: function(initial,reducer) {
@@ -8129,6 +10067,9 @@ tink_streams_Empty.__super__ = tink_streams_StreamBase;
 tink_streams_Empty.prototype = $extend(tink_streams_StreamBase.prototype,{
 	get_depleted: function() {
 		return true;
+	}
+	,next: function() {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Step.End));
 	}
 	,forEach: function(handler) {
 		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Conclusion.Depleted));
@@ -8200,8 +10141,28 @@ tink_io_RealSourceTools.all = function(s) {
 		}
 	});
 };
+tink_io_RealSourceTools.parse = function(s,p) {
+	return tink_core_Future.map(tink_io_StreamParser.parse(s,p),function(r) {
+		switch(r._hx_index) {
+		case 0:
+			return tink_core_Outcome.Success(new tink_core_MPair(r.data,r.rest));
+		case 1:
+			return tink_core_Outcome.Failure(r.e);
+		case 2:
+			return tink_core_Outcome.Failure(r.e);
+		}
+	});
+};
 tink_io_RealSourceTools.parseStream = function(s,p) {
 	return tink_io_StreamParser.parseStream(s,p);
+};
+var tink_io_IdealSourceTools = function() { };
+$hxClasses["tink.io.IdealSourceTools"] = tink_io_IdealSourceTools;
+tink_io_IdealSourceTools.__name__ = true;
+tink_io_IdealSourceTools.all = function(s) {
+	return tink_core_Future.map(tink_io_Source.concatAll(s),function(o) {
+		return o.result;
+	});
 };
 var tink_io_ParseResult = $hxEnums["tink.io.ParseResult"] = { __ename__:true,__constructs__:null
 	,Parsed: ($_=function(data,rest) { return {_hx_index:0,data:data,rest:rest,__enum__:"tink.io.ParseResult",toString:$estr}; },$_._hx_name="Parsed",$_.__params__ = ["data","rest"],$_)
@@ -8340,7 +10301,10 @@ tink_streams_Generator.stream = function(step) {
 };
 tink_streams_Generator.__super__ = tink_streams_StreamBase;
 tink_streams_Generator.prototype = $extend(tink_streams_StreamBase.prototype,{
-	forEach: function(handler) {
+	next: function() {
+		return this.upcoming;
+	}
+	,forEach: function(handler) {
 		var _gthis = this;
 		return tink_core_Future.async(function(cb) {
 			_gthis.upcoming.handle(function(e) {
@@ -8545,6 +10509,842 @@ tink_io_nodejs_WrappedWritable.prototype = {
 	}
 };
 var tink_json_JsonString = {};
+var tink_json_Parser1 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser1"] = tink_json_Parser1;
+tink_json_Parser1.__name__ = true;
+tink_json_Parser1.__super__ = tink_json_BasicParser;
+tink_json_Parser1.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_bcc = null;
+		var v_body = null;
+		var v_cc = null;
+		var v_from = null;
+		var hasv_from = false;
+		var v_hasAttachments = null;
+		var v_subject = null;
+		var hasv_subject = false;
+		var v_to = null;
+		var hasv_to = false;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 98:
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 99:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 99) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 34) {
+								while(true) {
+									var _g1 = this.source.charCodeAt(this.pos++);
+									var _hx_tmp1;
+									if(_g1 == 58 == true) {
+										break;
+									} else {
+										_hx_tmp1 = _g1 < 33;
+										if(_hx_tmp1 != true) {
+											this.die("expected " + ":");
+										}
+									}
+								}
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var v_bcc1;
+								if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+									this.pos += 4;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_bcc1 = true;
+								} else {
+									v_bcc1 = false;
+								}
+								if(v_bcc1) {
+									v_bcc = null;
+								} else {
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_bcc2;
+									if(this.source.charCodeAt(this.pos) == 91) {
+										this.pos += 1;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_bcc2 = true;
+									} else {
+										v_bcc2 = false;
+									}
+									if(!v_bcc2) {
+										this.die("Expected " + "[");
+									}
+									var __ret = [];
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_bcc3;
+									if(this.source.charCodeAt(this.pos) == 93) {
+										this.pos += 1;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_bcc3 = true;
+									} else {
+										v_bcc3 = false;
+									}
+									if(!v_bcc3) {
+										while(true) {
+											__ret.push(this.process1());
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var v_bcc4;
+											if(this.source.charCodeAt(this.pos) == 44) {
+												this.pos += 1;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												v_bcc4 = true;
+											} else {
+												v_bcc4 = false;
+											}
+											if(!v_bcc4) {
+												break;
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_bcc5;
+										if(this.source.charCodeAt(this.pos) == 93) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_bcc5 = true;
+										} else {
+											v_bcc5 = false;
+										}
+										if(!v_bcc5) {
+											this.die("Expected " + "]");
+										}
+									}
+									v_bcc = __ret;
+								}
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var tmp;
+								if(this.source.charCodeAt(this.pos) == 44) {
+									this.pos += 1;
+									tmp = true;
+								} else {
+									tmp = false;
+								}
+								if(!tmp) {
+									break _hx_loop4;
+								} else {
+									continue;
+								}
+							}
+						}
+						break;
+					case 111:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 121) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g2 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp2;
+										if(_g2 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp2 = _g2 < 33;
+											if(_hx_tmp2 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_body1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_body1 = true;
+									} else {
+										v_body1 = false;
+									}
+									if(v_body1) {
+										v_body = null;
+									} else {
+										var this1 = this.parseString();
+										v_body = tink_chunk_ByteChunk.of(haxe_crypto_Base64.decode(this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"")));
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp1;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp1 = true;
+									} else {
+										tmp1 = false;
+									}
+									if(!tmp1) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 99:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 99) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 34) {
+							while(true) {
+								var _g3 = this.source.charCodeAt(this.pos++);
+								var _hx_tmp3;
+								if(_g3 == 58 == true) {
+									break;
+								} else {
+									_hx_tmp3 = _g3 < 33;
+									if(_hx_tmp3 != true) {
+										this.die("expected " + ":");
+									}
+								}
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var v_cc1;
+							if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+								this.pos += 4;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_cc1 = true;
+							} else {
+								v_cc1 = false;
+							}
+							if(v_cc1) {
+								v_cc = null;
+							} else {
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var v_cc2;
+								if(this.source.charCodeAt(this.pos) == 91) {
+									this.pos += 1;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_cc2 = true;
+								} else {
+									v_cc2 = false;
+								}
+								if(!v_cc2) {
+									this.die("Expected " + "[");
+								}
+								var __ret1 = [];
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var v_cc3;
+								if(this.source.charCodeAt(this.pos) == 93) {
+									this.pos += 1;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_cc3 = true;
+								} else {
+									v_cc3 = false;
+								}
+								if(!v_cc3) {
+									while(true) {
+										__ret1.push(this.process1());
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_cc4;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_cc4 = true;
+										} else {
+											v_cc4 = false;
+										}
+										if(!v_cc4) {
+											break;
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_cc5;
+									if(this.source.charCodeAt(this.pos) == 93) {
+										this.pos += 1;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_cc5 = true;
+									} else {
+										v_cc5 = false;
+									}
+									if(!v_cc5) {
+										this.die("Expected " + "]");
+									}
+								}
+								v_cc = __ret1;
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var tmp2;
+							if(this.source.charCodeAt(this.pos) == 44) {
+								this.pos += 1;
+								tmp2 = true;
+							} else {
+								tmp2 = false;
+							}
+							if(!tmp2) {
+								break _hx_loop4;
+							} else {
+								continue;
+							}
+						}
+					}
+					break;
+				case 102:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 114) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 111) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 109) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g4 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp4;
+										if(_g4 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp4 = _g4 < 33;
+											if(_hx_tmp4 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_from = this.process1();
+									hasv_from = true;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp3;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp3 = true;
+									} else {
+										tmp3 = false;
+									}
+									if(!tmp3) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 104:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 65) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 116) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 116) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 97) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 99) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 104) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 109) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 101) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 110) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 116) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 115) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 34) {
+																			while(true) {
+																				var _g5 = this.source.charCodeAt(this.pos++);
+																				var _hx_tmp5;
+																				if(_g5 == 58 == true) {
+																					break;
+																				} else {
+																					_hx_tmp5 = _g5 < 33;
+																					if(_hx_tmp5 != true) {
+																						this.die("expected " + ":");
+																					}
+																				}
+																			}
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_hasAttachments1;
+																			if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																				this.pos += 4;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_hasAttachments1 = true;
+																			} else {
+																				v_hasAttachments1 = false;
+																			}
+																			v_hasAttachments = v_hasAttachments1 ? null : this.parseBool();
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var tmp4;
+																			if(this.source.charCodeAt(this.pos) == 44) {
+																				this.pos += 1;
+																				tmp4 = true;
+																			} else {
+																				tmp4 = false;
+																			}
+																			if(!tmp4) {
+																				break _hx_loop4;
+																			} else {
+																				continue;
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 115:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 98) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 106) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 99) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 116) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g6 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp6;
+													if(_g6 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp6 = _g6 < 33;
+														if(_hx_tmp6 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var this2 = this.parseString();
+												v_subject = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+												hasv_subject = true;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp5;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp5 = true;
+												} else {
+													tmp5 = false;
+												}
+												if(!tmp5) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 116:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 111) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 34) {
+							while(true) {
+								var _g7 = this.source.charCodeAt(this.pos++);
+								var _hx_tmp7;
+								if(_g7 == 58 == true) {
+									break;
+								} else {
+									_hx_tmp7 = _g7 < 33;
+									if(_hx_tmp7 != true) {
+										this.die("expected " + ":");
+									}
+								}
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var v_to1;
+							if(this.source.charCodeAt(this.pos) == 91) {
+								this.pos += 1;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_to1 = true;
+							} else {
+								v_to1 = false;
+							}
+							if(!v_to1) {
+								this.die("Expected " + "[");
+							}
+							var __ret2 = [];
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var v_to2;
+							if(this.source.charCodeAt(this.pos) == 93) {
+								this.pos += 1;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_to2 = true;
+							} else {
+								v_to2 = false;
+							}
+							if(!v_to2) {
+								while(true) {
+									__ret2.push(this.process1());
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_to3;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_to3 = true;
+									} else {
+										v_to3 = false;
+									}
+									if(!v_to3) {
+										break;
+									}
+								}
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var v_to4;
+								if(this.source.charCodeAt(this.pos) == 93) {
+									this.pos += 1;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_to4 = true;
+								} else {
+									v_to4 = false;
+								}
+								if(!v_to4) {
+									this.die("Expected " + "]");
+								}
+							}
+							v_to = __ret2;
+							hasv_to = true;
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var tmp6;
+							if(this.source.charCodeAt(this.pos) == 44) {
+								this.pos += 1;
+								tmp6 = true;
+							} else {
+								tmp6 = false;
+							}
+							if(!tmp6) {
+								break _hx_loop4;
+							} else {
+								continue;
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g8 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp8;
+					if(_g8 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp8 = _g8 < 33;
+						if(_hx_tmp8 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp7;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp7 = true;
+				} else {
+					tmp7 = false;
+				}
+				if(!tmp7) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { bcc : v_bcc, body : v_body, cc : v_cc, from : hasv_from ? v_from : __missing__("from"), hasAttachments : v_hasAttachments, subject : hasv_subject ? v_subject : __missing__("subject"), to : hasv_to ? v_to : __missing__("to")};
+	}
+	,process1: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_address = null;
+		var hasv_address = false;
+		var v_name = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 97:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 100) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g1 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp1;
+													if(_g1 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp1 = _g1 < 33;
+														if(_hx_tmp1 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var this1 = this.parseString();
+												v_address = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+												hasv_address = true;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp = true;
+												} else {
+													tmp = false;
+												}
+												if(!tmp) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 110:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 109) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g2 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp2;
+										if(_g2 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp2 = _g2 < 33;
+											if(_hx_tmp2 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_name1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_name1 = true;
+									} else {
+										v_name1 = false;
+									}
+									if(v_name1) {
+										v_name = null;
+									} else {
+										var this2 = this.parseString();
+										v_name = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp1;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp1 = true;
+									} else {
+										tmp1 = false;
+									}
+									if(!tmp1) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g3 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp3;
+					if(_g3 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp3 = _g3 < 33;
+						if(_hx_tmp3 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp2;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp2 = true;
+				} else {
+					tmp2 = false;
+				}
+				if(!tmp2) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { address : hasv_address ? v_address : __missing__("address"), name : v_name};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+});
 var tink_json_Parser2 = function() {
 	tink_json_BasicParser.call(this);
 };
@@ -8552,6 +11352,1679 @@ $hxClasses["tink.json.Parser2"] = tink_json_Parser2;
 tink_json_Parser2.__name__ = true;
 tink_json_Parser2.__super__ = tink_json_BasicParser;
 tink_json_Parser2.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_code = null;
+		var v_error = null;
+		var v_results = null;
+		var v_success = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 99:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 111) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g1 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp1;
+										if(_g1 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp1 = _g1 < 33;
+											if(_hx_tmp1 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_code1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_code1 = true;
+									} else {
+										v_code1 = false;
+									}
+									if(v_code1) {
+										v_code = null;
+									} else {
+										var this1 = this.parseString();
+										v_code = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp = true;
+									} else {
+										tmp = false;
+									}
+									if(!tmp) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 101:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 114) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 114) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 114) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 34) {
+										while(true) {
+											var _g2 = this.source.charCodeAt(this.pos++);
+											var _hx_tmp2;
+											if(_g2 == 58 == true) {
+												break;
+											} else {
+												_hx_tmp2 = _g2 < 33;
+												if(_hx_tmp2 != true) {
+													this.die("expected " + ":");
+												}
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_error1;
+										if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+											this.pos += 4;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_error1 = true;
+										} else {
+											v_error1 = false;
+										}
+										if(v_error1) {
+											v_error = null;
+										} else {
+											var this2 = this.parseString();
+											v_error = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var tmp1;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											tmp1 = true;
+										} else {
+											tmp1 = false;
+										}
+										if(!tmp1) {
+											break _hx_loop4;
+										} else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 114:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 101) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 117) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 108) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 116) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g3 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp3;
+													if(_g3 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp3 = _g3 < 33;
+														if(_hx_tmp3 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_results1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_results1 = true;
+												} else {
+													v_results1 = false;
+												}
+												if(v_results1) {
+													v_results = null;
+												} else {
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_results2;
+													if(this.source.charCodeAt(this.pos) == 91) {
+														this.pos += 1;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_results2 = true;
+													} else {
+														v_results2 = false;
+													}
+													if(!v_results2) {
+														this.die("Expected " + "[");
+													}
+													var __ret = [];
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_results3;
+													if(this.source.charCodeAt(this.pos) == 93) {
+														this.pos += 1;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_results3 = true;
+													} else {
+														v_results3 = false;
+													}
+													if(!v_results3) {
+														while(true) {
+															__ret.push(this.process1());
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var v_results4;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																v_results4 = true;
+															} else {
+																v_results4 = false;
+															}
+															if(!v_results4) {
+																break;
+															}
+														}
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var v_results5;
+														if(this.source.charCodeAt(this.pos) == 93) {
+															this.pos += 1;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_results5 = true;
+														} else {
+															v_results5 = false;
+														}
+														if(!v_results5) {
+															this.die("Expected " + "]");
+														}
+													}
+													v_results = __ret;
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp2;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp2 = true;
+												} else {
+													tmp2 = false;
+												}
+												if(!tmp2) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 115:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 99) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 99) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g4 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp4;
+													if(_g4 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp4 = _g4 < 33;
+														if(_hx_tmp4 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_success1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_success1 = true;
+												} else {
+													v_success1 = false;
+												}
+												v_success = v_success1 ? null : this.parseBool();
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp3;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp3 = true;
+												} else {
+													tmp3 = false;
+												}
+												if(!tmp3) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g5 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp5;
+					if(_g5 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp5 = _g5 < 33;
+						if(_hx_tmp5 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp4;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp4 = true;
+				} else {
+					tmp4 = false;
+				}
+				if(!tmp4) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		return { code : v_code, error : v_error, results : v_results, success : v_success};
+	}
+	,process1: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_address = null;
+		var v_allowWildcard = null;
+		var v_code = null;
+		var v_created = null;
+		var v_error = null;
+		var v_id = null;
+		var v_main = null;
+		var v_name = null;
+		var v_success = null;
+		var v_tags = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 97:
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 100:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g1 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp1;
+													if(_g1 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp1 = _g1 < 33;
+														if(_hx_tmp1 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_address1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_address1 = true;
+												} else {
+													v_address1 = false;
+												}
+												if(v_address1) {
+													v_address = null;
+												} else {
+													var this1 = this.parseString();
+													v_address = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp = true;
+												} else {
+													tmp = false;
+												}
+												if(!tmp) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 108:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 108) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 119) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 87) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 105) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 108) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 100) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 99) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 97) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 114) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 100) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 34) {
+																		while(true) {
+																			var _g2 = this.source.charCodeAt(this.pos++);
+																			var _hx_tmp2;
+																			if(_g2 == 58 == true) {
+																				break;
+																			} else {
+																				_hx_tmp2 = _g2 < 33;
+																				if(_hx_tmp2 != true) {
+																					this.die("expected " + ":");
+																				}
+																			}
+																		}
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		var v_allowWildcard1;
+																		if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																			this.pos += 4;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			v_allowWildcard1 = true;
+																		} else {
+																			v_allowWildcard1 = false;
+																		}
+																		v_allowWildcard = v_allowWildcard1 ? null : this.parseBool();
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		var tmp1;
+																		if(this.source.charCodeAt(this.pos) == 44) {
+																			this.pos += 1;
+																			tmp1 = true;
+																		} else {
+																			tmp1 = false;
+																		}
+																		if(!tmp1) {
+																			break _hx_loop4;
+																		} else {
+																			continue;
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 99:
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 111:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g3 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp3;
+										if(_g3 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp3 = _g3 < 33;
+											if(_hx_tmp3 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_code1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_code1 = true;
+									} else {
+										v_code1 = false;
+									}
+									if(v_code1) {
+										v_code = null;
+									} else {
+										var this2 = this.parseString();
+										v_code = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp2;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp2 = true;
+									} else {
+										tmp2 = false;
+									}
+									if(!tmp2) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+						break;
+					case 114:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 101) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 97) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 116) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 101) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g4 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp4;
+													if(_g4 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp4 = _g4 < 33;
+														if(_hx_tmp4 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_created1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_created1 = true;
+												} else {
+													v_created1 = false;
+												}
+												if(v_created1) {
+													v_created = null;
+												} else {
+													var this3 = this.parseString();
+													v_created = this3.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this3 : JSON.parse("\"" + this3 + "\"");
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp3;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp3 = true;
+												} else {
+													tmp3 = false;
+												}
+												if(!tmp3) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 101:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 114) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 114) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 114) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 34) {
+										while(true) {
+											var _g5 = this.source.charCodeAt(this.pos++);
+											var _hx_tmp5;
+											if(_g5 == 58 == true) {
+												break;
+											} else {
+												_hx_tmp5 = _g5 < 33;
+												if(_hx_tmp5 != true) {
+													this.die("expected " + ":");
+												}
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_error1;
+										if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+											this.pos += 4;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_error1 = true;
+										} else {
+											v_error1 = false;
+										}
+										if(v_error1) {
+											v_error = null;
+										} else {
+											var this4 = this.parseString();
+											v_error = this4.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this4 : JSON.parse("\"" + this4 + "\"");
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var tmp4;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											tmp4 = true;
+										} else {
+											tmp4 = false;
+										}
+										if(!tmp4) {
+											break _hx_loop4;
+										} else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 105:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 100) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 34) {
+							while(true) {
+								var _g6 = this.source.charCodeAt(this.pos++);
+								var _hx_tmp6;
+								if(_g6 == 58 == true) {
+									break;
+								} else {
+									_hx_tmp6 = _g6 < 33;
+									if(_hx_tmp6 != true) {
+										this.die("expected " + ":");
+									}
+								}
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var v_id1;
+							if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+								this.pos += 4;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_id1 = true;
+							} else {
+								v_id1 = false;
+							}
+							if(v_id1) {
+								v_id = null;
+							} else {
+								var this5 = this.parseString();
+								v_id = this5.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this5 : JSON.parse("\"" + this5 + "\"");
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var tmp5;
+							if(this.source.charCodeAt(this.pos) == 44) {
+								this.pos += 1;
+								tmp5 = true;
+							} else {
+								tmp5 = false;
+							}
+							if(!tmp5) {
+								break _hx_loop4;
+							} else {
+								continue;
+							}
+						}
+					}
+					break;
+				case 109:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 105) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 110) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g7 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp7;
+										if(_g7 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp7 = _g7 < 33;
+											if(_hx_tmp7 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_main1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_main1 = true;
+									} else {
+										v_main1 = false;
+									}
+									v_main = v_main1 ? null : this.parseBool();
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp6;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp6 = true;
+									} else {
+										tmp6 = false;
+									}
+									if(!tmp6) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 110:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 109) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g8 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp8;
+										if(_g8 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp8 = _g8 < 33;
+											if(_hx_tmp8 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									v_name = this.parseDynamic();
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp7;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp7 = true;
+									} else {
+										tmp7 = false;
+									}
+									if(!tmp7) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 115:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 99) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 99) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g9 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp9;
+													if(_g9 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp9 = _g9 < 33;
+														if(_hx_tmp9 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_success1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_success1 = true;
+												} else {
+													v_success1 = false;
+												}
+												v_success = v_success1 ? null : this.parseBool();
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp8;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp8 = true;
+												} else {
+													tmp8 = false;
+												}
+												if(!tmp8) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 116:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 103) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 115) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g10 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp10;
+										if(_g10 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp10 = _g10 < 33;
+											if(_hx_tmp10 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_tags1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_tags1 = true;
+									} else {
+										v_tags1 = false;
+									}
+									if(v_tags1) {
+										v_tags = null;
+									} else {
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_tags2;
+										if(this.source.charCodeAt(this.pos) == 91) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_tags2 = true;
+										} else {
+											v_tags2 = false;
+										}
+										if(!v_tags2) {
+											this.die("Expected " + "[");
+										}
+										var __ret = [];
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_tags3;
+										if(this.source.charCodeAt(this.pos) == 93) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_tags3 = true;
+										} else {
+											v_tags3 = false;
+										}
+										if(!v_tags3) {
+											while(true) {
+												var this6 = this.parseString();
+												__ret.push(this6.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this6 : JSON.parse("\"" + this6 + "\""));
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_tags4;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_tags4 = true;
+												} else {
+													v_tags4 = false;
+												}
+												if(!v_tags4) {
+													break;
+												}
+											}
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var v_tags5;
+											if(this.source.charCodeAt(this.pos) == 93) {
+												this.pos += 1;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												v_tags5 = true;
+											} else {
+												v_tags5 = false;
+											}
+											if(!v_tags5) {
+												this.die("Expected " + "]");
+											}
+										}
+										v_tags = __ret;
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp9;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp9 = true;
+									} else {
+										tmp9 = false;
+									}
+									if(!tmp9) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g11 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp11;
+					if(_g11 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp11 = _g11 < 33;
+						if(_hx_tmp11 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp10;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp10 = true;
+				} else {
+					tmp10 = false;
+				}
+				if(!tmp10) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		return { address : v_address, allowWildcard : v_allowWildcard, code : v_code, created : v_created, error : v_error, id : v_id, main : v_main, name : v_name, success : v_success, tags : v_tags};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+	,tryParse: function(source) {
+		var _gthis = this;
+		return tink_core_TypedError.catchExceptions(function() {
+			var ret = _gthis.parse(source);
+			while(_gthis.source.charCodeAt(_gthis.pos) < 33) _gthis.pos++;
+			if(_gthis.pos < _gthis.max) {
+				_gthis.die("Invalid data after JSON document");
+			}
+			return ret;
+		},null,{ fileName : "tink/json/macros/Macro.hx", lineNumber : 107, className : "tink.json.Parser2", methodName : "tryParse"});
+	}
+});
+var tink_json_Parser29 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser29"] = tink_json_Parser29;
+tink_json_Parser29.__name__ = true;
+tink_json_Parser29.__super__ = tink_json_BasicParser;
+tink_json_Parser29.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_uuid = null;
+		var hasv_uuid = false;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				if(cur == 117) {
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 105) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 100) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g1 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp1;
+										if(_g1 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp1 = _g1 < 33;
+											if(_hx_tmp1 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var this1 = this.parseString();
+									v_uuid = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+									hasv_uuid = true;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp = true;
+									} else {
+										tmp = false;
+									}
+									if(!tmp) {
+										break;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g2 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp2;
+					if(_g2 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp2 = _g2 < 33;
+						if(_hx_tmp2 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp1;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp1 = true;
+				} else {
+					tmp1 = false;
+				}
+				if(!tmp1) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { uuid : hasv_uuid ? v_uuid : __missing__("uuid")};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+});
+var tink_json_Parser30 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser30"] = tink_json_Parser30;
+tink_json_Parser30.__name__ = true;
+tink_json_Parser30.__super__ = tink_json_BasicParser;
+tink_json_Parser30.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_chunk = null;
+		var hasv_chunk = false;
+		var v_currentFile = null;
+		var hasv_currentFile = false;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				if(cur == 99) {
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 104:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 117) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 110) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 107) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 34) {
+										while(true) {
+											var _g1 = this.source.charCodeAt(this.pos++);
+											var _hx_tmp1;
+											if(_g1 == 58 == true) {
+												break;
+											} else {
+												_hx_tmp1 = _g1 < 33;
+												if(_hx_tmp1 != true) {
+													this.die("expected " + ":");
+												}
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var this1 = this.parseString();
+										v_chunk = haxe_crypto_Base64.decode(this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\""));
+										hasv_chunk = true;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var tmp;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											tmp = true;
+										} else {
+											tmp = false;
+										}
+										if(!tmp) {
+											break _hx_loop4;
+										} else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 117:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 114) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 110) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 116) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 70) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 105) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 108) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 101) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 34) {
+																while(true) {
+																	var _g2 = this.source.charCodeAt(this.pos++);
+																	var _hx_tmp2;
+																	if(_g2 == 58 == true) {
+																		break;
+																	} else {
+																		_hx_tmp2 = _g2 < 33;
+																		if(_hx_tmp2 != true) {
+																			this.die("expected " + ":");
+																		}
+																	}
+																}
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var this2 = this.parseString();
+																v_currentFile = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+																hasv_currentFile = true;
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var tmp1;
+																if(this.source.charCodeAt(this.pos) == 44) {
+																	this.pos += 1;
+																	tmp1 = true;
+																} else {
+																	tmp1 = false;
+																}
+																if(!tmp1) {
+																	break _hx_loop4;
+																} else {
+																	continue;
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g3 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp3;
+					if(_g3 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp3 = _g3 < 33;
+						if(_hx_tmp3 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp2;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp2 = true;
+				} else {
+					tmp2 = false;
+				}
+				if(!tmp2) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { chunk : hasv_chunk ? v_chunk : __missing__("chunk"), currentFile : hasv_currentFile ? v_currentFile : __missing__("currentFile")};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+});
+var tink_json_Parser31 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser31"] = tink_json_Parser31;
+tink_json_Parser31.__name__ = true;
+tink_json_Parser31.__super__ = tink_json_BasicParser;
+tink_json_Parser31.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_result = null;
+		var hasv_result = false;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				if(cur == 114) {
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 101) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 117) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 108) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 116) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 34) {
+											while(true) {
+												var _g1 = this.source.charCodeAt(this.pos++);
+												var _hx_tmp1;
+												if(_g1 == 58 == true) {
+													break;
+												} else {
+													_hx_tmp1 = _g1 < 33;
+													if(_hx_tmp1 != true) {
+														this.die("expected " + ":");
+													}
+												}
+											}
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var this1 = this.parseString();
+											v_result = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+											hasv_result = true;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var tmp;
+											if(this.source.charCodeAt(this.pos) == 44) {
+												this.pos += 1;
+												tmp = true;
+											} else {
+												tmp = false;
+											}
+											if(!tmp) {
+												break;
+											} else {
+												continue;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g2 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp2;
+					if(_g2 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp2 = _g2 < 33;
+						if(_hx_tmp2 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp1;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp1 = true;
+				} else {
+					tmp1 = false;
+				}
+				if(!tmp1) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { result : hasv_result ? v_result : __missing__("result")};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+	,tryParse: function(source) {
+		var _gthis = this;
+		return tink_core_TypedError.catchExceptions(function() {
+			var ret = _gthis.parse(source);
+			while(_gthis.source.charCodeAt(_gthis.pos) < 33) _gthis.pos++;
+			if(_gthis.pos < _gthis.max) {
+				_gthis.die("Invalid data after JSON document");
+			}
+			return ret;
+		},null,{ fileName : "tink/json/macros/Macro.hx", lineNumber : 107, className : "tink.json.Parser31", methodName : "tryParse"});
+	}
+});
+var tink_json_Parser32 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser32"] = tink_json_Parser32;
+tink_json_Parser32.__name__ = true;
+tink_json_Parser32.__super__ = tink_json_BasicParser;
+tink_json_Parser32.prototype = $extend(tink_json_BasicParser.prototype,{
 	process0: function() {
 		var _gthis = this;
 		var cur = 0;
@@ -9090,13 +13563,13 @@ tink_json_Parser2.prototype = $extend(tink_json_BasicParser.prototype,{
 		return ret;
 	}
 });
-var tink_json_Parser3 = function() {
+var tink_json_Parser33 = function() {
 	tink_json_BasicParser.call(this);
 };
-$hxClasses["tink.json.Parser3"] = tink_json_Parser3;
-tink_json_Parser3.__name__ = true;
-tink_json_Parser3.__super__ = tink_json_BasicParser;
-tink_json_Parser3.prototype = $extend(tink_json_BasicParser.prototype,{
+$hxClasses["tink.json.Parser33"] = tink_json_Parser33;
+tink_json_Parser33.__name__ = true;
+tink_json_Parser33.__super__ = tink_json_BasicParser;
+tink_json_Parser33.prototype = $extend(tink_json_BasicParser.prototype,{
 	process0: function() {
 		var _gthis = this;
 		var cur = 0;
@@ -9783,6 +14256,2759 @@ tink_json_Parser3.prototype = $extend(tink_json_BasicParser.prototype,{
 		return ret;
 	}
 });
+var tink_json_Parser6 = function() {
+	tink_json_BasicParser.call(this);
+};
+$hxClasses["tink.json.Parser6"] = tink_json_Parser6;
+tink_json_Parser6.__name__ = true;
+tink_json_Parser6.__super__ = tink_json_BasicParser;
+tink_json_Parser6.prototype = $extend(tink_json_BasicParser.prototype,{
+	process0: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_activated = null;
+		var v_address = null;
+		var v_autoreply = null;
+		var v_code = null;
+		var v_disabled = null;
+		var v_disabledScopes = null;
+		var hasv_disabledScopes = false;
+		var v_enabled2fa = null;
+		var v_encryptForwarded = null;
+		var v_encryptMessages = null;
+		var v_error = null;
+		var v_fromWhitelist = null;
+		var v_hasPasswordSet = null;
+		var v_id = null;
+		var v_keyInfo = null;
+		var hasv_keyInfo = false;
+		var v_limits = null;
+		var hasv_limits = false;
+		var v_metaData = null;
+		var v_name = null;
+		var v_password = null;
+		var v_success = null;
+		var v_suspended = null;
+		var v_tags = null;
+		var v_targets = null;
+		var v_username = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 97:
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 99:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 116) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 105) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 118) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 97) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 116) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 101) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 100) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 34) {
+														while(true) {
+															var _g1 = this.source.charCodeAt(this.pos++);
+															var _hx_tmp1;
+															if(_g1 == 58 == true) {
+																break;
+															} else {
+																_hx_tmp1 = _g1 < 33;
+																if(_hx_tmp1 != true) {
+																	this.die("expected " + ":");
+																}
+															}
+														}
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var v_activated1;
+														if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+															this.pos += 4;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_activated1 = true;
+														} else {
+															v_activated1 = false;
+														}
+														v_activated = v_activated1 ? null : this.parseBool();
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var tmp;
+														if(this.source.charCodeAt(this.pos) == 44) {
+															this.pos += 1;
+															tmp = true;
+														} else {
+															tmp = false;
+														}
+														if(!tmp) {
+															break _hx_loop4;
+														} else {
+															continue;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 100:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g2 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp2;
+													if(_g2 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp2 = _g2 < 33;
+														if(_hx_tmp2 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_address1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_address1 = true;
+												} else {
+													v_address1 = false;
+												}
+												if(v_address1) {
+													v_address = null;
+												} else {
+													var this1 = this.parseString();
+													v_address = this1.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this1 : JSON.parse("\"" + this1 + "\"");
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp1;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp1 = true;
+												} else {
+													tmp1 = false;
+												}
+												if(!tmp1) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					case 117:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 116) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 114) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 101) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 112) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 108) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 121) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 34) {
+														while(true) {
+															var _g3 = this.source.charCodeAt(this.pos++);
+															var _hx_tmp3;
+															if(_g3 == 58 == true) {
+																break;
+															} else {
+																_hx_tmp3 = _g3 < 33;
+																if(_hx_tmp3 != true) {
+																	this.die("expected " + ":");
+																}
+															}
+														}
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var v_autoreply1;
+														if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+															this.pos += 4;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_autoreply1 = true;
+														} else {
+															v_autoreply1 = false;
+														}
+														v_autoreply = v_autoreply1 ? null : this.parseBool();
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var tmp2;
+														if(this.source.charCodeAt(this.pos) == 44) {
+															this.pos += 1;
+															tmp2 = true;
+														} else {
+															tmp2 = false;
+														}
+														if(!tmp2) {
+															break _hx_loop4;
+														} else {
+															continue;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 99:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 111) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 100) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g4 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp4;
+										if(_g4 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp4 = _g4 < 33;
+											if(_hx_tmp4 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_code1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_code1 = true;
+									} else {
+										v_code1 = false;
+									}
+									if(v_code1) {
+										v_code = null;
+									} else {
+										var this2 = this.parseString();
+										v_code = this2.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this2 : JSON.parse("\"" + this2 + "\"");
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp3;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp3 = true;
+									} else {
+										tmp3 = false;
+									}
+									if(!tmp3) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 100:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 105) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 97) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 98) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 108) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 101) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 100) {
+												cur = this.source.charCodeAt(this.pos++);
+												switch(cur) {
+												case 34:
+													while(true) {
+														var _g5 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp5;
+														if(_g5 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp5 = _g5 < 33;
+															if(_hx_tmp5 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_disabled1;
+													if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+														this.pos += 4;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_disabled1 = true;
+													} else {
+														v_disabled1 = false;
+													}
+													v_disabled = v_disabled1 ? null : this.parseBool();
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp4;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp4 = true;
+													} else {
+														tmp4 = false;
+													}
+													if(!tmp4) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+													break;
+												case 83:
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 99) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 111) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 112) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 101) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 115) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 34) {
+																			while(true) {
+																				var _g6 = this.source.charCodeAt(this.pos++);
+																				var _hx_tmp6;
+																				if(_g6 == 58 == true) {
+																					break;
+																				} else {
+																					_hx_tmp6 = _g6 < 33;
+																					if(_hx_tmp6 != true) {
+																						this.die("expected " + ":");
+																					}
+																				}
+																			}
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_disabledScopes1;
+																			if(this.source.charCodeAt(this.pos) == 91) {
+																				this.pos += 1;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_disabledScopes1 = true;
+																			} else {
+																				v_disabledScopes1 = false;
+																			}
+																			if(!v_disabledScopes1) {
+																				this.die("Expected " + "[");
+																			}
+																			var __ret = [];
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_disabledScopes2;
+																			if(this.source.charCodeAt(this.pos) == 93) {
+																				this.pos += 1;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_disabledScopes2 = true;
+																			} else {
+																				v_disabledScopes2 = false;
+																			}
+																			if(!v_disabledScopes2) {
+																				while(true) {
+																					var this3 = this.parseString();
+																					__ret.push(this3.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this3 : JSON.parse("\"" + this3 + "\""));
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					var v_disabledScopes3;
+																					if(this.source.charCodeAt(this.pos) == 44) {
+																						this.pos += 1;
+																						while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																						v_disabledScopes3 = true;
+																					} else {
+																						v_disabledScopes3 = false;
+																					}
+																					if(!v_disabledScopes3) {
+																						break;
+																					}
+																				}
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				var v_disabledScopes4;
+																				if(this.source.charCodeAt(this.pos) == 93) {
+																					this.pos += 1;
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					v_disabledScopes4 = true;
+																				} else {
+																					v_disabledScopes4 = false;
+																				}
+																				if(!v_disabledScopes4) {
+																					this.die("Expected " + "]");
+																				}
+																			}
+																			v_disabledScopes = __ret;
+																			hasv_disabledScopes = true;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var tmp5;
+																			if(this.source.charCodeAt(this.pos) == 44) {
+																				this.pos += 1;
+																				tmp5 = true;
+																			} else {
+																				tmp5 = false;
+																			}
+																			if(!tmp5) {
+																				break _hx_loop4;
+																			} else {
+																				continue;
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+													break;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 101:
+					cur = this.source.charCodeAt(this.pos++);
+					switch(cur) {
+					case 110:
+						cur = this.source.charCodeAt(this.pos++);
+						switch(cur) {
+						case 97:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 98) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 108) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 101) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 50) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 102) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 97) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 34) {
+															while(true) {
+																var _g7 = this.source.charCodeAt(this.pos++);
+																var _hx_tmp7;
+																if(_g7 == 58 == true) {
+																	break;
+																} else {
+																	_hx_tmp7 = _g7 < 33;
+																	if(_hx_tmp7 != true) {
+																		this.die("expected " + ":");
+																	}
+																}
+															}
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var v_enabled2fa1;
+															if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																this.pos += 4;
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																v_enabled2fa1 = true;
+															} else {
+																v_enabled2fa1 = false;
+															}
+															if(v_enabled2fa1) {
+																v_enabled2fa = null;
+															} else {
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var v_enabled2fa2;
+																if(this.source.charCodeAt(this.pos) == 91) {
+																	this.pos += 1;
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	v_enabled2fa2 = true;
+																} else {
+																	v_enabled2fa2 = false;
+																}
+																if(!v_enabled2fa2) {
+																	this.die("Expected " + "[");
+																}
+																var __ret1 = [];
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																var v_enabled2fa3;
+																if(this.source.charCodeAt(this.pos) == 93) {
+																	this.pos += 1;
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	v_enabled2fa3 = true;
+																} else {
+																	v_enabled2fa3 = false;
+																}
+																if(!v_enabled2fa3) {
+																	while(true) {
+																		var this4 = this.parseString();
+																		__ret1.push(this4.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this4 : JSON.parse("\"" + this4 + "\""));
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		var v_enabled2fa4;
+																		if(this.source.charCodeAt(this.pos) == 44) {
+																			this.pos += 1;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			v_enabled2fa4 = true;
+																		} else {
+																			v_enabled2fa4 = false;
+																		}
+																		if(!v_enabled2fa4) {
+																			break;
+																		}
+																	}
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	var v_enabled2fa5;
+																	if(this.source.charCodeAt(this.pos) == 93) {
+																		this.pos += 1;
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		v_enabled2fa5 = true;
+																	} else {
+																		v_enabled2fa5 = false;
+																	}
+																	if(!v_enabled2fa5) {
+																		this.die("Expected " + "]");
+																	}
+																}
+																v_enabled2fa = __ret1;
+															}
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var tmp6;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																tmp6 = true;
+															} else {
+																tmp6 = false;
+															}
+															if(!tmp6) {
+																break _hx_loop4;
+															} else {
+																continue;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+							break;
+						case 99:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 121) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 112) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 116) {
+											cur = this.source.charCodeAt(this.pos++);
+											switch(cur) {
+											case 70:
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 111) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 114) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 119) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 97) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 114) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 100) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 101) {
+																			cur = this.source.charCodeAt(this.pos++);
+																			if(cur == 100) {
+																				cur = this.source.charCodeAt(this.pos++);
+																				if(cur == 34) {
+																					while(true) {
+																						var _g8 = this.source.charCodeAt(this.pos++);
+																						var _hx_tmp8;
+																						if(_g8 == 58 == true) {
+																							break;
+																						} else {
+																							_hx_tmp8 = _g8 < 33;
+																							if(_hx_tmp8 != true) {
+																								this.die("expected " + ":");
+																							}
+																						}
+																					}
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					var v_encryptForwarded1;
+																					if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																						this.pos += 4;
+																						while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																						v_encryptForwarded1 = true;
+																					} else {
+																						v_encryptForwarded1 = false;
+																					}
+																					v_encryptForwarded = v_encryptForwarded1 ? null : this.parseBool();
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					var tmp7;
+																					if(this.source.charCodeAt(this.pos) == 44) {
+																						this.pos += 1;
+																						tmp7 = true;
+																					} else {
+																						tmp7 = false;
+																					}
+																					if(!tmp7) {
+																						break _hx_loop4;
+																					} else {
+																						continue;
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+												break;
+											case 77:
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 101) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 115) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 115) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 97) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 103) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 101) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 115) {
+																			cur = this.source.charCodeAt(this.pos++);
+																			if(cur == 34) {
+																				while(true) {
+																					var _g9 = this.source.charCodeAt(this.pos++);
+																					var _hx_tmp9;
+																					if(_g9 == 58 == true) {
+																						break;
+																					} else {
+																						_hx_tmp9 = _g9 < 33;
+																						if(_hx_tmp9 != true) {
+																							this.die("expected " + ":");
+																						}
+																					}
+																				}
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				var v_encryptMessages1;
+																				if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																					this.pos += 4;
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					v_encryptMessages1 = true;
+																				} else {
+																					v_encryptMessages1 = false;
+																				}
+																				v_encryptMessages = v_encryptMessages1 ? null : this.parseBool();
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				var tmp8;
+																				if(this.source.charCodeAt(this.pos) == 44) {
+																					this.pos += 1;
+																					tmp8 = true;
+																				} else {
+																					tmp8 = false;
+																				}
+																				if(!tmp8) {
+																					break _hx_loop4;
+																				} else {
+																					continue;
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+												break;
+											}
+										}
+									}
+								}
+							}
+							break;
+						}
+						break;
+					case 114:
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 114) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 114) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 34) {
+										while(true) {
+											var _g10 = this.source.charCodeAt(this.pos++);
+											var _hx_tmp10;
+											if(_g10 == 58 == true) {
+												break;
+											} else {
+												_hx_tmp10 = _g10 < 33;
+												if(_hx_tmp10 != true) {
+													this.die("expected " + ":");
+												}
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_error1;
+										if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+											this.pos += 4;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_error1 = true;
+										} else {
+											v_error1 = false;
+										}
+										if(v_error1) {
+											v_error = null;
+										} else {
+											var this5 = this.parseString();
+											v_error = this5.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this5 : JSON.parse("\"" + this5 + "\"");
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var tmp9;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											tmp9 = true;
+										} else {
+											tmp9 = false;
+										}
+										if(!tmp9) {
+											break _hx_loop4;
+										} else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+						break;
+					}
+					break;
+				case 102:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 114) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 111) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 109) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 87) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 104) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 105) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 116) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 101) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 108) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 105) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 115) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 116) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 34) {
+																		while(true) {
+																			var _g11 = this.source.charCodeAt(this.pos++);
+																			var _hx_tmp11;
+																			if(_g11 == 58 == true) {
+																				break;
+																			} else {
+																				_hx_tmp11 = _g11 < 33;
+																				if(_hx_tmp11 != true) {
+																					this.die("expected " + ":");
+																				}
+																			}
+																		}
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		var v_fromWhitelist1;
+																		if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																			this.pos += 4;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			v_fromWhitelist1 = true;
+																		} else {
+																			v_fromWhitelist1 = false;
+																		}
+																		if(v_fromWhitelist1) {
+																			v_fromWhitelist = null;
+																		} else {
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_fromWhitelist2;
+																			if(this.source.charCodeAt(this.pos) == 91) {
+																				this.pos += 1;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_fromWhitelist2 = true;
+																			} else {
+																				v_fromWhitelist2 = false;
+																			}
+																			if(!v_fromWhitelist2) {
+																				this.die("Expected " + "[");
+																			}
+																			var __ret2 = [];
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_fromWhitelist3;
+																			if(this.source.charCodeAt(this.pos) == 93) {
+																				this.pos += 1;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_fromWhitelist3 = true;
+																			} else {
+																				v_fromWhitelist3 = false;
+																			}
+																			if(!v_fromWhitelist3) {
+																				while(true) {
+																					var this6 = this.parseString();
+																					__ret2.push(this6.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this6 : JSON.parse("\"" + this6 + "\""));
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					var v_fromWhitelist4;
+																					if(this.source.charCodeAt(this.pos) == 44) {
+																						this.pos += 1;
+																						while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																						v_fromWhitelist4 = true;
+																					} else {
+																						v_fromWhitelist4 = false;
+																					}
+																					if(!v_fromWhitelist4) {
+																						break;
+																					}
+																				}
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				var v_fromWhitelist5;
+																				if(this.source.charCodeAt(this.pos) == 93) {
+																					this.pos += 1;
+																					while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																					v_fromWhitelist5 = true;
+																				} else {
+																					v_fromWhitelist5 = false;
+																				}
+																				if(!v_fromWhitelist5) {
+																					this.die("Expected " + "]");
+																				}
+																			}
+																			v_fromWhitelist = __ret2;
+																		}
+																		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																		var tmp10;
+																		if(this.source.charCodeAt(this.pos) == 44) {
+																			this.pos += 1;
+																			tmp10 = true;
+																		} else {
+																			tmp10 = false;
+																		}
+																		if(!tmp10) {
+																			break _hx_loop4;
+																		} else {
+																			continue;
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 104:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 80) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 97) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 119) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 111) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 114) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 100) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 83) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 101) {
+																	cur = this.source.charCodeAt(this.pos++);
+																	if(cur == 116) {
+																		cur = this.source.charCodeAt(this.pos++);
+																		if(cur == 34) {
+																			while(true) {
+																				var _g12 = this.source.charCodeAt(this.pos++);
+																				var _hx_tmp12;
+																				if(_g12 == 58 == true) {
+																					break;
+																				} else {
+																					_hx_tmp12 = _g12 < 33;
+																					if(_hx_tmp12 != true) {
+																						this.die("expected " + ":");
+																					}
+																				}
+																			}
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var v_hasPasswordSet1;
+																			if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+																				this.pos += 4;
+																				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																				v_hasPasswordSet1 = true;
+																			} else {
+																				v_hasPasswordSet1 = false;
+																			}
+																			v_hasPasswordSet = v_hasPasswordSet1 ? null : this.parseBool();
+																			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																			var tmp11;
+																			if(this.source.charCodeAt(this.pos) == 44) {
+																				this.pos += 1;
+																				tmp11 = true;
+																			} else {
+																				tmp11 = false;
+																			}
+																			if(!tmp11) {
+																				break _hx_loop4;
+																			} else {
+																				continue;
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 105:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 100) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 34) {
+							while(true) {
+								var _g13 = this.source.charCodeAt(this.pos++);
+								var _hx_tmp13;
+								if(_g13 == 58 == true) {
+									break;
+								} else {
+									_hx_tmp13 = _g13 < 33;
+									if(_hx_tmp13 != true) {
+										this.die("expected " + ":");
+									}
+								}
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var v_id1;
+							if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+								this.pos += 4;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_id1 = true;
+							} else {
+								v_id1 = false;
+							}
+							if(v_id1) {
+								v_id = null;
+							} else {
+								var this7 = this.parseString();
+								v_id = this7.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this7 : JSON.parse("\"" + this7 + "\"");
+							}
+							while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+							var tmp12;
+							if(this.source.charCodeAt(this.pos) == 44) {
+								this.pos += 1;
+								tmp12 = true;
+							} else {
+								tmp12 = false;
+							}
+							if(!tmp12) {
+								break _hx_loop4;
+							} else {
+								continue;
+							}
+						}
+					}
+					break;
+				case 107:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 101) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 121) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 73) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 110) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 102) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 111) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g14 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp14;
+													if(_g14 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp14 = _g14 < 33;
+														if(_hx_tmp14 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												v_keyInfo = this.parseDynamic();
+												hasv_keyInfo = true;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp13;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp13 = true;
+												} else {
+													tmp13 = false;
+												}
+												if(!tmp13) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 108:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 105) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 109) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 105) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 116) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 34) {
+											while(true) {
+												var _g15 = this.source.charCodeAt(this.pos++);
+												var _hx_tmp15;
+												if(_g15 == 58 == true) {
+													break;
+												} else {
+													_hx_tmp15 = _g15 < 33;
+													if(_hx_tmp15 != true) {
+														this.die("expected " + ":");
+													}
+												}
+											}
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_limits = this.process1();
+											hasv_limits = true;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var tmp14;
+											if(this.source.charCodeAt(this.pos) == 44) {
+												this.pos += 1;
+												tmp14 = true;
+											} else {
+												tmp14 = false;
+											}
+											if(!tmp14) {
+												break _hx_loop4;
+											} else {
+												continue;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 109:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 101) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 116) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 97) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 68) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 97) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 116) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 97) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 34) {
+													while(true) {
+														var _g16 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp16;
+														if(_g16 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp16 = _g16 < 33;
+															if(_hx_tmp16 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_metaData = this.parseDynamic();
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp15;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp15 = true;
+													} else {
+														tmp15 = false;
+													}
+													if(!tmp15) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 110:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 109) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 101) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g17 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp17;
+										if(_g17 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp17 = _g17 < 33;
+											if(_hx_tmp17 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_name1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_name1 = true;
+									} else {
+										v_name1 = false;
+									}
+									if(v_name1) {
+										v_name = null;
+									} else {
+										var this8 = this.parseString();
+										v_name = this8.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this8 : JSON.parse("\"" + this8 + "\"");
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp16;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp16 = true;
+									} else {
+										tmp16 = false;
+									}
+									if(!tmp16) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 112:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 115) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 115) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 119) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 111) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 114) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 100) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 34) {
+													while(true) {
+														var _g18 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp18;
+														if(_g18 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp18 = _g18 < 33;
+															if(_hx_tmp18 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_password1;
+													if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+														this.pos += 4;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_password1 = true;
+													} else {
+														v_password1 = false;
+													}
+													if(v_password1) {
+														v_password = null;
+													} else {
+														var this9 = this.parseString();
+														v_password = this9.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this9 : JSON.parse("\"" + this9 + "\"");
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp17;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp17 = true;
+													} else {
+														tmp17 = false;
+													}
+													if(!tmp17) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 115:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						switch(cur) {
+						case 99:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 99) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 115) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g19 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp19;
+													if(_g19 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp19 = _g19 < 33;
+														if(_hx_tmp19 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_success1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_success1 = true;
+												} else {
+													v_success1 = false;
+												}
+												v_success = v_success1 ? null : this.parseBool();
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp18;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp18 = true;
+												} else {
+													tmp18 = false;
+												}
+												if(!tmp18) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+							break;
+						case 115:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 112) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 110) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 101) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 100) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 34) {
+														while(true) {
+															var _g20 = this.source.charCodeAt(this.pos++);
+															var _hx_tmp20;
+															if(_g20 == 58 == true) {
+																break;
+															} else {
+																_hx_tmp20 = _g20 < 33;
+																if(_hx_tmp20 != true) {
+																	this.die("expected " + ":");
+																}
+															}
+														}
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var v_suspended1;
+														if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+															this.pos += 4;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_suspended1 = true;
+														} else {
+															v_suspended1 = false;
+														}
+														v_suspended = v_suspended1 ? null : this.parseBool();
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var tmp19;
+														if(this.source.charCodeAt(this.pos) == 44) {
+															this.pos += 1;
+															tmp19 = true;
+														} else {
+															tmp19 = false;
+														}
+														if(!tmp19) {
+															break _hx_loop4;
+														} else {
+															continue;
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+							break;
+						}
+					}
+					break;
+				case 116:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 97) {
+						cur = this.source.charCodeAt(this.pos++);
+						switch(cur) {
+						case 103:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 115) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g21 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp21;
+										if(_g21 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp21 = _g21 < 33;
+											if(_hx_tmp21 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_tags1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_tags1 = true;
+									} else {
+										v_tags1 = false;
+									}
+									if(v_tags1) {
+										v_tags = null;
+									} else {
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_tags2;
+										if(this.source.charCodeAt(this.pos) == 91) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_tags2 = true;
+										} else {
+											v_tags2 = false;
+										}
+										if(!v_tags2) {
+											this.die("Expected " + "[");
+										}
+										var __ret3 = [];
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var v_tags3;
+										if(this.source.charCodeAt(this.pos) == 93) {
+											this.pos += 1;
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											v_tags3 = true;
+										} else {
+											v_tags3 = false;
+										}
+										if(!v_tags3) {
+											while(true) {
+												var this10 = this.parseString();
+												__ret3.push(this10.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this10 : JSON.parse("\"" + this10 + "\""));
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_tags4;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_tags4 = true;
+												} else {
+													v_tags4 = false;
+												}
+												if(!v_tags4) {
+													break;
+												}
+											}
+											while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+											var v_tags5;
+											if(this.source.charCodeAt(this.pos) == 93) {
+												this.pos += 1;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												v_tags5 = true;
+											} else {
+												v_tags5 = false;
+											}
+											if(!v_tags5) {
+												this.die("Expected " + "]");
+											}
+										}
+										v_tags = __ret3;
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp20;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp20 = true;
+									} else {
+										tmp20 = false;
+									}
+									if(!tmp20) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+							break;
+						case 114:
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 103) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 101) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 116) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 115) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g22 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp22;
+													if(_g22 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp22 = _g22 < 33;
+														if(_hx_tmp22 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_targets1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_targets1 = true;
+												} else {
+													v_targets1 = false;
+												}
+												if(v_targets1) {
+													v_targets = null;
+												} else {
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_targets2;
+													if(this.source.charCodeAt(this.pos) == 91) {
+														this.pos += 1;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_targets2 = true;
+													} else {
+														v_targets2 = false;
+													}
+													if(!v_targets2) {
+														this.die("Expected " + "[");
+													}
+													var __ret4 = [];
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_targets3;
+													if(this.source.charCodeAt(this.pos) == 93) {
+														this.pos += 1;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_targets3 = true;
+													} else {
+														v_targets3 = false;
+													}
+													if(!v_targets3) {
+														while(true) {
+															var this11 = this.parseString();
+															__ret4.push(this11.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this11 : JSON.parse("\"" + this11 + "\""));
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var v_targets4;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																v_targets4 = true;
+															} else {
+																v_targets4 = false;
+															}
+															if(!v_targets4) {
+																break;
+															}
+														}
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														var v_targets5;
+														if(this.source.charCodeAt(this.pos) == 93) {
+															this.pos += 1;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_targets5 = true;
+														} else {
+															v_targets5 = false;
+														}
+														if(!v_targets5) {
+															this.die("Expected " + "]");
+														}
+													}
+													v_targets = __ret4;
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp21;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp21 = true;
+												} else {
+													tmp21 = false;
+												}
+												if(!tmp21) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+							break;
+						}
+					}
+					break;
+				case 117:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 115) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 101) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 114) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 110) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 97) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 109) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 101) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 34) {
+													while(true) {
+														var _g23 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp23;
+														if(_g23 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp23 = _g23 < 33;
+															if(_hx_tmp23 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var v_username1;
+													if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+														this.pos += 4;
+														while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+														v_username1 = true;
+													} else {
+														v_username1 = false;
+													}
+													if(v_username1) {
+														v_username = null;
+													} else {
+														var this12 = this.parseString();
+														v_username = this12.indexOf(tink_json_JsonString.BACKSLASH) == -1 ? this12 : JSON.parse("\"" + this12 + "\"");
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp22;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp22 = true;
+													} else {
+														tmp22 = false;
+													}
+													if(!tmp22) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g24 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp24;
+					if(_g24 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp24 = _g24 < 33;
+						if(_hx_tmp24 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp23;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp23 = true;
+				} else {
+					tmp23 = false;
+				}
+				if(!tmp23) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { activated : v_activated, address : v_address, autoreply : v_autoreply, code : v_code, disabled : v_disabled, disabledScopes : hasv_disabledScopes ? v_disabledScopes : __missing__("disabledScopes"), enabled2fa : v_enabled2fa, encryptForwarded : v_encryptForwarded, encryptMessages : v_encryptMessages, error : v_error, fromWhitelist : v_fromWhitelist, hasPasswordSet : v_hasPasswordSet, id : v_id, keyInfo : hasv_keyInfo ? v_keyInfo : __missing__("keyInfo"), limits : hasv_limits ? v_limits : __missing__("limits"), metaData : v_metaData, name : v_name, password : v_password, success : v_success, suspended : v_suspended, tags : v_tags, targets : v_targets, username : v_username};
+	}
+	,process1: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_forwards = null;
+		var hasv_forwards = false;
+		var v_imapDownload = null;
+		var hasv_imapDownload = false;
+		var v_imapUpload = null;
+		var hasv_imapUpload = false;
+		var v_pop3Download = null;
+		var hasv_pop3Download = false;
+		var v_quota = null;
+		var hasv_quota = false;
+		var v_received = null;
+		var hasv_received = false;
+		var v_recipients = null;
+		var hasv_recipients = false;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 102:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 111) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 114) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 119) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 97) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 114) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 115) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 34) {
+													while(true) {
+														var _g1 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp1;
+														if(_g1 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp1 = _g1 < 33;
+															if(_hx_tmp1 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_forwards = this.process2();
+													hasv_forwards = true;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp = true;
+													} else {
+														tmp = false;
+													}
+													if(!tmp) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 105:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 109) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 97) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 112) {
+								cur = this.source.charCodeAt(this.pos++);
+								switch(cur) {
+								case 68:
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 111) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 119) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 110) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 108) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 111) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 97) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 100) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 34) {
+																	while(true) {
+																		var _g2 = this.source.charCodeAt(this.pos++);
+																		var _hx_tmp2;
+																		if(_g2 == 58 == true) {
+																			break;
+																		} else {
+																			_hx_tmp2 = _g2 < 33;
+																			if(_hx_tmp2 != true) {
+																				this.die("expected " + ":");
+																			}
+																		}
+																	}
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	v_imapDownload = this.process2();
+																	hasv_imapDownload = true;
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	var tmp1;
+																	if(this.source.charCodeAt(this.pos) == 44) {
+																		this.pos += 1;
+																		tmp1 = true;
+																	} else {
+																		tmp1 = false;
+																	}
+																	if(!tmp1) {
+																		break _hx_loop4;
+																	} else {
+																		continue;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+									break;
+								case 85:
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 112) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 108) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 111) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 97) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 100) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 34) {
+															while(true) {
+																var _g3 = this.source.charCodeAt(this.pos++);
+																var _hx_tmp3;
+																if(_g3 == 58 == true) {
+																	break;
+																} else {
+																	_hx_tmp3 = _g3 < 33;
+																	if(_hx_tmp3 != true) {
+																		this.die("expected " + ":");
+																	}
+																}
+															}
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_imapUpload = this.process2();
+															hasv_imapUpload = true;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var tmp2;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																tmp2 = true;
+															} else {
+																tmp2 = false;
+															}
+															if(!tmp2) {
+																break _hx_loop4;
+															} else {
+																continue;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+					break;
+				case 112:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 111) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 112) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 51) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 68) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 111) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 119) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 110) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 108) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 111) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 97) {
+															cur = this.source.charCodeAt(this.pos++);
+															if(cur == 100) {
+																cur = this.source.charCodeAt(this.pos++);
+																if(cur == 34) {
+																	while(true) {
+																		var _g4 = this.source.charCodeAt(this.pos++);
+																		var _hx_tmp4;
+																		if(_g4 == 58 == true) {
+																			break;
+																		} else {
+																			_hx_tmp4 = _g4 < 33;
+																			if(_hx_tmp4 != true) {
+																				this.die("expected " + ":");
+																			}
+																		}
+																	}
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	v_pop3Download = this.process2();
+																	hasv_pop3Download = true;
+																	while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+																	var tmp3;
+																	if(this.source.charCodeAt(this.pos) == 44) {
+																		this.pos += 1;
+																		tmp3 = true;
+																	} else {
+																		tmp3 = false;
+																	}
+																	if(!tmp3) {
+																		break _hx_loop4;
+																	} else {
+																		continue;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 113:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 117) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 111) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 116) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 97) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 34) {
+										while(true) {
+											var _g5 = this.source.charCodeAt(this.pos++);
+											var _hx_tmp5;
+											if(_g5 == 58 == true) {
+												break;
+											} else {
+												_hx_tmp5 = _g5 < 33;
+												if(_hx_tmp5 != true) {
+													this.die("expected " + ":");
+												}
+											}
+										}
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_quota = this.process3();
+										hasv_quota = true;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										var tmp4;
+										if(this.source.charCodeAt(this.pos) == 44) {
+											this.pos += 1;
+											tmp4 = true;
+										} else {
+											tmp4 = false;
+										}
+										if(!tmp4) {
+											break _hx_loop4;
+										} else {
+											continue;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 114:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 101) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 99) {
+							cur = this.source.charCodeAt(this.pos++);
+							switch(cur) {
+							case 101:
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 105) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 118) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 101) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 100) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 34) {
+													while(true) {
+														var _g6 = this.source.charCodeAt(this.pos++);
+														var _hx_tmp6;
+														if(_g6 == 58 == true) {
+															break;
+														} else {
+															_hx_tmp6 = _g6 < 33;
+															if(_hx_tmp6 != true) {
+																this.die("expected " + ":");
+															}
+														}
+													}
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_received = this.process2();
+													hasv_received = true;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													var tmp5;
+													if(this.source.charCodeAt(this.pos) == 44) {
+														this.pos += 1;
+														tmp5 = true;
+													} else {
+														tmp5 = false;
+													}
+													if(!tmp5) {
+														break _hx_loop4;
+													} else {
+														continue;
+													}
+												}
+											}
+										}
+									}
+								}
+								break;
+							case 105:
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 112) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 105) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 101) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 110) {
+												cur = this.source.charCodeAt(this.pos++);
+												if(cur == 116) {
+													cur = this.source.charCodeAt(this.pos++);
+													if(cur == 115) {
+														cur = this.source.charCodeAt(this.pos++);
+														if(cur == 34) {
+															while(true) {
+																var _g7 = this.source.charCodeAt(this.pos++);
+																var _hx_tmp7;
+																if(_g7 == 58 == true) {
+																	break;
+																} else {
+																	_hx_tmp7 = _g7 < 33;
+																	if(_hx_tmp7 != true) {
+																		this.die("expected " + ":");
+																	}
+																}
+															}
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															v_recipients = this.process2();
+															hasv_recipients = true;
+															while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+															var tmp6;
+															if(this.source.charCodeAt(this.pos) == 44) {
+																this.pos += 1;
+																tmp6 = true;
+															} else {
+																tmp6 = false;
+															}
+															if(!tmp6) {
+																break _hx_loop4;
+															} else {
+																continue;
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+								break;
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g8 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp8;
+					if(_g8 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp8 = _g8 < 33;
+						if(_hx_tmp8 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp7;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp7 = true;
+				} else {
+					tmp7 = false;
+				}
+				if(!tmp7) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { forwards : hasv_forwards ? v_forwards : __missing__("forwards"), imapDownload : hasv_imapDownload ? v_imapDownload : __missing__("imapDownload"), imapUpload : hasv_imapUpload ? v_imapUpload : __missing__("imapUpload"), pop3Download : hasv_pop3Download ? v_pop3Download : __missing__("pop3Download"), quota : hasv_quota ? v_quota : __missing__("quota"), received : hasv_received ? v_received : __missing__("received"), recipients : hasv_recipients ? v_recipients : __missing__("recipients")};
+	}
+	,process2: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_allowed = null;
+		var v_ttl = null;
+		var hasv_ttl = false;
+		var v_used = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 97:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 108) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 108) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 119) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 101) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g1 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp1;
+													if(_g1 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp1 = _g1 < 33;
+														if(_hx_tmp1 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_allowed1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_allowed1 = true;
+												} else {
+													v_allowed1 = false;
+												}
+												v_allowed = v_allowed1 ? null : parseInt(this.parseNumber());
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp = true;
+												} else {
+													tmp = false;
+												}
+												if(!tmp) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 116:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 116) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 108) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 34) {
+								while(true) {
+									var _g2 = this.source.charCodeAt(this.pos++);
+									var _hx_tmp2;
+									if(_g2 == 58 == true) {
+										break;
+									} else {
+										_hx_tmp2 = _g2 < 33;
+										if(_hx_tmp2 != true) {
+											this.die("expected " + ":");
+										}
+									}
+								}
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								v_ttl = this.parseDynamic();
+								hasv_ttl = true;
+								while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+								var tmp1;
+								if(this.source.charCodeAt(this.pos) == 44) {
+									this.pos += 1;
+									tmp1 = true;
+								} else {
+									tmp1 = false;
+								}
+								if(!tmp1) {
+									break _hx_loop4;
+								} else {
+									continue;
+								}
+							}
+						}
+					}
+					break;
+				case 117:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 115) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 101) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 100) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g3 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp3;
+										if(_g3 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp3 = _g3 < 33;
+											if(_hx_tmp3 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_used1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_used1 = true;
+									} else {
+										v_used1 = false;
+									}
+									v_used = v_used1 ? null : parseInt(this.parseNumber());
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp2;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp2 = true;
+									} else {
+										tmp2 = false;
+									}
+									if(!tmp2) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g4 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp4;
+					if(_g4 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp4 = _g4 < 33;
+						if(_hx_tmp4 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp3;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp3 = true;
+				} else {
+					tmp3 = false;
+				}
+				if(!tmp3) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		var __missing__ = function(field) {
+			return _gthis.die("missing field \"" + field + "\"",__start__);
+		};
+		return { allowed : v_allowed, ttl : hasv_ttl ? v_ttl : __missing__("ttl"), used : v_used};
+	}
+	,process3: function() {
+		var _gthis = this;
+		var cur = 0;
+		var v_allowed = null;
+		var v_used = null;
+		var __start__ = this.pos;
+		while(true) {
+			var _g = this.source.charCodeAt(this.pos++);
+			var _hx_tmp;
+			if(_g == 123 == true) {
+				break;
+			} else {
+				_hx_tmp = _g < 33;
+				if(_hx_tmp != true) {
+					this.die("expected " + "{");
+				}
+			}
+		}
+		while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+		var tmp;
+		if(this.source.charCodeAt(this.pos) == 125) {
+			this.pos += 1;
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			tmp = true;
+		} else {
+			tmp = false;
+		}
+		if(!tmp) {
+			_hx_loop4: while(true) {
+				while(true) {
+					var _g = this.source.charCodeAt(this.pos++);
+					var _hx_tmp;
+					if(_g == 34 == true) {
+						break;
+					} else {
+						_hx_tmp = _g < 33;
+						if(_hx_tmp != true) {
+							this.die("expected " + "\"");
+						}
+					}
+				}
+				cur = this.source.charCodeAt(this.pos++);
+				switch(cur) {
+				case 97:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 108) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 108) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 111) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 119) {
+									cur = this.source.charCodeAt(this.pos++);
+									if(cur == 101) {
+										cur = this.source.charCodeAt(this.pos++);
+										if(cur == 100) {
+											cur = this.source.charCodeAt(this.pos++);
+											if(cur == 34) {
+												while(true) {
+													var _g1 = this.source.charCodeAt(this.pos++);
+													var _hx_tmp1;
+													if(_g1 == 58 == true) {
+														break;
+													} else {
+														_hx_tmp1 = _g1 < 33;
+														if(_hx_tmp1 != true) {
+															this.die("expected " + ":");
+														}
+													}
+												}
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var v_allowed1;
+												if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+													this.pos += 4;
+													while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+													v_allowed1 = true;
+												} else {
+													v_allowed1 = false;
+												}
+												v_allowed = v_allowed1 ? null : parseInt(this.parseNumber());
+												while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+												var tmp;
+												if(this.source.charCodeAt(this.pos) == 44) {
+													this.pos += 1;
+													tmp = true;
+												} else {
+													tmp = false;
+												}
+												if(!tmp) {
+													break _hx_loop4;
+												} else {
+													continue;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+				case 117:
+					cur = this.source.charCodeAt(this.pos++);
+					if(cur == 115) {
+						cur = this.source.charCodeAt(this.pos++);
+						if(cur == 101) {
+							cur = this.source.charCodeAt(this.pos++);
+							if(cur == 100) {
+								cur = this.source.charCodeAt(this.pos++);
+								if(cur == 34) {
+									while(true) {
+										var _g2 = this.source.charCodeAt(this.pos++);
+										var _hx_tmp2;
+										if(_g2 == 58 == true) {
+											break;
+										} else {
+											_hx_tmp2 = _g2 < 33;
+											if(_hx_tmp2 != true) {
+												this.die("expected " + ":");
+											}
+										}
+									}
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var v_used1;
+									if(this.source.charCodeAt(this.pos) == 110 && this.source.charCodeAt(this.pos + 1) == 117 && this.source.charCodeAt(this.pos + 2) == 108 && this.source.charCodeAt(this.pos + 3) == 108) {
+										this.pos += 4;
+										while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+										v_used1 = true;
+									} else {
+										v_used1 = false;
+									}
+									v_used = v_used1 ? null : parseInt(this.parseNumber());
+									while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+									var tmp1;
+									if(this.source.charCodeAt(this.pos) == 44) {
+										this.pos += 1;
+										tmp1 = true;
+									} else {
+										tmp1 = false;
+									}
+									if(!tmp1) {
+										break _hx_loop4;
+									} else {
+										continue;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+				if(cur != 34) {
+					this.skipString();
+				}
+				while(true) {
+					var _g3 = this.source.charCodeAt(this.pos++);
+					var _hx_tmp3;
+					if(_g3 == 58 == true) {
+						break;
+					} else {
+						_hx_tmp3 = _g3 < 33;
+						if(_hx_tmp3 != true) {
+							this.die("expected " + ":");
+						}
+					}
+				}
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				this.skipValue();
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				var tmp2;
+				if(this.source.charCodeAt(this.pos) == 44) {
+					this.pos += 1;
+					tmp2 = true;
+				} else {
+					tmp2 = false;
+				}
+				if(!tmp2) {
+					break;
+				}
+			}
+			while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+			var tmp;
+			if(this.source.charCodeAt(this.pos) == 125) {
+				this.pos += 1;
+				while(this.source.charCodeAt(this.pos) < 33) this.pos++;
+				tmp = true;
+			} else {
+				tmp = false;
+			}
+			if(!tmp) {
+				this.die("Expected " + "}");
+			}
+		}
+		return { allowed : v_allowed, used : v_used};
+	}
+	,parse: function(source) {
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		this.init(source);
+		var ret = this.process0();
+		var _g = 0;
+		var _g1 = this.afterParsing;
+		while(_g < _g1.length) _g1[_g++]();
+		if(this.afterParsing.length > 0) {
+			this.afterParsing = [];
+		}
+		return ret;
+	}
+	,tryParse: function(source) {
+		var _gthis = this;
+		return tink_core_TypedError.catchExceptions(function() {
+			var ret = _gthis.parse(source);
+			while(_gthis.source.charCodeAt(_gthis.pos) < 33) _gthis.pos++;
+			if(_gthis.pos < _gthis.max) {
+				_gthis.die("Invalid data after JSON document");
+			}
+			return ret;
+		},null,{ fileName : "tink/json/macros/Macro.hx", lineNumber : 107, className : "tink.json.Parser6", methodName : "tryParse"});
+	}
+});
 var tink_json_Value = $hxEnums["tink.json.Value"] = { __ename__:true,__constructs__:null
 	,VNumber: ($_=function(f) { return {_hx_index:0,f:f,__enum__:"tink.json.Value",toString:$estr}; },$_._hx_name="VNumber",$_.__params__ = ["f"],$_)
 	,VString: ($_=function(s) { return {_hx_index:1,s:s,__enum__:"tink.json.Value",toString:$estr}; },$_._hx_name="VString",$_.__params__ = ["s"],$_)
@@ -9802,13 +17028,272 @@ tink_json_BasicWriter.prototype = {
 		this.buf = "";
 	}
 };
-var tink_json_Writer0 = function() {
+var tink_json_Writer22 = function() {
 	tink_json_BasicWriter.call(this);
 };
-$hxClasses["tink.json.Writer0"] = tink_json_Writer0;
-tink_json_Writer0.__name__ = true;
-tink_json_Writer0.__super__ = tink_json_BasicWriter;
-tink_json_Writer0.prototype = $extend(tink_json_BasicWriter.prototype,{
+$hxClasses["tink.json.Writer22"] = tink_json_Writer22;
+tink_json_Writer22.__name__ = true;
+tink_json_Writer22.__super__ = tink_json_BasicWriter;
+tink_json_Writer22.prototype = $extend(tink_json_BasicWriter.prototype,{
+	process0: function(value) {
+		var __first = true;
+		this.buf += String.fromCodePoint(123);
+		var value1 = value.done;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"done\":";
+		this.buf += value1 ? "true" : "false";
+		this.buf += String.fromCodePoint(125);
+	}
+	,write: function(value) {
+		this.init();
+		this.process0(value);
+		return this.buf.toString();
+	}
+});
+var tink_json_Writer23 = function() {
+	tink_json_BasicWriter.call(this);
+};
+$hxClasses["tink.json.Writer23"] = tink_json_Writer23;
+tink_json_Writer23.__name__ = true;
+tink_json_Writer23.__super__ = tink_json_BasicWriter;
+tink_json_Writer23.prototype = $extend(tink_json_BasicWriter.prototype,{
+	process0: function(value) {
+		var __first = true;
+		this.buf += String.fromCodePoint(123);
+		var value1 = value.from;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"from\":";
+		this.process1(value1);
+		var value1 = value.subject;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"subject\":";
+		var s = JSON.stringify(value1);
+		this.buf += s;
+		var value1 = value.to;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"to\":";
+		this.buf += String.fromCodePoint(91);
+		var first = true;
+		var _g = 0;
+		while(_g < value1.length) {
+			var value2 = value1[_g++];
+			if(first) {
+				first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.process1(value2);
+		}
+		this.buf += String.fromCodePoint(93);
+		var _g = value.bcc;
+		if(_g != null) {
+			var value1 = _g;
+			if(__first) {
+				__first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.buf += "\"bcc\":";
+			if(value1 == null) {
+				this.buf += "null";
+			} else {
+				this.buf += String.fromCodePoint(91);
+				var first = true;
+				var _g = 0;
+				while(_g < value1.length) {
+					var value2 = value1[_g++];
+					if(first) {
+						first = false;
+					} else {
+						this.buf += String.fromCodePoint(44);
+					}
+					this.process1(value2);
+				}
+				this.buf += String.fromCodePoint(93);
+			}
+		}
+		var _g = value.body;
+		if(_g != null) {
+			var value1 = _g;
+			if(__first) {
+				__first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.buf += "\"body\":";
+			if(value1 == null) {
+				this.buf += "null";
+			} else {
+				var s = JSON.stringify(haxe_crypto_Base64.encode(value1.toBytes()));
+				this.buf += s;
+			}
+		}
+		var _g = value.cc;
+		if(_g != null) {
+			var value1 = _g;
+			if(__first) {
+				__first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.buf += "\"cc\":";
+			if(value1 == null) {
+				this.buf += "null";
+			} else {
+				this.buf += String.fromCodePoint(91);
+				var first = true;
+				var _g = 0;
+				while(_g < value1.length) {
+					var value2 = value1[_g++];
+					if(first) {
+						first = false;
+					} else {
+						this.buf += String.fromCodePoint(44);
+					}
+					this.process1(value2);
+				}
+				this.buf += String.fromCodePoint(93);
+			}
+		}
+		var _g = value.hasAttachments;
+		if(_g != null) {
+			var value = _g;
+			if(__first) {
+				__first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.buf += "\"hasAttachments\":";
+			if(value == null) {
+				this.buf += "null";
+			} else {
+				this.buf += value ? "true" : "false";
+			}
+		}
+		this.buf += String.fromCodePoint(125);
+	}
+	,process1: function(value) {
+		var __first = true;
+		this.buf += String.fromCodePoint(123);
+		var value1 = value.address;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"address\":";
+		var s = JSON.stringify(value1);
+		this.buf += s;
+		var _g = value.name;
+		if(_g != null) {
+			var value = _g;
+			if(__first) {
+				__first = false;
+			} else {
+				this.buf += String.fromCodePoint(44);
+			}
+			this.buf += "\"name\":";
+			if(value == null) {
+				this.buf += "null";
+			} else {
+				var s = JSON.stringify(value);
+				this.buf += s;
+			}
+		}
+		this.buf += String.fromCodePoint(125);
+	}
+	,write: function(value) {
+		this.init();
+		this.process0(value);
+		return this.buf.toString();
+	}
+});
+var tink_json_Writer24 = function() {
+	tink_json_BasicWriter.call(this);
+};
+$hxClasses["tink.json.Writer24"] = tink_json_Writer24;
+tink_json_Writer24.__name__ = true;
+tink_json_Writer24.__super__ = tink_json_BasicWriter;
+tink_json_Writer24.prototype = $extend(tink_json_BasicWriter.prototype,{
+	process0: function(value) {
+		var __first = true;
+		this.buf += String.fromCodePoint(123);
+		var value1 = value.uuid;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"uuid\":";
+		var s = JSON.stringify(value1);
+		this.buf += s;
+		this.buf += String.fromCodePoint(125);
+	}
+	,write: function(value) {
+		this.init();
+		this.process0(value);
+		return this.buf.toString();
+	}
+});
+var tink_json_Writer25 = function() {
+	tink_json_BasicWriter.call(this);
+};
+$hxClasses["tink.json.Writer25"] = tink_json_Writer25;
+tink_json_Writer25.__name__ = true;
+tink_json_Writer25.__super__ = tink_json_BasicWriter;
+tink_json_Writer25.prototype = $extend(tink_json_BasicWriter.prototype,{
+	process0: function(value) {
+		var __first = true;
+		this.buf += String.fromCodePoint(123);
+		var value1 = value.chunk;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"chunk\":";
+		var s = JSON.stringify(haxe_crypto_Base64.encode(value1.toBytes()));
+		this.buf += s;
+		var value1 = value.currentFile;
+		if(__first) {
+			__first = false;
+		} else {
+			this.buf += String.fromCodePoint(44);
+		}
+		this.buf += "\"currentFile\":";
+		var s = JSON.stringify(value1);
+		this.buf += s;
+		this.buf += String.fromCodePoint(125);
+	}
+	,write: function(value) {
+		this.init();
+		this.process0(value);
+		return this.buf.toString();
+	}
+});
+var tink_json_Writer26 = function() {
+	tink_json_BasicWriter.call(this);
+};
+$hxClasses["tink.json.Writer26"] = tink_json_Writer26;
+tink_json_Writer26.__name__ = true;
+tink_json_Writer26.__super__ = tink_json_BasicWriter;
+tink_json_Writer26.prototype = $extend(tink_json_BasicWriter.prototype,{
 	process0: function(value) {
 		var __first = true;
 		this.buf += String.fromCodePoint(123);
@@ -9829,6 +17314,37 @@ tink_json_Writer0.prototype = $extend(tink_json_BasicWriter.prototype,{
 		return this.buf.toString();
 	}
 });
+var tink_querystring_Builder16 = function() {
+};
+$hxClasses["tink.querystring.Builder16"] = tink_querystring_Builder16;
+tink_querystring_Builder16.__name__ = true;
+tink_querystring_Builder16.prototype = {
+	stringify: function(data) {
+		var buffer = [];
+		this.process0("",buffer,data);
+		return buffer;
+	}
+	,process0: function(prefix,buffer,data) {
+		buffer.push(new tink_http_HeaderField((prefix == "" ? "data" : prefix + ".data").toLowerCase(),data._252));
+	}
+};
+var tink_querystring_Builder17 = function() {
+};
+$hxClasses["tink.querystring.Builder17"] = tink_querystring_Builder17;
+tink_querystring_Builder17.__name__ = true;
+tink_querystring_Builder17.prototype = {
+	stringify: function(data) {
+		var buffer = [];
+		this.process0("",buffer,data);
+		return buffer;
+	}
+	,process0: function(prefix,buffer,data) {
+		var data1 = data._254;
+		if(data1 != null) {
+			buffer.push(new tink_http_HeaderField((prefix == "" ? "X-Access-Token" : prefix + ".X-Access-Token").toLowerCase(),data1));
+		}
+	}
+};
 var tink_querystring_Pairs = {};
 tink_querystring_Pairs.ofIterable = function(i) {
 	return $getIterator(i);
@@ -9916,217 +17432,39 @@ tink_querystring_Parser0.prototype = $extend(tink_querystring_ParserBase.prototy
 	}
 	,process0: function(prefix) {
 		var prefix1 = prefix == "" ? "data" : prefix + ".data";
-		return { _2 : this.exists.h[prefix1] ? this.params.h[prefix1] : this.missing(prefix1)};
+		return { _309 : this.exists.h[prefix1] ? this.params.h[prefix1] : this.missing(prefix1)};
 	}
 });
-var tink_serialize_DecoderBase = function() {
+var tink_streams_IdealStreamBase = function() {
+	tink_streams_StreamBase.call(this);
 };
-$hxClasses["tink.serialize.DecoderBase"] = tink_serialize_DecoderBase;
-tink_serialize_DecoderBase.__name__ = true;
-tink_serialize_DecoderBase.prototype = {
-	reset: function(data) {
-		this.wrapped = data;
-		this.input = new haxe_io_BytesInput(data);
-		this.src = data.b.bufferValue;
-		this.pos = 0;
-		this.max = data.length;
-	}
-	,bytes: function() {
-		var l = this.dynInt();
-		var ret = this.wrapped.sub(this.pos,l);
-		this.pos += l;
-		return ret;
-	}
-	,string: function() {
-		var end = this.pos;
-		while(this.src.bytes[end] != 255) ++end;
-		var ret = this.wrapped.getString(this.pos,end - this.pos);
-		this.pos = end + 1;
-		return ret;
-	}
-	,int32: function() {
-		this.input.set_position(this.pos);
-		var ret = this.input.readInt32();
-		this.pos = this.input.pos;
-		return ret;
-	}
-	,dynInt: function() {
-		var ret = this.src.bytes[this.pos++];
-		if(ret < 128) {
-			return ret;
-		} else if(ret < 192) {
-			return (ret ^ 128) << 8 | this.src.bytes[this.pos++];
-		} else if(ret < 224) {
-			return (ret ^ 192) << 16 | this.src.bytes[this.pos++] << 8 | this.src.bytes[this.pos++];
-		} else {
-			return this.int32();
-		}
-	}
-};
-var tink_serialize_Decoder0 = function() {
-	tink_serialize_DecoderBase.call(this);
-};
-$hxClasses["tink.serialize.Decoder0"] = tink_serialize_Decoder0;
-tink_serialize_Decoder0.__name__ = true;
-tink_serialize_Decoder0.__super__ = tink_serialize_DecoderBase;
-tink_serialize_Decoder0.prototype = $extend(tink_serialize_DecoderBase.prototype,{
-	process0: function() {
-		var tmp;
-		if(this.src.bytes[this.pos] == 255 && ++this.pos > 0) {
-			tmp = null;
-		} else {
-			var _g = [];
-			var _g1 = 0;
-			var _g2 = this.dynInt();
-			while(_g1 < _g2) {
-				++_g1;
-				_g.push(this.process1());
-			}
-			tmp = _g;
-		}
-		var tmp1 = this.src.bytes[this.pos] == 255 && ++this.pos > 0 ? null : tink_chunk_ByteChunk.of(this.bytes());
-		var tmp2;
-		if(this.src.bytes[this.pos] == 255 && ++this.pos > 0) {
-			tmp2 = null;
-		} else {
-			var _g = [];
-			var _g1 = 0;
-			var _g2 = this.dynInt();
-			while(_g1 < _g2) {
-				++_g1;
-				_g.push(this.process1());
-			}
-			tmp2 = _g;
-		}
-		var tmp3 = this.process1();
-		var tmp4 = this.src.bytes[this.pos] == 255 && ++this.pos > 0 ? null : this.src.bytes[this.pos++] == 1;
-		var tmp5 = this.string();
-		var _g = [];
-		var _g1 = 0;
-		var _g2 = this.dynInt();
-		while(_g1 < _g2) {
-			++_g1;
-			_g.push(this.process1());
-		}
-		return { bcc : tmp, body : tmp1, cc : tmp2, from : tmp3, hasAttachments : tmp4, subject : tmp5, to : _g};
-	}
-	,process1: function() {
-		return { address : this.string(), name : this.src.bytes[this.pos] == 255 && ++this.pos > 0 ? null : this.string()};
-	}
-	,decode: function(data) {
-		this.reset(data);
-		return this.process0();
-	}
-});
-var tink_serialize_Decoder1 = function() {
-	tink_serialize_DecoderBase.call(this);
-};
-$hxClasses["tink.serialize.Decoder1"] = tink_serialize_Decoder1;
-tink_serialize_Decoder1.__name__ = true;
-tink_serialize_Decoder1.__super__ = tink_serialize_DecoderBase;
-tink_serialize_Decoder1.prototype = $extend(tink_serialize_DecoderBase.prototype,{
-	process0: function() {
-		return { uuid : this.string()};
-	}
-	,decode: function(data) {
-		this.reset(data);
-		return this.process0();
-	}
-});
-var tink_serialize_Decoder2 = function() {
-	tink_serialize_DecoderBase.call(this);
-};
-$hxClasses["tink.serialize.Decoder2"] = tink_serialize_Decoder2;
-tink_serialize_Decoder2.__name__ = true;
-tink_serialize_Decoder2.__super__ = tink_serialize_DecoderBase;
-tink_serialize_Decoder2.prototype = $extend(tink_serialize_DecoderBase.prototype,{
-	process0: function() {
-		return { chunk : this.bytes(), currentFile : this.string()};
-	}
-	,decode: function(data) {
-		this.reset(data);
-		return this.process0();
-	}
-});
-var tink_serialize__$Encoder_BytesBuffer = function() {
-	this.prev = [];
-	this.index = 0;
-	this.cur = tink_serialize__$Encoder_BytesBuffer.alloc();
-};
-$hxClasses["tink.serialize._Encoder.BytesBuffer"] = tink_serialize__$Encoder_BytesBuffer;
-tink_serialize__$Encoder_BytesBuffer.__name__ = true;
-tink_serialize__$Encoder_BytesBuffer.alloc = function() {
-	var _g = tink_serialize__$Encoder_BytesBuffer.POOL.pop();
-	if(_g == null) {
-		return new Uint8Array(65536);
-	} else {
-		return _g;
-	}
-};
-tink_serialize__$Encoder_BytesBuffer.prototype = {
-	next: function() {
-		this.prev.push(this.cur);
-		this.cur = tink_serialize__$Encoder_BytesBuffer.alloc();
-	}
-	,getBytes: function() {
-		var out = new Uint8Array(this.index + 65536 * this.prev.length);
-		var pos = 0;
-		var _g = 0;
-		var _g1 = this.prev;
-		while(_g < _g1.length) {
-			var buf = _g1[_g];
-			++_g;
-			var _g2 = 0;
-			while(_g2 < buf.length) out[pos++] = buf[_g2++];
-		}
-		var _g = 0;
-		var _g1 = this.index;
-		while(_g < _g1) out[pos++] = this.cur[_g++];
-		this.free();
-		return haxe_io_Bytes.ofData(out);
-	}
-	,free: function() {
-		tink_serialize__$Encoder_BytesBuffer.POOL.push(this.cur);
-		var _g = 0;
-		var _g1 = this.prev;
-		while(_g < _g1.length) tink_serialize__$Encoder_BytesBuffer.POOL.push(_g1[_g++]);
-	}
-};
-var tink_serialize_EncoderBase = function() {
-};
-$hxClasses["tink.serialize.EncoderBase"] = tink_serialize_EncoderBase;
-tink_serialize_EncoderBase.__name__ = true;
-tink_serialize_EncoderBase.prototype = {
-	reset: function() {
-		this.out = new tink_serialize__$Encoder_BytesBuffer();
-	}
-};
-var tink_serialize_Encoder0 = function() {
-	tink_serialize_EncoderBase.call(this);
-};
-$hxClasses["tink.serialize.Encoder0"] = tink_serialize_Encoder0;
-tink_serialize_Encoder0.__name__ = true;
-tink_serialize_Encoder0.__super__ = tink_serialize_EncoderBase;
-tink_serialize_Encoder0.prototype = $extend(tink_serialize_EncoderBase.prototype,{
-	process0: function(data) {
-		var _this = this.out;
-		_this.cur[_this.index++] = data.done ? 1 : 0;
-		if(_this.index == 65536) {
-			_this.next();
-		}
-	}
-	,encode: function(data) {
-		this.reset();
-		this.process0(data);
-		return this.out.getBytes();
+$hxClasses["tink.streams.IdealStreamBase"] = tink_streams_IdealStreamBase;
+tink_streams_IdealStreamBase.__name__ = true;
+tink_streams_IdealStreamBase.__super__ = tink_streams_StreamBase;
+tink_streams_IdealStreamBase.prototype = $extend(tink_streams_StreamBase.prototype,{
+	idealize: function(rescue) {
+		return this;
 	}
 });
 var tink_streams_Stream = {};
+tink_streams_Stream.dirty = function(this1) {
+	return this1;
+};
 tink_streams_Stream.single = function(i) {
 	return new tink_streams_Single(new tink_core__$Lazy_LazyConst(i));
 };
 tink_streams_Stream.future = function(f) {
 	return new tink_streams_FutureStream(f);
+};
+tink_streams_Stream.promise = function(f) {
+	return tink_streams_Stream.future(tink_core_Future.map(f,function(o) {
+		switch(o._hx_index) {
+		case 0:
+			return tink_streams_Stream.dirty(o.data);
+		case 1:
+			return tink_streams_Stream.ofError(o.failure);
+		}
+	}));
 };
 tink_streams_Stream.ofError = function(e) {
 	return new tink_streams__$Stream_ErrorStream(e);
@@ -10145,6 +17483,11 @@ var tink_streams_RegroupResult = $hxEnums["tink.streams.RegroupResult"] = { __en
 };
 tink_streams_RegroupResult.__constructs__ = [tink_streams_RegroupResult.Converted,tink_streams_RegroupResult.Terminated,tink_streams_RegroupResult.Untouched,tink_streams_RegroupResult.Errored];
 var tink_streams_Regrouper = {};
+tink_streams_Regrouper.ofIgnoranceSync = function(f) {
+	return { apply : function(i,_) {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(f(i)));
+	}};
+};
 tink_streams_Regrouper.ofFuncSync = function(f) {
 	return { apply : function(i,s) {
 		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(f(i,s)));
@@ -10207,6 +17550,30 @@ tink_streams__$Stream_CompoundStream.prototype = $extend(tink_streams_StreamBase
 			return this.parts[0].get_depleted();
 		default:
 			return false;
+		}
+	}
+	,next: function() {
+		var _gthis = this;
+		if(this.parts.length == 0) {
+			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Step.End));
+		} else {
+			return tink_core_Future.flatMap(this.parts[0].next(),function(v) {
+				switch(v._hx_index) {
+				case 0:
+					var copy = _gthis.parts.slice();
+					copy[0] = v.next;
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Step.Link(v.value,new tink_streams__$Stream_CompoundStream(copy))));
+				case 2:
+					if(_gthis.parts.length > 1) {
+						return _gthis.parts[1].next();
+					} else {
+						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(v));
+					}
+					break;
+				default:
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(v));
+				}
+			});
 		}
 	}
 	,decompose: function(into) {
@@ -10328,7 +17695,10 @@ $hxClasses["tink.streams._Stream.ErrorStream"] = tink_streams__$Stream_ErrorStre
 tink_streams__$Stream_ErrorStream.__name__ = true;
 tink_streams__$Stream_ErrorStream.__super__ = tink_streams_StreamBase;
 tink_streams__$Stream_ErrorStream.prototype = $extend(tink_streams_StreamBase.prototype,{
-	forEach: function(handler) {
+	next: function() {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Step.Fail(this.error)));
+	}
+	,forEach: function(handler) {
 		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Conclusion.Failed(this.error)));
 	}
 });
@@ -10338,6 +17708,50 @@ tink_streams_Mapping.ofPlain = function(f) {
 		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_RegroupResult.Converted(tink_streams_Stream.single(f(i[0])))));
 	}};
 };
+var tink_streams_IdealizeStream = function(target,rescue) {
+	tink_streams_IdealStreamBase.call(this);
+	this.target = target;
+	this.rescue = rescue;
+};
+$hxClasses["tink.streams.IdealizeStream"] = tink_streams_IdealizeStream;
+tink_streams_IdealizeStream.__name__ = true;
+tink_streams_IdealizeStream.__super__ = tink_streams_IdealStreamBase;
+tink_streams_IdealizeStream.prototype = $extend(tink_streams_IdealStreamBase.prototype,{
+	get_depleted: function() {
+		return this.target.get_depleted();
+	}
+	,next: function() {
+		var _gthis = this;
+		return tink_core_Future.flatMap(this.target.next(),function(v) {
+			if(v._hx_index == 1) {
+				return _gthis.rescue(v.e).idealize(_gthis.rescue).next();
+			} else {
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(v));
+			}
+		});
+	}
+	,forEach: function(handler) {
+		var _gthis = this;
+		return tink_core_Future.async(function(cb) {
+			_gthis.target.forEach(handler).handle(function(end) {
+				switch(end._hx_index) {
+				case 0:
+					cb(tink_streams_Conclusion.Halted(end.rest.idealize(_gthis.rescue)));
+					break;
+				case 1:
+					cb(tink_streams_Conclusion.Clogged(end.error,end.at.idealize(_gthis.rescue)));
+					break;
+				case 2:
+					_gthis.rescue(end.error).idealize(_gthis.rescue).forEach(handler).handle(cb);
+					break;
+				case 3:
+					cb(tink_streams_Conclusion.Depleted);
+					break;
+				}
+			});
+		});
+	}
+});
 var tink_streams_Single = function(value) {
 	tink_streams_StreamBase.call(this);
 	this.value = value;
@@ -10346,7 +17760,10 @@ $hxClasses["tink.streams.Single"] = tink_streams_Single;
 tink_streams_Single.__name__ = true;
 tink_streams_Single.__super__ = tink_streams_StreamBase;
 tink_streams_Single.prototype = $extend(tink_streams_StreamBase.prototype,{
-	forEach: function(handle) {
+	next: function() {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_streams_Step.Link(tink_core_Lazy.get(this.value),tink_streams_Empty.inst)));
+	}
+	,forEach: function(handle) {
 		var _gthis = this;
 		return tink_core_Future.map(handle(tink_core_Lazy.get(this.value)),function(step) {
 			switch(step._hx_index) {
@@ -10381,7 +17798,12 @@ $hxClasses["tink.streams.FutureStream"] = tink_streams_FutureStream;
 tink_streams_FutureStream.__name__ = true;
 tink_streams_FutureStream.__super__ = tink_streams_StreamBase;
 tink_streams_FutureStream.prototype = $extend(tink_streams_StreamBase.prototype,{
-	forEach: function(handler) {
+	next: function() {
+		return tink_core_Future.flatMap(this.f,function(s) {
+			return s.next();
+		});
+	}
+	,forEach: function(handler) {
 		var _gthis = this;
 		return tink_core_Future.async(function(cb) {
 			_gthis.f.handle(function(s) {
@@ -10389,6 +17811,39 @@ tink_streams_FutureStream.prototype = $extend(tink_streams_StreamBase.prototype,
 			});
 		});
 	}
+});
+var tink_streams_BlendStream = function(a,b) {
+	var first = null;
+	var wait = function(s) {
+		return tink_core_Future.map(s.next(),function(o) {
+			if(first == null) {
+				first = s;
+			}
+			return o;
+		});
+	};
+	var n1 = wait(a);
+	var n2 = wait(b);
+	tink_streams_Generator.call(this,tink_core_Future.async(function(cb) {
+		tink_core_Future.first(n1,n2).handle(function(o) {
+			switch(o._hx_index) {
+			case 0:
+				cb(tink_streams_Step.Link(o.value,new tink_streams_BlendStream(o.next,first == a ? b : a)));
+				break;
+			case 1:
+				cb(tink_streams_Step.Fail(o.e));
+				break;
+			case 2:
+				(first == a ? n2 : n1).handle(cb);
+				break;
+			}
+		});
+	}));
+};
+$hxClasses["tink.streams.BlendStream"] = tink_streams_BlendStream;
+tink_streams_BlendStream.__name__ = true;
+tink_streams_BlendStream.__super__ = tink_streams_Generator;
+tink_streams_BlendStream.prototype = $extend(tink_streams_Generator.prototype,{
 });
 var tink_streams_Step = $hxEnums["tink.streams.Step"] = { __ename__:true,__constructs__:null
 	,Link: ($_=function(value,next) { return {_hx_index:0,value:value,next:next,__enum__:"tink.streams.Step",toString:$estr}; },$_._hx_name="Link",$_.__params__ = ["value","next"],$_)
@@ -10421,6 +17876,80 @@ var tink_streams_Yield = $hxEnums["tink.streams.Yield"] = { __ename__:true,__con
 	,End: {_hx_name:"End",_hx_index:2,__enum__:"tink.streams.Yield",toString:$estr}
 };
 tink_streams_Yield.__constructs__ = [tink_streams_Yield.Data,tink_streams_Yield.Fail,tink_streams_Yield.End];
+var tink_tcp_Endpoint = {};
+tink_tcp_Endpoint.get_secure = function(this1) {
+	if(this1.secure == null) {
+		return this1.port == 443;
+	} else {
+		return this1.secure;
+	}
+};
+tink_tcp_Endpoint.toString = function(this1) {
+	return "" + this1.host + ":" + this1.port;
+};
+var tink_tcp_Handler = {};
+tink_tcp_Handler.handle = function(this1,incoming) {
+	return this1[0](incoming);
+};
+tink_tcp_Handler.ofAsync = function(f) {
+	var ret = new Array(1);
+	ret[0] = f;
+	return ret;
+};
+var tink_tcp_nodejs_NodejsConnector = function() { };
+$hxClasses["tink.tcp.nodejs.NodejsConnector"] = tink_tcp_nodejs_NodejsConnector;
+tink_tcp_nodejs_NodejsConnector.__name__ = true;
+tink_tcp_nodejs_NodejsConnector.connect = function(to,handler) {
+	return tink_core_Future.async(function(cb) {
+		haxe_Log.trace("CONNECTING TO " + (to == null ? "null" : tink_tcp_Endpoint.toString(to)),{ fileName : "tink/tcp/nodejs/NodejsConnector.hx", lineNumber : 10, className : "tink.tcp.nodejs.NodejsConnector", methodName : "connect"});
+		var native = tink_tcp_Endpoint.get_secure(to) ? js_node_Tls.connect(to.port,to.host) : js_node_Net.connect(to.port,to.host);
+		native.on("error",function(e) {
+			var handler1 = handler;
+			var this1 = tink_io_Source.ofError(new tink_core_TypedError(null,"" + e.code + " - Failed connecting to " + (to == null ? "null" : tink_tcp_Endpoint.toString(to)) + " because " + e.message,{ fileName : "tink/tcp/nodejs/NodejsConnector.hx", lineNumber : 15, className : "tink.tcp.nodejs.NodejsConnector", methodName : "connect"}));
+			var to1 = to;
+			var this2 = new tink_core__$Future_SuspendableFuture(function(_) {
+				return null;
+			});
+			tink_tcp_Handler.handle(handler1,{ stream : this1, from : to1, to : { host : "", port : -1}, closed : this2}).handle(function() {
+				cb(tink_core_Outcome.Success(null));
+			});
+		});
+		native.on("connect",function() {
+			native.removeAllListeners();
+			var sourceClosed = new tink_core_FutureTrigger();
+			var _g = $bind(sourceClosed,sourceClosed.trigger);
+			var result = null;
+			var options = { onEnd : function() {
+				return _g(result);
+			}};
+			if(options == null) {
+				options = { };
+			}
+			var stream = tink_io_nodejs_NodejsSource.wrap("Incoming stream of connection to " + (to == null ? "null" : tink_tcp_Endpoint.toString(to)),native,options.chunkSize,options.onEnd);
+			var out = "Outgoing stream of connection to " + (to == null ? "null" : tink_tcp_Endpoint.toString(to));
+			tink_tcp_Handler.handle(handler,{ from : to, to : { host : native.localAddress, port : native.localPort}, stream : stream, closed : sourceClosed}).handle(function(outgoing) {
+				tink_io_Source.pipeTo(outgoing.stream,tink_io_nodejs_NodejsSink.wrap(out,native),{ end : true}).handle(function(o) {
+					(outgoing.allowHalfOpen ? sourceClosed : new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(null))).handle(function() {
+						native.destroy();
+						var cb1 = cb;
+						var tmp;
+						switch(o._hx_index) {
+						case 1:
+							tmp = o.rest.get_depleted() == false ? tink_core_Outcome.Failure(new tink_core_TypedError(null,"" + out + " closed before all data could be written",{ fileName : "tink/tcp/nodejs/NodejsConnector.hx", lineNumber : 44, className : "tink.tcp.nodejs.NodejsConnector", methodName : "connect"})) : tink_core_Outcome.Success(null);
+							break;
+						case 2:
+							tmp = tink_core_Outcome.Failure(o.e);
+							break;
+						default:
+							tmp = tink_core_Outcome.Success(null);
+						}
+						cb1(tmp);
+					});
+				});
+			});
+		});
+	});
+};
 var tink_url_Query = {};
 tink_url_Query.toMap = function(this1) {
 	var _g = new haxe_ds_StringMap();
@@ -10431,6 +17960,91 @@ tink_url_Query.toMap = function(this1) {
 	}
 	return _g;
 };
+var tink_web_proxy_ResponseReader = {};
+tink_web_proxy_ResponseReader.withHeader = function(this1,header) {
+	var _g = this1;
+	var a1 = header;
+	return function(a2) {
+		return _g(a1,a2);
+	};
+};
+tink_web_proxy_ResponseReader.ofStringReader = function(read) {
+	return function(header,body) {
+		return tink_core_Promise.next(tink_io_RealSourceTools.all(body),function(chunk) {
+			if(header.statusCode >= 400) {
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(tink_core_TypedError.withData(header.statusCode,header.reason,chunk.toString(),{ fileName : "tink/web/proxy/Remote.hx", lineNumber : 202, className : "tink.web.proxy._Remote.ResponseReader_Impl_", methodName : "ofStringReader"}))));
+			} else {
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(read(chunk.toString())));
+			}
+		});
+	};
+};
+var tink_web_proxy_QueryParams = {};
+tink_web_proxy_QueryParams.toString = function(this1) {
+	if(this1 == null) {
+		return "";
+	} else if(this1.length == 0) {
+		return "";
+	} else {
+		var ret = [];
+		var _g = 0;
+		while(_g < this1.length) {
+			var p = this1[_g];
+			++_g;
+			ret.push(p.name + "=" + p.value);
+		}
+		return "?" + (ret == null ? "null" : ret.join("&"));
+	}
+};
+var tink_web_proxy_Remote0 = function(client,endpoint) {
+	tink_web_proxy_RemoteBase.call(this,client,endpoint);
+};
+$hxClasses["tink.web.proxy.Remote0"] = tink_web_proxy_Remote0;
+tink_web_proxy_Remote0.__name__ = true;
+tink_web_proxy_Remote0.__super__ = tink_web_proxy_RemoteBase;
+tink_web_proxy_Remote0.prototype = $extend(tink_web_proxy_RemoteBase.prototype,{
+	info: function() {
+		var __body__ = tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(""));
+		return tink_web_proxy_RemoteEndpoint.request(tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : [], query : [], headers : [new tink_http_HeaderField("content-length",tink_http_HeaderValue.ofInt(__body__.getLength())),new tink_http_HeaderField("accept","application/json")].concat([])}),this.client,"GET",new tink_streams_Single(new tink_core__$Lazy_LazyConst(__body__)),tink_web_proxy_ResponseReader.ofStringReader(($_=new tink_json_Parser6(),$bind($_,$_.tryParse))));
+	}
+	,addresses: function() {
+		return new tink_web_proxy_Remote1(this.client,tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : ["addresses"], query : [], headers : [].concat([])}));
+	}
+});
+var tink_web_proxy_Remote1 = function(client,endpoint) {
+	tink_web_proxy_RemoteBase.call(this,client,endpoint);
+};
+$hxClasses["tink.web.proxy.Remote1"] = tink_web_proxy_Remote1;
+tink_web_proxy_Remote1.__name__ = true;
+tink_web_proxy_Remote1.__super__ = tink_web_proxy_RemoteBase;
+tink_web_proxy_Remote1.prototype = $extend(tink_web_proxy_RemoteBase.prototype,{
+	list: function() {
+		var __body__ = tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(""));
+		return tink_web_proxy_RemoteEndpoint.request(tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : [], query : [], headers : [new tink_http_HeaderField("content-length",tink_http_HeaderValue.ofInt(__body__.getLength())),new tink_http_HeaderField("accept","application/json")].concat([])}),this.client,"GET",new tink_streams_Single(new tink_core__$Lazy_LazyConst(__body__)),tink_web_proxy_ResponseReader.ofStringReader(($_=new tink_json_Parser2(),$bind($_,$_.tryParse))));
+	}
+});
+var tink_web_proxy_Remote19 = function(client,endpoint) {
+	tink_web_proxy_RemoteBase.call(this,client,endpoint);
+};
+$hxClasses["tink.web.proxy.Remote19"] = tink_web_proxy_Remote19;
+tink_web_proxy_Remote19.__name__ = true;
+tink_web_proxy_Remote19.__super__ = tink_web_proxy_RemoteBase;
+tink_web_proxy_Remote19.prototype = $extend(tink_web_proxy_RemoteBase.prototype,{
+	send: function(configData,accessToken,body) {
+		return tink_web_proxy_RemoteEndpoint.request(tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : ["send"], query : [], headers : [new tink_http_HeaderField("accept","application/json")].concat(new tink_querystring_Builder16().stringify({ _252 : configData}))}),this.client,"POST",body,tink_web_proxy_ResponseReader.ofStringReader(($_=new tink_json_Parser31(),$bind($_,$_.tryParse))));
+	}
+});
+var tink_web_proxy_Remote21 = function(client,endpoint) {
+	tink_web_proxy_RemoteBase.call(this,client,endpoint);
+};
+$hxClasses["tink.web.proxy.Remote21"] = tink_web_proxy_Remote21;
+tink_web_proxy_Remote21.__name__ = true;
+tink_web_proxy_Remote21.__super__ = tink_web_proxy_RemoteBase;
+tink_web_proxy_Remote21.prototype = $extend(tink_web_proxy_RemoteBase.prototype,{
+	get: function(id) {
+		return new tink_web_proxy_Remote0(this.client,tink_web_proxy_RemoteEndpoint.sub(this.endpoint,{ path : [tink_url_Portion.ofString(id)], query : [], headers : [].concat([])}));
+	}
+});
 var tink_web_routing_Context = function(parent,accepts,request,depth,parts,params) {
 	this.parent = parent;
 	this.accepts = accepts;
@@ -10441,8 +18055,15 @@ var tink_web_routing_Context = function(parent,accepts,request,depth,parts,param
 };
 $hxClasses["tink.web.routing.Context"] = tink_web_routing_Context;
 tink_web_routing_Context.__name__ = true;
-tink_web_routing_Context.ofRequest = function(request) {
-	return new tink_web_routing_Context(null,tink_web_routing_Context.parseAcceptHeader(request.header),request,0,tink_url_Path.parts(request.header.url.path),tink_url_Query.toMap(request.header.url.query));
+tink_web_routing_Context.authed = function(request,getSession) {
+	var tmp = tink_web_routing_Context.parseAcceptHeader(request.header);
+	var tmp1 = tink_url_Path.parts(request.header.url.path);
+	var _g = getSession;
+	var a1 = request.header;
+	var tmp2 = new tink_core__$Lazy_LazyFunc(function() {
+		return _g(a1);
+	});
+	return new tink_web_routing_AuthedContext(null,tmp,request,0,tmp1,tink_url_Query.toMap(request.header.url.query),tmp2);
 };
 tink_web_routing_Context.parseAcceptHeader = function(h) {
 	var _g = h.get("accept");
@@ -10487,6 +18108,28 @@ tink_web_routing_Context.prototype = {
 		}
 	}
 };
+var tink_web_routing_AuthedContext = function(parent,accepts,request,depth,parts,params,session,user) {
+	this.session = session;
+	var tmp;
+	if(user == null) {
+		var this1 = session;
+		var f = function(s) {
+			return s.getUser();
+		};
+		tmp = new tink_core__$Lazy_LazyFunc(function() {
+			return f(this1.get());
+		},this1);
+	} else {
+		tmp = user;
+	}
+	this.user = tmp;
+	tink_web_routing_Context.call(this,parent,accepts,request,depth,parts,params);
+};
+$hxClasses["tink.web.routing.AuthedContext"] = tink_web_routing_AuthedContext;
+tink_web_routing_AuthedContext.__name__ = true;
+tink_web_routing_AuthedContext.__super__ = tink_web_routing_Context;
+tink_web_routing_AuthedContext.prototype = $extend(tink_web_routing_Context.prototype,{
+});
 var tink_web_routing_Response = {};
 tink_web_routing_Response.binary = function(code,contentType,bytes,headers) {
 	if(code == null) {
@@ -10520,11 +18163,11 @@ tink_web_routing_Router0.prototype = {
 						return this.dropoff(ctx);
 					} else {
 						var this1 = ctx.request.header.url;
-						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 					}
 				} else {
 					var this1 = ctx.request.header.url;
-					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 				}
 				break;
 			case "send":
@@ -10533,16 +18176,16 @@ tink_web_routing_Router0.prototype = {
 						return this.send(ctx);
 					} else {
 						var this1 = ctx.request.header.url;
-						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 					}
 				} else {
 					var this1 = ctx.request.header.url;
-					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 				}
 				break;
 			default:
 				var this1 = ctx.request.header.url;
-				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 			}
 		} else if(_g1 == "dropoff") {
 			if(_g2 == true) {
@@ -10550,26 +18193,33 @@ tink_web_routing_Router0.prototype = {
 					return this.dropoff(ctx);
 				} else {
 					var this1 = ctx.request.header.url;
-					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 				}
 			} else {
 				var this1 = ctx.request.header.url;
-				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 			}
 		} else {
 			var this1 = ctx.request.header.url;
-			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 48, className : "tink.web.routing.Router0", methodName : "route"}))));
+			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(404,"Not Found: [" + ctx.request.header.method + "] " + (this1.query == null ? this1.path : (this1.path == null ? "null" : this1.path) + "?" + (this1.query == null ? "null" : this1.query)),{ fileName : "src/DuckJet.hx", lineNumber : 41, className : "tink.web.routing.Router0", methodName : "route"}))));
 		}
 	}
 	,send: function(ctx) {
 		var _gthis = this;
-		return tink_core_Promise.next(new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(new tink_querystring_Parser0(null,{ fileName : "src/duck_jet/Api.hx", lineNumber : 53, className : "tink.web.routing.Router0", methodName : "send"}).tryParse(ctx.headers()))),function(__header__) {
-			var _g = ctx.request.body;
-			return tink_core_Promise.next(_gthis.target.send(__header__._2,_g._hx_index == 0 ? _g.source : tink_io_Source.ofError(new tink_core_TypedError(501,"not implemented",{ fileName : "tink/web/routing/Context.hx", lineNumber : 47, className : "tink.web.routing.Context", methodName : "get_rawBody"}))),function(__data__) {
-				if(ctx.accepts("application/json")) {
-					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(tink_web_routing_Response.textual(200,"application/json",new tink_json_Writer0().write(__data__),[]))));
+		return tink_core_Promise.next(new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(new tink_querystring_Parser0(null,{ fileName : "src/duck_jet/Api.hx", lineNumber : 56, className : "tink.web.routing.Router0", methodName : "send"}).tryParse(ctx.headers()))),function(__header__) {
+			return tink_core_Promise.next(tink_core_Lazy.get(ctx.user),function(user) {
+				switch(user._hx_index) {
+				case 0:
+					var _g = ctx.request.body;
+					return tink_core_Promise.next(_gthis.target.send(user.v,__header__._309,_g._hx_index == 0 ? _g.source : tink_io_Source.ofError(new tink_core_TypedError(501,"not implemented",{ fileName : "tink/web/routing/Context.hx", lineNumber : 47, className : "tink.web.routing.Context", methodName : "get_rawBody"}))),function(__data__) {
+						if(ctx.accepts("application/json")) {
+							return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(tink_web_routing_Response.textual(200,"application/json",new tink_json_Writer26().write(__data__),[]))));
+						}
+						return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(415,"Unsupported Media Type",{ fileName : "src/duck_jet/Api.hx", lineNumber : 56, className : "tink.web.routing.Router0", methodName : "send"}))));
+					});
+				case 1:
+					return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(401,"unauthorized",{ fileName : "src/duck_jet/Api.hx", lineNumber : 56, className : "tink.web.routing.Router0", methodName : "send"}))));
 				}
-				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Failure(new tink_core_TypedError(415,"Unsupported Media Type",{ fileName : "src/duck_jet/Api.hx", lineNumber : 53, className : "tink.web.routing.Router0", methodName : "send"}))));
 			});
 		});
 	}
@@ -10578,6 +18228,33 @@ tink_web_routing_Router0.prototype = {
 			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(v)));
 		});
 	}
+};
+var tink_websocket_Connector = function() { };
+$hxClasses["tink.websocket.Connector"] = tink_websocket_Connector;
+tink_websocket_Connector.__name__ = true;
+var tink_websocket_ClientHandlerTools = function() { };
+$hxClasses["tink.websocket.ClientHandlerTools"] = tink_websocket_ClientHandlerTools;
+tink_websocket_ClientHandlerTools.__name__ = true;
+tink_websocket_ClientHandlerTools.toTcpHandler = function(handler,url,onError) {
+	if(onError == null) {
+		onError = function(_) {
+			return tink_streams_Empty.inst;
+		};
+	}
+	return tink_tcp_Handler.ofAsync(function(i) {
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst({ stream : tink_streams_Generator.stream(function(step) {
+			var header = new tink_websocket_OutgoingHandshakeRequestHeader(url);
+			var accept = header.accept;
+			var promise = tink_core_Promise.next(tink_core_Promise.next(tink_io_RealSourceTools.parse(i.stream,tink_http_ResponseHeaderBase.parser()),function(o) {
+				return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_OutcomeTools.map(tink_websocket_IncomingHandshakeResponseHeader.validate(o.a,accept),function(_) {
+					return o.b;
+				})));
+			}),tink_core_Next.ofSafeSync(function(rest) {
+				return tink_websocket_RawMessageStream.toMaskedChunkStream(handler(tink_io_RealSourceTools.parseStream(rest,new tink_websocket_Parser()).map(tink_streams_Mapping.ofPlain(tink_websocket_Frame.fromChunk)).regroup(tink_websocket_MessageRegrouper.get())),tink_websocket_MaskingKey.random);
+			}));
+			step(tink_streams_Step.Link(tink_chunk_ByteChunk.of(haxe_io_Bytes.ofString(header.toString())),tink_streams_Stream.promise(promise).idealize(onError)));
+		}), allowHalfOpen : true}));
+	});
 };
 var tink_websocket_Frame = {};
 tink_websocket_Frame.fromChunk = function(v) {
@@ -10828,18 +18505,66 @@ tink_websocket_IncomingHandshakeRequestHeader.validate = function(this1) {
 		return tink_core_Outcome.Success(null);
 	}
 };
+var tink_websocket_IncomingHandshakeResponseHeader = {};
+tink_websocket_IncomingHandshakeResponseHeader.validate = function(this1,accept) {
+	if(this1.statusCode != 101) {
+		return tink_core_Outcome.Failure(new tink_core_TypedError(null,"Unexpected response status code",{ fileName : "tink/websocket/IncomingHandshakeResponseHeader.hx", lineNumber : 11, className : "tink.websocket._IncomingHandshakeResponseHeader.IncomingHandshakeResponseHeader_Impl_", methodName : "validate"}));
+	}
+	var _g = this1.byName("sec-websocket-accept".toLowerCase());
+	if(_g._hx_index == 0) {
+		if(_g.data == accept) {
+			return tink_core_Outcome.Success(null);
+		} else {
+			return tink_core_Outcome.Failure(new tink_core_TypedError(null,"Invalid accept",{ fileName : "tink/websocket/IncomingHandshakeResponseHeader.hx", lineNumber : 14, className : "tink.websocket._IncomingHandshakeResponseHeader.IncomingHandshakeResponseHeader_Impl_", methodName : "validate"}));
+		}
+	} else {
+		return tink_core_Outcome.Failure(new tink_core_TypedError(null,"Invalid accept",{ fileName : "tink/websocket/IncomingHandshakeResponseHeader.hx", lineNumber : 14, className : "tink.websocket._IncomingHandshakeResponseHeader.IncomingHandshakeResponseHeader_Impl_", methodName : "validate"}));
+	}
+};
 var tink_websocket_MaskingKey = {};
+tink_websocket_MaskingKey._new = function(a,b,c,d) {
+	var bytes = new haxe_io_Bytes(new ArrayBuffer(4));
+	bytes.b[0] = a;
+	bytes.b[1] = b;
+	bytes.b[2] = c;
+	bytes.b[3] = d;
+	return tink_chunk_ByteChunk.of(bytes);
+};
 tink_websocket_MaskingKey.ofChunk = function(c) {
 	if(c.getLength() != 4) {
 		throw haxe_Exception.thrown("Invalid key length, should be 4");
 	}
 	return c;
 };
+tink_websocket_MaskingKey.random = function() {
+	return tink_websocket_MaskingKey._new(Std.random(256),Std.random(256),Std.random(256),Std.random(256));
+};
 var tink_websocket_Message = $hxEnums["tink.websocket.Message"] = { __ename__:true,__constructs__:null
 	,Text: ($_=function(v) { return {_hx_index:0,v:v,__enum__:"tink.websocket.Message",toString:$estr}; },$_._hx_name="Text",$_.__params__ = ["v"],$_)
 	,Binary: ($_=function(b) { return {_hx_index:1,b:b,__enum__:"tink.websocket.Message",toString:$estr}; },$_._hx_name="Binary",$_.__params__ = ["b"],$_)
 };
 tink_websocket_Message.__constructs__ = [tink_websocket_Message.Text,tink_websocket_Message.Binary];
+var tink_websocket_OutgoingHandshakeRequestHeader = function(url,key,fields) {
+	var _gthis = this;
+	tink_http_OutgoingRequestHeader.call(this,"GET",url,null,fields);
+	this.key = key == null ? haxe_crypto_Base64.encode(haxe_crypto_Sha1.make(haxe_io_Bytes.ofString(Std.string(Math.random())))) : key;
+	this.accept = haxe_crypto_Base64.encode(haxe_crypto_Sha1.make(haxe_io_Bytes.ofString(this.key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11")));
+	var fillHeader = function(name,value) {
+		if(_gthis.byName(name.toLowerCase())._hx_index == 1) {
+			_gthis.fields.push(new tink_http_HeaderField(name.toLowerCase(),value));
+		}
+	};
+	fillHeader("host",url.hosts[0]);
+	fillHeader("upgrade","websocket");
+	fillHeader("connection","upgrade");
+	fillHeader("sec-websocket-key",this.key);
+	fillHeader("sec-websocket-version","13");
+};
+$hxClasses["tink.websocket.OutgoingHandshakeRequestHeader"] = tink_websocket_OutgoingHandshakeRequestHeader;
+tink_websocket_OutgoingHandshakeRequestHeader.__name__ = true;
+tink_websocket_OutgoingHandshakeRequestHeader.__super__ = tink_http_OutgoingRequestHeader;
+tink_websocket_OutgoingHandshakeRequestHeader.prototype = $extend(tink_http_OutgoingRequestHeader.prototype,{
+});
 var tink_websocket_OutgoingHandshakeResponseHeader = function(key,fields) {
 	var _gthis = this;
 	tink_http_ResponseHeaderBase.call(this,101,"Switching Protocols",fields);
@@ -10931,6 +18656,13 @@ tink_websocket_Parser.prototype = {
 		this.required = 2;
 	}
 };
+var tink_websocket_PongStream = {};
+tink_websocket_PongStream._new = function(raw) {
+	return raw.regroup(tink_streams_Regrouper.ofIgnoranceSync(function(m) {
+		var _g = m[0];
+		return tink_streams_RegroupResult.Converted(_g._hx_index == 3 ? tink_streams_Stream.single(tink_websocket_RawMessage.Pong(_g.b)) : tink_streams_Empty.inst);
+	}));
+};
 var tink_websocket_RawMessage = $hxEnums["tink.websocket.RawMessage"] = { __ename__:true,__constructs__:null
 	,Text: ($_=function(v) { return {_hx_index:0,v:v,__enum__:"tink.websocket.RawMessage",toString:$estr}; },$_._hx_name="Text",$_.__params__ = ["v"],$_)
 	,Binary: ($_=function(b) { return {_hx_index:1,b:b,__enum__:"tink.websocket.RawMessage",toString:$estr}; },$_._hx_name="Binary",$_.__params__ = ["b"],$_)
@@ -10959,6 +18691,44 @@ tink_websocket_MessageRegrouper.get = function() {
 var tink_websocket_ConnectedClient = function() { };
 $hxClasses["tink.websocket.ConnectedClient"] = tink_websocket_ConnectedClient;
 tink_websocket_ConnectedClient.__name__ = true;
+var tink_websocket_clients_TcpConnector = function(url) {
+	this.url = url;
+};
+$hxClasses["tink.websocket.clients.TcpConnector"] = tink_websocket_clients_TcpConnector;
+tink_websocket_clients_TcpConnector.__name__ = true;
+tink_websocket_clients_TcpConnector.prototype = {
+	connect: function(outgoing) {
+		var _gthis = this;
+		return tink_streams_Stream.promise(tink_core_Future.async(function(cb) {
+			var handler = function(stream) {
+				cb(tink_core_Outcome.Success(stream));
+				var pong = tink_websocket_PongStream._new(stream).idealize(function(e) {
+					return tink_streams_Empty.inst;
+				});
+				return outgoing.blend(pong);
+			};
+			var port;
+			var _g = tink_url_Host.get_port(_gthis.url.hosts[0]);
+			var _g1 = _gthis.url.scheme;
+			if(_g == null) {
+				if(_g1 == null) {
+					port = 80;
+				} else {
+					switch(_g1) {
+					case "https":case "wss":
+						port = 443;
+						break;
+					default:
+						port = 80;
+					}
+				}
+			} else {
+				port = _g;
+			}
+			tink_tcp_nodejs_NodejsConnector.connect({ host : tink_url_Host.get_name(_gthis.url.hosts[0]), port : port},tink_websocket_ClientHandlerTools.toTcpHandler(handler,_gthis.url)).eager();
+		}));
+	}
+};
 var tink_websocket_servers_TinkConnectedClient = function(clientIp,header,incoming) {
 	this.clientIp = clientIp;
 	this.header = header;
@@ -11080,6 +18850,7 @@ boisly_AppSettings._config = (function($this) {
 	return $r;
 }(this));
 duck_$jet_Impl.EOF = "$_$_$EOF$_$_$";
+duck_$jet_Client.EOF = "$_$_$EOF$_$_$";
 duck_$jet_Ws.server = new tink_websocket_servers_TinkServer();
 tink_core_Future.NEVER = new tink_core__$Future_NeverFuture();
 tink_core_Promise.NOISE = new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(null)));
@@ -11087,13 +18858,31 @@ tink_core_Promise.NEVER = tink_core_Future.NEVER;
 tink_core_Callback.depth = 0;
 haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
+fire_$duck_Connectors.getClient = (function($this) {
+	var $r;
+	var client = new tink_http_clients_NodeClient();
+	haxe_Log.trace(boisly_AppSettings.get_config(),{ fileName : "fire_duck/Connectors.hx", lineNumber : 6, className : "fire_duck.Connectors", methodName : "getClient"});
+	var getApiKey = boisly_Secret.reveal(boisly_AppSettings.get_config().wildDuck.apiKey);
+	fire_$duck_Connectors.firebaseInit();
+	$r = tink_core_Promise.next(getApiKey,function(apiKey) {
+		var pipeline = { before : [function(req) {
+			req.header.fields.push(new tink_http_HeaderField("x-access-token".toLowerCase(),apiKey.toString()));
+			return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(req)));
+		}]};
+		return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(tink_http__$Client_CustomClient.create(client,pipeline.before,pipeline.after))));
+	});
+	return $r;
+}(this));
+fire_$duck_Connectors.duck = tink_core_Promise.next(fire_$duck_Connectors.getClient,function(client) {
+	return new tink_core__$Future_SyncFuture(new tink_core__$Lazy_LazyConst(tink_core_Outcome.Success(new tink_web_proxy_Remote20(client,tink_web_proxy_RemoteEndpoint.ofUrl(tink_Url.fromString(boisly_AppSettings.get_config().duckApiUrl))))));
+});
+fire_$duck_Logger._logger = haxe_Log;
 mime_Mime.db = { "application/1d-interleaved-parityfec" : { "source" : "iana"}, "application/3gpdash-qoe-report+xml" : { "source" : "iana", "compressible" : true}, "application/3gpp-ims+xml" : { "source" : "iana", "compressible" : true}, "application/a2l" : { "source" : "iana"}, "application/activemessage" : { "source" : "iana"}, "application/activity+json" : { "source" : "iana", "compressible" : true}, "application/alto-costmap+json" : { "source" : "iana", "compressible" : true}, "application/alto-costmapfilter+json" : { "source" : "iana", "compressible" : true}, "application/alto-directory+json" : { "source" : "iana", "compressible" : true}, "application/alto-endpointcost+json" : { "source" : "iana", "compressible" : true}, "application/alto-endpointcostparams+json" : { "source" : "iana", "compressible" : true}, "application/alto-endpointprop+json" : { "source" : "iana", "compressible" : true}, "application/alto-endpointpropparams+json" : { "source" : "iana", "compressible" : true}, "application/alto-error+json" : { "source" : "iana", "compressible" : true}, "application/alto-networkmap+json" : { "source" : "iana", "compressible" : true}, "application/alto-networkmapfilter+json" : { "source" : "iana", "compressible" : true}, "application/aml" : { "source" : "iana"}, "application/andrew-inset" : { "source" : "iana", "extensions" : ["ez"]}, "application/applefile" : { "source" : "iana"}, "application/applixware" : { "source" : "apache", "extensions" : ["aw"]}, "application/atf" : { "source" : "iana"}, "application/atfx" : { "source" : "iana"}, "application/atom+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["atom"]}, "application/atomcat+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["atomcat"]}, "application/atomdeleted+xml" : { "source" : "iana", "compressible" : true}, "application/atomicmail" : { "source" : "iana"}, "application/atomsvc+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["atomsvc"]}, "application/atxml" : { "source" : "iana"}, "application/auth-policy+xml" : { "source" : "iana", "compressible" : true}, "application/bacnet-xdd+zip" : { "source" : "iana", "compressible" : false}, "application/batch-smtp" : { "source" : "iana"}, "application/bdoc" : { "compressible" : false, "extensions" : ["bdoc"]}, "application/beep+xml" : { "source" : "iana", "compressible" : true}, "application/calendar+json" : { "source" : "iana", "compressible" : true}, "application/calendar+xml" : { "source" : "iana", "compressible" : true}, "application/call-completion" : { "source" : "iana"}, "application/cals-1840" : { "source" : "iana"}, "application/cbor" : { "source" : "iana"}, "application/cccex" : { "source" : "iana"}, "application/ccmp+xml" : { "source" : "iana", "compressible" : true}, "application/ccxml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["ccxml"]}, "application/cdfx+xml" : { "source" : "iana", "compressible" : true}, "application/cdmi-capability" : { "source" : "iana", "extensions" : ["cdmia"]}, "application/cdmi-container" : { "source" : "iana", "extensions" : ["cdmic"]}, "application/cdmi-domain" : { "source" : "iana", "extensions" : ["cdmid"]}, "application/cdmi-object" : { "source" : "iana", "extensions" : ["cdmio"]}, "application/cdmi-queue" : { "source" : "iana", "extensions" : ["cdmiq"]}, "application/cdni" : { "source" : "iana"}, "application/cea" : { "source" : "iana"}, "application/cea-2018+xml" : { "source" : "iana", "compressible" : true}, "application/cellml+xml" : { "source" : "iana", "compressible" : true}, "application/cfw" : { "source" : "iana"}, "application/clue_info+xml" : { "source" : "iana", "compressible" : true}, "application/cms" : { "source" : "iana"}, "application/cnrp+xml" : { "source" : "iana", "compressible" : true}, "application/coap-group+json" : { "source" : "iana", "compressible" : true}, "application/coap-payload" : { "source" : "iana"}, "application/commonground" : { "source" : "iana"}, "application/conference-info+xml" : { "source" : "iana", "compressible" : true}, "application/cose" : { "source" : "iana"}, "application/cose-key" : { "source" : "iana"}, "application/cose-key-set" : { "source" : "iana"}, "application/cpl+xml" : { "source" : "iana", "compressible" : true}, "application/csrattrs" : { "source" : "iana"}, "application/csta+xml" : { "source" : "iana", "compressible" : true}, "application/cstadata+xml" : { "source" : "iana", "compressible" : true}, "application/csvm+json" : { "source" : "iana", "compressible" : true}, "application/cu-seeme" : { "source" : "apache", "extensions" : ["cu"]}, "application/cwt" : { "source" : "iana"}, "application/cybercash" : { "source" : "iana"}, "application/dart" : { "compressible" : true}, "application/dash+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mpd"]}, "application/dashdelta" : { "source" : "iana"}, "application/davmount+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["davmount"]}, "application/dca-rft" : { "source" : "iana"}, "application/dcd" : { "source" : "iana"}, "application/dec-dx" : { "source" : "iana"}, "application/dialog-info+xml" : { "source" : "iana", "compressible" : true}, "application/dicom" : { "source" : "iana"}, "application/dicom+json" : { "source" : "iana", "compressible" : true}, "application/dicom+xml" : { "source" : "iana", "compressible" : true}, "application/dii" : { "source" : "iana"}, "application/dit" : { "source" : "iana"}, "application/dns" : { "source" : "iana"}, "application/dns+json" : { "source" : "iana", "compressible" : true}, "application/dns-message" : { "source" : "iana"}, "application/docbook+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["dbk"]}, "application/dskpp+xml" : { "source" : "iana", "compressible" : true}, "application/dssc+der" : { "source" : "iana", "extensions" : ["dssc"]}, "application/dssc+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xdssc"]}, "application/dvcs" : { "source" : "iana"}, "application/ecmascript" : { "source" : "iana", "compressible" : true, "extensions" : ["ecma","es"]}, "application/edi-consent" : { "source" : "iana"}, "application/edi-x12" : { "source" : "iana", "compressible" : false}, "application/edifact" : { "source" : "iana", "compressible" : false}, "application/efi" : { "source" : "iana"}, "application/emergencycalldata.comment+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.control+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.deviceinfo+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.ecall.msd" : { "source" : "iana"}, "application/emergencycalldata.providerinfo+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.serviceinfo+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.subscriberinfo+xml" : { "source" : "iana", "compressible" : true}, "application/emergencycalldata.veds+xml" : { "source" : "iana", "compressible" : true}, "application/emma+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["emma"]}, "application/emotionml+xml" : { "source" : "iana", "compressible" : true}, "application/encaprtp" : { "source" : "iana"}, "application/epp+xml" : { "source" : "iana", "compressible" : true}, "application/epub+zip" : { "source" : "iana", "compressible" : false, "extensions" : ["epub"]}, "application/eshop" : { "source" : "iana"}, "application/exi" : { "source" : "iana", "extensions" : ["exi"]}, "application/expect-ct-report+json" : { "source" : "iana", "compressible" : true}, "application/fastinfoset" : { "source" : "iana"}, "application/fastsoap" : { "source" : "iana"}, "application/fdt+xml" : { "source" : "iana", "compressible" : true}, "application/fhir+json" : { "source" : "iana", "compressible" : true}, "application/fhir+xml" : { "source" : "iana", "compressible" : true}, "application/fido.trusted-apps+json" : { "compressible" : true}, "application/fits" : { "source" : "iana"}, "application/font-sfnt" : { "source" : "iana"}, "application/font-tdpfr" : { "source" : "iana", "extensions" : ["pfr"]}, "application/font-woff" : { "source" : "iana", "compressible" : false}, "application/framework-attributes+xml" : { "source" : "iana", "compressible" : true}, "application/geo+json" : { "source" : "iana", "compressible" : true, "extensions" : ["geojson"]}, "application/geo+json-seq" : { "source" : "iana"}, "application/geopackage+sqlite3" : { "source" : "iana"}, "application/geoxacml+xml" : { "source" : "iana", "compressible" : true}, "application/gltf-buffer" : { "source" : "iana"}, "application/gml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["gml"]}, "application/gpx+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["gpx"]}, "application/gxf" : { "source" : "apache", "extensions" : ["gxf"]}, "application/gzip" : { "source" : "iana", "compressible" : false, "extensions" : ["gz"]}, "application/h224" : { "source" : "iana"}, "application/held+xml" : { "source" : "iana", "compressible" : true}, "application/hjson" : { "extensions" : ["hjson"]}, "application/http" : { "source" : "iana"}, "application/hyperstudio" : { "source" : "iana", "extensions" : ["stk"]}, "application/ibe-key-request+xml" : { "source" : "iana", "compressible" : true}, "application/ibe-pkg-reply+xml" : { "source" : "iana", "compressible" : true}, "application/ibe-pp-data" : { "source" : "iana"}, "application/iges" : { "source" : "iana"}, "application/im-iscomposing+xml" : { "source" : "iana", "compressible" : true}, "application/index" : { "source" : "iana"}, "application/index.cmd" : { "source" : "iana"}, "application/index.obj" : { "source" : "iana"}, "application/index.response" : { "source" : "iana"}, "application/index.vnd" : { "source" : "iana"}, "application/inkml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["ink","inkml"]}, "application/iotp" : { "source" : "iana"}, "application/ipfix" : { "source" : "iana", "extensions" : ["ipfix"]}, "application/ipp" : { "source" : "iana"}, "application/isup" : { "source" : "iana"}, "application/its+xml" : { "source" : "iana", "compressible" : true}, "application/java-archive" : { "source" : "apache", "compressible" : false, "extensions" : ["jar","war","ear"]}, "application/java-serialized-object" : { "source" : "apache", "compressible" : false, "extensions" : ["ser"]}, "application/java-vm" : { "source" : "apache", "compressible" : false, "extensions" : ["class"]}, "application/javascript" : { "source" : "iana", "charset" : "UTF-8", "compressible" : true, "extensions" : ["js","mjs"]}, "application/jf2feed+json" : { "source" : "iana", "compressible" : true}, "application/jose" : { "source" : "iana"}, "application/jose+json" : { "source" : "iana", "compressible" : true}, "application/jrd+json" : { "source" : "iana", "compressible" : true}, "application/json" : { "source" : "iana", "charset" : "UTF-8", "compressible" : true, "extensions" : ["json","map"]}, "application/json-patch+json" : { "source" : "iana", "compressible" : true}, "application/json-seq" : { "source" : "iana"}, "application/json5" : { "extensions" : ["json5"]}, "application/jsonml+json" : { "source" : "apache", "compressible" : true, "extensions" : ["jsonml"]}, "application/jwk+json" : { "source" : "iana", "compressible" : true}, "application/jwk-set+json" : { "source" : "iana", "compressible" : true}, "application/jwt" : { "source" : "iana"}, "application/kpml-request+xml" : { "source" : "iana", "compressible" : true}, "application/kpml-response+xml" : { "source" : "iana", "compressible" : true}, "application/ld+json" : { "source" : "iana", "compressible" : true, "extensions" : ["jsonld"]}, "application/lgr+xml" : { "source" : "iana", "compressible" : true}, "application/link-format" : { "source" : "iana"}, "application/load-control+xml" : { "source" : "iana", "compressible" : true}, "application/lost+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["lostxml"]}, "application/lostsync+xml" : { "source" : "iana", "compressible" : true}, "application/lxf" : { "source" : "iana"}, "application/mac-binhex40" : { "source" : "iana", "extensions" : ["hqx"]}, "application/mac-compactpro" : { "source" : "apache", "extensions" : ["cpt"]}, "application/macwriteii" : { "source" : "iana"}, "application/mads+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mads"]}, "application/manifest+json" : { "charset" : "UTF-8", "compressible" : true, "extensions" : ["webmanifest"]}, "application/marc" : { "source" : "iana", "extensions" : ["mrc"]}, "application/marcxml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mrcx"]}, "application/mathematica" : { "source" : "iana", "extensions" : ["ma","nb","mb"]}, "application/mathml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mathml"]}, "application/mathml-content+xml" : { "source" : "iana", "compressible" : true}, "application/mathml-presentation+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-associated-procedure-description+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-deregister+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-envelope+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-msk+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-msk-response+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-protection-description+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-reception-report+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-register+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-register-response+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-schedule+xml" : { "source" : "iana", "compressible" : true}, "application/mbms-user-service-description+xml" : { "source" : "iana", "compressible" : true}, "application/mbox" : { "source" : "iana", "extensions" : ["mbox"]}, "application/media-policy-dataset+xml" : { "source" : "iana", "compressible" : true}, "application/media_control+xml" : { "source" : "iana", "compressible" : true}, "application/mediaservercontrol+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mscml"]}, "application/merge-patch+json" : { "source" : "iana", "compressible" : true}, "application/metalink+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["metalink"]}, "application/metalink4+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["meta4"]}, "application/mets+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mets"]}, "application/mf4" : { "source" : "iana"}, "application/mikey" : { "source" : "iana"}, "application/mmt-usd+xml" : { "source" : "iana", "compressible" : true}, "application/mods+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mods"]}, "application/moss-keys" : { "source" : "iana"}, "application/moss-signature" : { "source" : "iana"}, "application/mosskey-data" : { "source" : "iana"}, "application/mosskey-request" : { "source" : "iana"}, "application/mp21" : { "source" : "iana", "extensions" : ["m21","mp21"]}, "application/mp4" : { "source" : "iana", "extensions" : ["mp4s","m4p"]}, "application/mpeg4-generic" : { "source" : "iana"}, "application/mpeg4-iod" : { "source" : "iana"}, "application/mpeg4-iod-xmt" : { "source" : "iana"}, "application/mrb-consumer+xml" : { "source" : "iana", "compressible" : true}, "application/mrb-publish+xml" : { "source" : "iana", "compressible" : true}, "application/msc-ivr+xml" : { "source" : "iana", "compressible" : true}, "application/msc-mixer+xml" : { "source" : "iana", "compressible" : true}, "application/msword" : { "source" : "iana", "compressible" : false, "extensions" : ["doc","dot"]}, "application/mud+json" : { "source" : "iana", "compressible" : true}, "application/mxf" : { "source" : "iana", "extensions" : ["mxf"]}, "application/n-quads" : { "source" : "iana", "extensions" : ["nq"]}, "application/n-triples" : { "source" : "iana", "extensions" : ["nt"]}, "application/nasdata" : { "source" : "iana"}, "application/news-checkgroups" : { "source" : "iana"}, "application/news-groupinfo" : { "source" : "iana"}, "application/news-transmission" : { "source" : "iana"}, "application/nlsml+xml" : { "source" : "iana", "compressible" : true}, "application/node" : { "source" : "iana"}, "application/nss" : { "source" : "iana"}, "application/ocsp-request" : { "source" : "iana"}, "application/ocsp-response" : { "source" : "iana"}, "application/octet-stream" : { "source" : "iana", "compressible" : false, "extensions" : ["bin","dms","lrf","mar","so","dist","distz","pkg","bpk","dump","elc","deploy","exe","dll","deb","dmg","iso","img","msi","msp","msm","buffer"]}, "application/oda" : { "source" : "iana", "extensions" : ["oda"]}, "application/odm+xml" : { "source" : "iana", "compressible" : true}, "application/odx" : { "source" : "iana"}, "application/oebps-package+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["opf"]}, "application/ogg" : { "source" : "iana", "compressible" : false, "extensions" : ["ogx"]}, "application/omdoc+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["omdoc"]}, "application/onenote" : { "source" : "apache", "extensions" : ["onetoc","onetoc2","onetmp","onepkg"]}, "application/oxps" : { "source" : "iana", "extensions" : ["oxps"]}, "application/p2p-overlay+xml" : { "source" : "iana", "compressible" : true}, "application/parityfec" : { "source" : "iana"}, "application/passport" : { "source" : "iana"}, "application/patch-ops-error+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xer"]}, "application/pdf" : { "source" : "iana", "compressible" : false, "extensions" : ["pdf"]}, "application/pdx" : { "source" : "iana"}, "application/pem-certificate-chain" : { "source" : "iana"}, "application/pgp-encrypted" : { "source" : "iana", "compressible" : false, "extensions" : ["pgp"]}, "application/pgp-keys" : { "source" : "iana"}, "application/pgp-signature" : { "source" : "iana", "extensions" : ["asc","sig"]}, "application/pics-rules" : { "source" : "apache", "extensions" : ["prf"]}, "application/pidf+xml" : { "source" : "iana", "compressible" : true}, "application/pidf-diff+xml" : { "source" : "iana", "compressible" : true}, "application/pkcs10" : { "source" : "iana", "extensions" : ["p10"]}, "application/pkcs12" : { "source" : "iana"}, "application/pkcs7-mime" : { "source" : "iana", "extensions" : ["p7m","p7c"]}, "application/pkcs7-signature" : { "source" : "iana", "extensions" : ["p7s"]}, "application/pkcs8" : { "source" : "iana", "extensions" : ["p8"]}, "application/pkcs8-encrypted" : { "source" : "iana"}, "application/pkix-attr-cert" : { "source" : "iana", "extensions" : ["ac"]}, "application/pkix-cert" : { "source" : "iana", "extensions" : ["cer"]}, "application/pkix-crl" : { "source" : "iana", "extensions" : ["crl"]}, "application/pkix-pkipath" : { "source" : "iana", "extensions" : ["pkipath"]}, "application/pkixcmp" : { "source" : "iana", "extensions" : ["pki"]}, "application/pls+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["pls"]}, "application/poc-settings+xml" : { "source" : "iana", "compressible" : true}, "application/postscript" : { "source" : "iana", "compressible" : true, "extensions" : ["ai","eps","ps"]}, "application/ppsp-tracker+json" : { "source" : "iana", "compressible" : true}, "application/problem+json" : { "source" : "iana", "compressible" : true}, "application/problem+xml" : { "source" : "iana", "compressible" : true}, "application/provenance+xml" : { "source" : "iana", "compressible" : true}, "application/prs.alvestrand.titrax-sheet" : { "source" : "iana"}, "application/prs.cww" : { "source" : "iana", "extensions" : ["cww"]}, "application/prs.hpub+zip" : { "source" : "iana", "compressible" : false}, "application/prs.nprend" : { "source" : "iana"}, "application/prs.plucker" : { "source" : "iana"}, "application/prs.rdf-xml-crypt" : { "source" : "iana"}, "application/prs.xsf+xml" : { "source" : "iana", "compressible" : true}, "application/pskc+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["pskcxml"]}, "application/qsig" : { "source" : "iana"}, "application/raml+yaml" : { "compressible" : true, "extensions" : ["raml"]}, "application/raptorfec" : { "source" : "iana"}, "application/rdap+json" : { "source" : "iana", "compressible" : true}, "application/rdf+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["rdf","owl"]}, "application/reginfo+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["rif"]}, "application/relax-ng-compact-syntax" : { "source" : "iana", "extensions" : ["rnc"]}, "application/remote-printing" : { "source" : "iana"}, "application/reputon+json" : { "source" : "iana", "compressible" : true}, "application/resource-lists+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["rl"]}, "application/resource-lists-diff+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["rld"]}, "application/rfc+xml" : { "source" : "iana", "compressible" : true}, "application/riscos" : { "source" : "iana"}, "application/rlmi+xml" : { "source" : "iana", "compressible" : true}, "application/rls-services+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["rs"]}, "application/route-apd+xml" : { "source" : "iana", "compressible" : true}, "application/route-s-tsid+xml" : { "source" : "iana", "compressible" : true}, "application/route-usd+xml" : { "source" : "iana", "compressible" : true}, "application/rpki-ghostbusters" : { "source" : "iana", "extensions" : ["gbr"]}, "application/rpki-manifest" : { "source" : "iana", "extensions" : ["mft"]}, "application/rpki-publication" : { "source" : "iana"}, "application/rpki-roa" : { "source" : "iana", "extensions" : ["roa"]}, "application/rpki-updown" : { "source" : "iana"}, "application/rsd+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["rsd"]}, "application/rss+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["rss"]}, "application/rtf" : { "source" : "iana", "compressible" : true, "extensions" : ["rtf"]}, "application/rtploopback" : { "source" : "iana"}, "application/rtx" : { "source" : "iana"}, "application/samlassertion+xml" : { "source" : "iana", "compressible" : true}, "application/samlmetadata+xml" : { "source" : "iana", "compressible" : true}, "application/sbml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["sbml"]}, "application/scaip+xml" : { "source" : "iana", "compressible" : true}, "application/scim+json" : { "source" : "iana", "compressible" : true}, "application/scvp-cv-request" : { "source" : "iana", "extensions" : ["scq"]}, "application/scvp-cv-response" : { "source" : "iana", "extensions" : ["scs"]}, "application/scvp-vp-request" : { "source" : "iana", "extensions" : ["spq"]}, "application/scvp-vp-response" : { "source" : "iana", "extensions" : ["spp"]}, "application/sdp" : { "source" : "iana", "extensions" : ["sdp"]}, "application/secevent+jwt" : { "source" : "iana"}, "application/senml+cbor" : { "source" : "iana"}, "application/senml+json" : { "source" : "iana", "compressible" : true}, "application/senml+xml" : { "source" : "iana", "compressible" : true}, "application/senml-exi" : { "source" : "iana"}, "application/sensml+cbor" : { "source" : "iana"}, "application/sensml+json" : { "source" : "iana", "compressible" : true}, "application/sensml+xml" : { "source" : "iana", "compressible" : true}, "application/sensml-exi" : { "source" : "iana"}, "application/sep+xml" : { "source" : "iana", "compressible" : true}, "application/sep-exi" : { "source" : "iana"}, "application/session-info" : { "source" : "iana"}, "application/set-payment" : { "source" : "iana"}, "application/set-payment-initiation" : { "source" : "iana", "extensions" : ["setpay"]}, "application/set-registration" : { "source" : "iana"}, "application/set-registration-initiation" : { "source" : "iana", "extensions" : ["setreg"]}, "application/sgml" : { "source" : "iana"}, "application/sgml-open-catalog" : { "source" : "iana"}, "application/shf+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["shf"]}, "application/sieve" : { "source" : "iana"}, "application/simple-filter+xml" : { "source" : "iana", "compressible" : true}, "application/simple-message-summary" : { "source" : "iana"}, "application/simplesymbolcontainer" : { "source" : "iana"}, "application/slate" : { "source" : "iana"}, "application/smil" : { "source" : "iana"}, "application/smil+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["smi","smil"]}, "application/smpte336m" : { "source" : "iana"}, "application/soap+fastinfoset" : { "source" : "iana"}, "application/soap+xml" : { "source" : "iana", "compressible" : true}, "application/sparql-query" : { "source" : "iana", "extensions" : ["rq"]}, "application/sparql-results+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["srx"]}, "application/spirits-event+xml" : { "source" : "iana", "compressible" : true}, "application/sql" : { "source" : "iana"}, "application/srgs" : { "source" : "iana", "extensions" : ["gram"]}, "application/srgs+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["grxml"]}, "application/sru+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["sru"]}, "application/ssdl+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["ssdl"]}, "application/ssml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["ssml"]}, "application/stix+json" : { "source" : "iana", "compressible" : true}, "application/tamp-apex-update" : { "source" : "iana"}, "application/tamp-apex-update-confirm" : { "source" : "iana"}, "application/tamp-community-update" : { "source" : "iana"}, "application/tamp-community-update-confirm" : { "source" : "iana"}, "application/tamp-error" : { "source" : "iana"}, "application/tamp-sequence-adjust" : { "source" : "iana"}, "application/tamp-sequence-adjust-confirm" : { "source" : "iana"}, "application/tamp-status-query" : { "source" : "iana"}, "application/tamp-status-response" : { "source" : "iana"}, "application/tamp-update" : { "source" : "iana"}, "application/tamp-update-confirm" : { "source" : "iana"}, "application/tar" : { "compressible" : true}, "application/taxii+json" : { "source" : "iana", "compressible" : true}, "application/tei+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["tei","teicorpus"]}, "application/tetra_isi" : { "source" : "iana"}, "application/thraud+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["tfi"]}, "application/timestamp-query" : { "source" : "iana"}, "application/timestamp-reply" : { "source" : "iana"}, "application/timestamped-data" : { "source" : "iana", "extensions" : ["tsd"]}, "application/tlsrpt+gzip" : { "source" : "iana"}, "application/tlsrpt+json" : { "source" : "iana", "compressible" : true}, "application/tnauthlist" : { "source" : "iana"}, "application/trickle-ice-sdpfrag" : { "source" : "iana"}, "application/trig" : { "source" : "iana"}, "application/ttml+xml" : { "source" : "iana", "compressible" : true}, "application/tve-trigger" : { "source" : "iana"}, "application/tzif" : { "source" : "iana"}, "application/tzif-leap" : { "source" : "iana"}, "application/ulpfec" : { "source" : "iana"}, "application/urc-grpsheet+xml" : { "source" : "iana", "compressible" : true}, "application/urc-ressheet+xml" : { "source" : "iana", "compressible" : true}, "application/urc-targetdesc+xml" : { "source" : "iana", "compressible" : true}, "application/urc-uisocketdesc+xml" : { "source" : "iana", "compressible" : true}, "application/vcard+json" : { "source" : "iana", "compressible" : true}, "application/vcard+xml" : { "source" : "iana", "compressible" : true}, "application/vemmi" : { "source" : "iana"}, "application/vividence.scriptfile" : { "source" : "apache"}, "application/vnd.1000minds.decision-model+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp-prose+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp-prose-pc3ch+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp-v2x-local-service-information" : { "source" : "iana"}, "application/vnd.3gpp.access-transfer-events+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.bsf+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.gmop+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mc-signalling-ear" : { "source" : "iana"}, "application/vnd.3gpp.mcdata-affiliation-command+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcdata-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcdata-payload" : { "source" : "iana"}, "application/vnd.3gpp.mcdata-service-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcdata-signalling" : { "source" : "iana"}, "application/vnd.3gpp.mcdata-ue-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcdata-user-profile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-affiliation-command+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-floor-request+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-location-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-mbms-usage-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-service-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-signed+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-ue-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-ue-init-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcptt-user-profile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-affiliation-command+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-affiliation-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-location-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-mbms-usage-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-service-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-transmission-request+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-ue-config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mcvideo-user-profile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.mid-call+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.pic-bw-large" : { "source" : "iana", "extensions" : ["plb"]}, "application/vnd.3gpp.pic-bw-small" : { "source" : "iana", "extensions" : ["psb"]}, "application/vnd.3gpp.pic-bw-var" : { "source" : "iana", "extensions" : ["pvb"]}, "application/vnd.3gpp.sms" : { "source" : "iana"}, "application/vnd.3gpp.sms+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.srvcc-ext+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.srvcc-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.state-and-event-info+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp.ussd+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp2.bcmcsinfo+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.3gpp2.sms" : { "source" : "iana"}, "application/vnd.3gpp2.tcap" : { "source" : "iana", "extensions" : ["tcap"]}, "application/vnd.3lightssoftware.imagescal" : { "source" : "iana"}, "application/vnd.3m.post-it-notes" : { "source" : "iana", "extensions" : ["pwn"]}, "application/vnd.accpac.simply.aso" : { "source" : "iana", "extensions" : ["aso"]}, "application/vnd.accpac.simply.imp" : { "source" : "iana", "extensions" : ["imp"]}, "application/vnd.acucobol" : { "source" : "iana", "extensions" : ["acu"]}, "application/vnd.acucorp" : { "source" : "iana", "extensions" : ["atc","acutc"]}, "application/vnd.adobe.air-application-installer-package+zip" : { "source" : "apache", "compressible" : false, "extensions" : ["air"]}, "application/vnd.adobe.flash.movie" : { "source" : "iana"}, "application/vnd.adobe.formscentral.fcdt" : { "source" : "iana", "extensions" : ["fcdt"]}, "application/vnd.adobe.fxp" : { "source" : "iana", "extensions" : ["fxp","fxpl"]}, "application/vnd.adobe.partial-upload" : { "source" : "iana"}, "application/vnd.adobe.xdp+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xdp"]}, "application/vnd.adobe.xfdf" : { "source" : "iana", "extensions" : ["xfdf"]}, "application/vnd.aether.imp" : { "source" : "iana"}, "application/vnd.afpc.afplinedata" : { "source" : "iana"}, "application/vnd.afpc.modca" : { "source" : "iana"}, "application/vnd.ah-barcode" : { "source" : "iana"}, "application/vnd.ahead.space" : { "source" : "iana", "extensions" : ["ahead"]}, "application/vnd.airzip.filesecure.azf" : { "source" : "iana", "extensions" : ["azf"]}, "application/vnd.airzip.filesecure.azs" : { "source" : "iana", "extensions" : ["azs"]}, "application/vnd.amadeus+json" : { "source" : "iana", "compressible" : true}, "application/vnd.amazon.ebook" : { "source" : "apache", "extensions" : ["azw"]}, "application/vnd.amazon.mobi8-ebook" : { "source" : "iana"}, "application/vnd.americandynamics.acc" : { "source" : "iana", "extensions" : ["acc"]}, "application/vnd.amiga.ami" : { "source" : "iana", "extensions" : ["ami"]}, "application/vnd.amundsen.maze+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.android.package-archive" : { "source" : "apache", "compressible" : false, "extensions" : ["apk"]}, "application/vnd.anki" : { "source" : "iana"}, "application/vnd.anser-web-certificate-issue-initiation" : { "source" : "iana", "extensions" : ["cii"]}, "application/vnd.anser-web-funds-transfer-initiation" : { "source" : "apache", "extensions" : ["fti"]}, "application/vnd.antix.game-component" : { "source" : "iana", "extensions" : ["atx"]}, "application/vnd.apache.thrift.binary" : { "source" : "iana"}, "application/vnd.apache.thrift.compact" : { "source" : "iana"}, "application/vnd.apache.thrift.json" : { "source" : "iana"}, "application/vnd.api+json" : { "source" : "iana", "compressible" : true}, "application/vnd.apothekende.reservation+json" : { "source" : "iana", "compressible" : true}, "application/vnd.apple.installer+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mpkg"]}, "application/vnd.apple.keynote" : { "source" : "iana", "extensions" : ["keynote"]}, "application/vnd.apple.mpegurl" : { "source" : "iana", "extensions" : ["m3u8"]}, "application/vnd.apple.numbers" : { "source" : "iana", "extensions" : ["numbers"]}, "application/vnd.apple.pages" : { "source" : "iana", "extensions" : ["pages"]}, "application/vnd.apple.pkpass" : { "compressible" : false, "extensions" : ["pkpass"]}, "application/vnd.arastra.swi" : { "source" : "iana"}, "application/vnd.aristanetworks.swi" : { "source" : "iana", "extensions" : ["swi"]}, "application/vnd.artisan+json" : { "source" : "iana", "compressible" : true}, "application/vnd.artsquare" : { "source" : "iana"}, "application/vnd.astraea-software.iota" : { "source" : "iana", "extensions" : ["iota"]}, "application/vnd.audiograph" : { "source" : "iana", "extensions" : ["aep"]}, "application/vnd.autopackage" : { "source" : "iana"}, "application/vnd.avalon+json" : { "source" : "iana", "compressible" : true}, "application/vnd.avistar+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.balsamiq.bmml+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.balsamiq.bmpr" : { "source" : "iana"}, "application/vnd.banana-accounting" : { "source" : "iana"}, "application/vnd.bbf.usp.msg" : { "source" : "iana"}, "application/vnd.bbf.usp.msg+json" : { "source" : "iana", "compressible" : true}, "application/vnd.bekitzur-stech+json" : { "source" : "iana", "compressible" : true}, "application/vnd.bint.med-content" : { "source" : "iana"}, "application/vnd.biopax.rdf+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.blink-idb-value-wrapper" : { "source" : "iana"}, "application/vnd.blueice.multipass" : { "source" : "iana", "extensions" : ["mpm"]}, "application/vnd.bluetooth.ep.oob" : { "source" : "iana"}, "application/vnd.bluetooth.le.oob" : { "source" : "iana"}, "application/vnd.bmi" : { "source" : "iana", "extensions" : ["bmi"]}, "application/vnd.businessobjects" : { "source" : "iana", "extensions" : ["rep"]}, "application/vnd.byu.uapi+json" : { "source" : "iana", "compressible" : true}, "application/vnd.cab-jscript" : { "source" : "iana"}, "application/vnd.canon-cpdl" : { "source" : "iana"}, "application/vnd.canon-lips" : { "source" : "iana"}, "application/vnd.capasystems-pg+json" : { "source" : "iana", "compressible" : true}, "application/vnd.cendio.thinlinc.clientconf" : { "source" : "iana"}, "application/vnd.century-systems.tcp_stream" : { "source" : "iana"}, "application/vnd.chemdraw+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["cdxml"]}, "application/vnd.chess-pgn" : { "source" : "iana"}, "application/vnd.chipnuts.karaoke-mmd" : { "source" : "iana", "extensions" : ["mmd"]}, "application/vnd.cinderella" : { "source" : "iana", "extensions" : ["cdy"]}, "application/vnd.cirpack.isdn-ext" : { "source" : "iana"}, "application/vnd.citationstyles.style+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["csl"]}, "application/vnd.claymore" : { "source" : "iana", "extensions" : ["cla"]}, "application/vnd.cloanto.rp9" : { "source" : "iana", "extensions" : ["rp9"]}, "application/vnd.clonk.c4group" : { "source" : "iana", "extensions" : ["c4g","c4d","c4f","c4p","c4u"]}, "application/vnd.cluetrust.cartomobile-config" : { "source" : "iana", "extensions" : ["c11amc"]}, "application/vnd.cluetrust.cartomobile-config-pkg" : { "source" : "iana", "extensions" : ["c11amz"]}, "application/vnd.coffeescript" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.document" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.document-template" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.presentation" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.presentation-template" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.spreadsheet" : { "source" : "iana"}, "application/vnd.collabio.xodocuments.spreadsheet-template" : { "source" : "iana"}, "application/vnd.collection+json" : { "source" : "iana", "compressible" : true}, "application/vnd.collection.doc+json" : { "source" : "iana", "compressible" : true}, "application/vnd.collection.next+json" : { "source" : "iana", "compressible" : true}, "application/vnd.comicbook+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.comicbook-rar" : { "source" : "iana"}, "application/vnd.commerce-battelle" : { "source" : "iana"}, "application/vnd.commonspace" : { "source" : "iana", "extensions" : ["csp"]}, "application/vnd.contact.cmsg" : { "source" : "iana", "extensions" : ["cdbcmsg"]}, "application/vnd.coreos.ignition+json" : { "source" : "iana", "compressible" : true}, "application/vnd.cosmocaller" : { "source" : "iana", "extensions" : ["cmc"]}, "application/vnd.crick.clicker" : { "source" : "iana", "extensions" : ["clkx"]}, "application/vnd.crick.clicker.keyboard" : { "source" : "iana", "extensions" : ["clkk"]}, "application/vnd.crick.clicker.palette" : { "source" : "iana", "extensions" : ["clkp"]}, "application/vnd.crick.clicker.template" : { "source" : "iana", "extensions" : ["clkt"]}, "application/vnd.crick.clicker.wordbank" : { "source" : "iana", "extensions" : ["clkw"]}, "application/vnd.criticaltools.wbs+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["wbs"]}, "application/vnd.ctc-posml" : { "source" : "iana", "extensions" : ["pml"]}, "application/vnd.ctct.ws+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.cups-pdf" : { "source" : "iana"}, "application/vnd.cups-postscript" : { "source" : "iana"}, "application/vnd.cups-ppd" : { "source" : "iana", "extensions" : ["ppd"]}, "application/vnd.cups-raster" : { "source" : "iana"}, "application/vnd.cups-raw" : { "source" : "iana"}, "application/vnd.curl" : { "source" : "iana"}, "application/vnd.curl.car" : { "source" : "apache", "extensions" : ["car"]}, "application/vnd.curl.pcurl" : { "source" : "apache", "extensions" : ["pcurl"]}, "application/vnd.cyan.dean.root+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.cybank" : { "source" : "iana"}, "application/vnd.d2l.coursepackage1p0+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.dart" : { "source" : "iana", "compressible" : true, "extensions" : ["dart"]}, "application/vnd.data-vision.rdz" : { "source" : "iana", "extensions" : ["rdz"]}, "application/vnd.datapackage+json" : { "source" : "iana", "compressible" : true}, "application/vnd.dataresource+json" : { "source" : "iana", "compressible" : true}, "application/vnd.debian.binary-package" : { "source" : "iana"}, "application/vnd.dece.data" : { "source" : "iana", "extensions" : ["uvf","uvvf","uvd","uvvd"]}, "application/vnd.dece.ttml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["uvt","uvvt"]}, "application/vnd.dece.unspecified" : { "source" : "iana", "extensions" : ["uvx","uvvx"]}, "application/vnd.dece.zip" : { "source" : "iana", "extensions" : ["uvz","uvvz"]}, "application/vnd.denovo.fcselayout-link" : { "source" : "iana", "extensions" : ["fe_launch"]}, "application/vnd.desmume.movie" : { "source" : "iana"}, "application/vnd.dir-bi.plate-dl-nosuffix" : { "source" : "iana"}, "application/vnd.dm.delegation+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dna" : { "source" : "iana", "extensions" : ["dna"]}, "application/vnd.document+json" : { "source" : "iana", "compressible" : true}, "application/vnd.dolby.mlp" : { "source" : "apache", "extensions" : ["mlp"]}, "application/vnd.dolby.mobile.1" : { "source" : "iana"}, "application/vnd.dolby.mobile.2" : { "source" : "iana"}, "application/vnd.doremir.scorecloud-binary-document" : { "source" : "iana"}, "application/vnd.dpgraph" : { "source" : "iana", "extensions" : ["dpg"]}, "application/vnd.dreamfactory" : { "source" : "iana", "extensions" : ["dfac"]}, "application/vnd.drive+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ds-keypoint" : { "source" : "apache", "extensions" : ["kpxx"]}, "application/vnd.dtg.local" : { "source" : "iana"}, "application/vnd.dtg.local.flash" : { "source" : "iana"}, "application/vnd.dtg.local.html" : { "source" : "iana"}, "application/vnd.dvb.ait" : { "source" : "iana", "extensions" : ["ait"]}, "application/vnd.dvb.dvbj" : { "source" : "iana"}, "application/vnd.dvb.esgcontainer" : { "source" : "iana"}, "application/vnd.dvb.ipdcdftnotifaccess" : { "source" : "iana"}, "application/vnd.dvb.ipdcesgaccess" : { "source" : "iana"}, "application/vnd.dvb.ipdcesgaccess2" : { "source" : "iana"}, "application/vnd.dvb.ipdcesgpdd" : { "source" : "iana"}, "application/vnd.dvb.ipdcroaming" : { "source" : "iana"}, "application/vnd.dvb.iptv.alfec-base" : { "source" : "iana"}, "application/vnd.dvb.iptv.alfec-enhancement" : { "source" : "iana"}, "application/vnd.dvb.notif-aggregate-root+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-container+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-generic+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-ia-msglist+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-ia-registration-request+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-ia-registration-response+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.notif-init+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.dvb.pfr" : { "source" : "iana"}, "application/vnd.dvb.service" : { "source" : "iana", "extensions" : ["svc"]}, "application/vnd.dxr" : { "source" : "iana"}, "application/vnd.dynageo" : { "source" : "iana", "extensions" : ["geo"]}, "application/vnd.dzr" : { "source" : "iana"}, "application/vnd.easykaraoke.cdgdownload" : { "source" : "iana"}, "application/vnd.ecdis-update" : { "source" : "iana"}, "application/vnd.ecip.rlp" : { "source" : "iana"}, "application/vnd.ecowin.chart" : { "source" : "iana", "extensions" : ["mag"]}, "application/vnd.ecowin.filerequest" : { "source" : "iana"}, "application/vnd.ecowin.fileupdate" : { "source" : "iana"}, "application/vnd.ecowin.series" : { "source" : "iana"}, "application/vnd.ecowin.seriesrequest" : { "source" : "iana"}, "application/vnd.ecowin.seriesupdate" : { "source" : "iana"}, "application/vnd.efi.img" : { "source" : "iana"}, "application/vnd.efi.iso" : { "source" : "iana"}, "application/vnd.emclient.accessrequest+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.enliven" : { "source" : "iana", "extensions" : ["nml"]}, "application/vnd.enphase.envoy" : { "source" : "iana"}, "application/vnd.eprints.data+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.epson.esf" : { "source" : "iana", "extensions" : ["esf"]}, "application/vnd.epson.msf" : { "source" : "iana", "extensions" : ["msf"]}, "application/vnd.epson.quickanime" : { "source" : "iana", "extensions" : ["qam"]}, "application/vnd.epson.salt" : { "source" : "iana", "extensions" : ["slt"]}, "application/vnd.epson.ssf" : { "source" : "iana", "extensions" : ["ssf"]}, "application/vnd.ericsson.quickcall" : { "source" : "iana"}, "application/vnd.espass-espass+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.eszigno3+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["es3","et3"]}, "application/vnd.etsi.aoc+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.asic-e+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.etsi.asic-s+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.etsi.cug+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvcommand+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvdiscovery+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvprofile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvsad-bc+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvsad-cod+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvsad-npvr+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvservice+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvsync+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.iptvueprofile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.mcid+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.mheg5" : { "source" : "iana"}, "application/vnd.etsi.overload-control-policy-dataset+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.pstn+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.sci+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.simservs+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.timestamp-token" : { "source" : "iana"}, "application/vnd.etsi.tsl+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.etsi.tsl.der" : { "source" : "iana"}, "application/vnd.eudora.data" : { "source" : "iana"}, "application/vnd.evolv.ecig.profile" : { "source" : "iana"}, "application/vnd.evolv.ecig.settings" : { "source" : "iana"}, "application/vnd.evolv.ecig.theme" : { "source" : "iana"}, "application/vnd.exstream-empower+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.exstream-package" : { "source" : "iana"}, "application/vnd.ezpix-album" : { "source" : "iana", "extensions" : ["ez2"]}, "application/vnd.ezpix-package" : { "source" : "iana", "extensions" : ["ez3"]}, "application/vnd.f-secure.mobile" : { "source" : "iana"}, "application/vnd.fastcopy-disk-image" : { "source" : "iana"}, "application/vnd.fdf" : { "source" : "iana", "extensions" : ["fdf"]}, "application/vnd.fdsn.mseed" : { "source" : "iana", "extensions" : ["mseed"]}, "application/vnd.fdsn.seed" : { "source" : "iana", "extensions" : ["seed","dataless"]}, "application/vnd.ffsns" : { "source" : "iana"}, "application/vnd.filmit.zfc" : { "source" : "iana"}, "application/vnd.fints" : { "source" : "iana"}, "application/vnd.firemonkeys.cloudcell" : { "source" : "iana"}, "application/vnd.flographit" : { "source" : "iana", "extensions" : ["gph"]}, "application/vnd.fluxtime.clip" : { "source" : "iana", "extensions" : ["ftc"]}, "application/vnd.font-fontforge-sfd" : { "source" : "iana"}, "application/vnd.framemaker" : { "source" : "iana", "extensions" : ["fm","frame","maker","book"]}, "application/vnd.frogans.fnc" : { "source" : "iana", "extensions" : ["fnc"]}, "application/vnd.frogans.ltf" : { "source" : "iana", "extensions" : ["ltf"]}, "application/vnd.fsc.weblaunch" : { "source" : "iana", "extensions" : ["fsc"]}, "application/vnd.fujitsu.oasys" : { "source" : "iana", "extensions" : ["oas"]}, "application/vnd.fujitsu.oasys2" : { "source" : "iana", "extensions" : ["oa2"]}, "application/vnd.fujitsu.oasys3" : { "source" : "iana", "extensions" : ["oa3"]}, "application/vnd.fujitsu.oasysgp" : { "source" : "iana", "extensions" : ["fg5"]}, "application/vnd.fujitsu.oasysprs" : { "source" : "iana", "extensions" : ["bh2"]}, "application/vnd.fujixerox.art-ex" : { "source" : "iana"}, "application/vnd.fujixerox.art4" : { "source" : "iana"}, "application/vnd.fujixerox.ddd" : { "source" : "iana", "extensions" : ["ddd"]}, "application/vnd.fujixerox.docuworks" : { "source" : "iana", "extensions" : ["xdw"]}, "application/vnd.fujixerox.docuworks.binder" : { "source" : "iana", "extensions" : ["xbd"]}, "application/vnd.fujixerox.docuworks.container" : { "source" : "iana"}, "application/vnd.fujixerox.hbpl" : { "source" : "iana"}, "application/vnd.fut-misnet" : { "source" : "iana"}, "application/vnd.futoin+cbor" : { "source" : "iana"}, "application/vnd.futoin+json" : { "source" : "iana", "compressible" : true}, "application/vnd.fuzzysheet" : { "source" : "iana", "extensions" : ["fzs"]}, "application/vnd.genomatix.tuxedo" : { "source" : "iana", "extensions" : ["txd"]}, "application/vnd.geo+json" : { "source" : "iana", "compressible" : true}, "application/vnd.geocube+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.geogebra.file" : { "source" : "iana", "extensions" : ["ggb"]}, "application/vnd.geogebra.tool" : { "source" : "iana", "extensions" : ["ggt"]}, "application/vnd.geometry-explorer" : { "source" : "iana", "extensions" : ["gex","gre"]}, "application/vnd.geonext" : { "source" : "iana", "extensions" : ["gxt"]}, "application/vnd.geoplan" : { "source" : "iana", "extensions" : ["g2w"]}, "application/vnd.geospace" : { "source" : "iana", "extensions" : ["g3w"]}, "application/vnd.gerber" : { "source" : "iana"}, "application/vnd.globalplatform.card-content-mgt" : { "source" : "iana"}, "application/vnd.globalplatform.card-content-mgt-response" : { "source" : "iana"}, "application/vnd.gmx" : { "source" : "iana", "extensions" : ["gmx"]}, "application/vnd.google-apps.document" : { "compressible" : false, "extensions" : ["gdoc"]}, "application/vnd.google-apps.presentation" : { "compressible" : false, "extensions" : ["gslides"]}, "application/vnd.google-apps.spreadsheet" : { "compressible" : false, "extensions" : ["gsheet"]}, "application/vnd.google-earth.kml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["kml"]}, "application/vnd.google-earth.kmz" : { "source" : "iana", "compressible" : false, "extensions" : ["kmz"]}, "application/vnd.gov.sk.e-form+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.gov.sk.e-form+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.gov.sk.xmldatacontainer+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.grafeq" : { "source" : "iana", "extensions" : ["gqf","gqs"]}, "application/vnd.gridmp" : { "source" : "iana"}, "application/vnd.groove-account" : { "source" : "iana", "extensions" : ["gac"]}, "application/vnd.groove-help" : { "source" : "iana", "extensions" : ["ghf"]}, "application/vnd.groove-identity-message" : { "source" : "iana", "extensions" : ["gim"]}, "application/vnd.groove-injector" : { "source" : "iana", "extensions" : ["grv"]}, "application/vnd.groove-tool-message" : { "source" : "iana", "extensions" : ["gtm"]}, "application/vnd.groove-tool-template" : { "source" : "iana", "extensions" : ["tpl"]}, "application/vnd.groove-vcard" : { "source" : "iana", "extensions" : ["vcg"]}, "application/vnd.hal+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hal+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["hal"]}, "application/vnd.handheld-entertainment+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["zmm"]}, "application/vnd.hbci" : { "source" : "iana", "extensions" : ["hbci"]}, "application/vnd.hc+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hcl-bireports" : { "source" : "iana"}, "application/vnd.hdt" : { "source" : "iana"}, "application/vnd.heroku+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hhe.lesson-player" : { "source" : "iana", "extensions" : ["les"]}, "application/vnd.hp-hpgl" : { "source" : "iana", "extensions" : ["hpgl"]}, "application/vnd.hp-hpid" : { "source" : "iana", "extensions" : ["hpid"]}, "application/vnd.hp-hps" : { "source" : "iana", "extensions" : ["hps"]}, "application/vnd.hp-jlyt" : { "source" : "iana", "extensions" : ["jlt"]}, "application/vnd.hp-pcl" : { "source" : "iana", "extensions" : ["pcl"]}, "application/vnd.hp-pclxl" : { "source" : "iana", "extensions" : ["pclxl"]}, "application/vnd.httphone" : { "source" : "iana"}, "application/vnd.hydrostatix.sof-data" : { "source" : "iana", "extensions" : ["sfd-hdstx"]}, "application/vnd.hyper+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hyper-item+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hyperdrive+json" : { "source" : "iana", "compressible" : true}, "application/vnd.hzn-3d-crossword" : { "source" : "iana"}, "application/vnd.ibm.afplinedata" : { "source" : "iana"}, "application/vnd.ibm.electronic-media" : { "source" : "iana"}, "application/vnd.ibm.minipay" : { "source" : "iana", "extensions" : ["mpy"]}, "application/vnd.ibm.modcap" : { "source" : "iana", "extensions" : ["afp","listafp","list3820"]}, "application/vnd.ibm.rights-management" : { "source" : "iana", "extensions" : ["irm"]}, "application/vnd.ibm.secure-container" : { "source" : "iana", "extensions" : ["sc"]}, "application/vnd.iccprofile" : { "source" : "iana", "extensions" : ["icc","icm"]}, "application/vnd.ieee.1905" : { "source" : "iana"}, "application/vnd.igloader" : { "source" : "iana", "extensions" : ["igl"]}, "application/vnd.imagemeter.folder+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.imagemeter.image+zip" : { "source" : "iana", "compressible" : false}, "application/vnd.immervision-ivp" : { "source" : "iana", "extensions" : ["ivp"]}, "application/vnd.immervision-ivu" : { "source" : "iana", "extensions" : ["ivu"]}, "application/vnd.ims.imsccv1p1" : { "source" : "iana"}, "application/vnd.ims.imsccv1p2" : { "source" : "iana"}, "application/vnd.ims.imsccv1p3" : { "source" : "iana"}, "application/vnd.ims.lis.v2.result+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ims.lti.v2.toolconsumerprofile+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ims.lti.v2.toolproxy+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ims.lti.v2.toolproxy.id+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ims.lti.v2.toolsettings+json" : { "source" : "iana", "compressible" : true}, "application/vnd.ims.lti.v2.toolsettings.simple+json" : { "source" : "iana", "compressible" : true}, "application/vnd.informedcontrol.rms+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.informix-visionary" : { "source" : "iana"}, "application/vnd.infotech.project" : { "source" : "iana"}, "application/vnd.infotech.project+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.innopath.wamp.notification" : { "source" : "iana"}, "application/vnd.insors.igm" : { "source" : "iana", "extensions" : ["igm"]}, "application/vnd.intercon.formnet" : { "source" : "iana", "extensions" : ["xpw","xpx"]}, "application/vnd.intergeo" : { "source" : "iana", "extensions" : ["i2g"]}, "application/vnd.intertrust.digibox" : { "source" : "iana"}, "application/vnd.intertrust.nncp" : { "source" : "iana"}, "application/vnd.intu.qbo" : { "source" : "iana", "extensions" : ["qbo"]}, "application/vnd.intu.qfx" : { "source" : "iana", "extensions" : ["qfx"]}, "application/vnd.iptc.g2.catalogitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.conceptitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.knowledgeitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.newsitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.newsmessage+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.packageitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.iptc.g2.planningitem+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.ipunplugged.rcprofile" : { "source" : "iana", "extensions" : ["rcprofile"]}, "application/vnd.irepository.package+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["irp"]}, "application/vnd.is-xpr" : { "source" : "iana", "extensions" : ["xpr"]}, "application/vnd.isac.fcs" : { "source" : "iana", "extensions" : ["fcs"]}, "application/vnd.jam" : { "source" : "iana", "extensions" : ["jam"]}, "application/vnd.japannet-directory-service" : { "source" : "iana"}, "application/vnd.japannet-jpnstore-wakeup" : { "source" : "iana"}, "application/vnd.japannet-payment-wakeup" : { "source" : "iana"}, "application/vnd.japannet-registration" : { "source" : "iana"}, "application/vnd.japannet-registration-wakeup" : { "source" : "iana"}, "application/vnd.japannet-setstore-wakeup" : { "source" : "iana"}, "application/vnd.japannet-verification" : { "source" : "iana"}, "application/vnd.japannet-verification-wakeup" : { "source" : "iana"}, "application/vnd.jcp.javame.midlet-rms" : { "source" : "iana", "extensions" : ["rms"]}, "application/vnd.jisp" : { "source" : "iana", "extensions" : ["jisp"]}, "application/vnd.joost.joda-archive" : { "source" : "iana", "extensions" : ["joda"]}, "application/vnd.jsk.isdn-ngn" : { "source" : "iana"}, "application/vnd.kahootz" : { "source" : "iana", "extensions" : ["ktz","ktr"]}, "application/vnd.kde.karbon" : { "source" : "iana", "extensions" : ["karbon"]}, "application/vnd.kde.kchart" : { "source" : "iana", "extensions" : ["chrt"]}, "application/vnd.kde.kformula" : { "source" : "iana", "extensions" : ["kfo"]}, "application/vnd.kde.kivio" : { "source" : "iana", "extensions" : ["flw"]}, "application/vnd.kde.kontour" : { "source" : "iana", "extensions" : ["kon"]}, "application/vnd.kde.kpresenter" : { "source" : "iana", "extensions" : ["kpr","kpt"]}, "application/vnd.kde.kspread" : { "source" : "iana", "extensions" : ["ksp"]}, "application/vnd.kde.kword" : { "source" : "iana", "extensions" : ["kwd","kwt"]}, "application/vnd.kenameaapp" : { "source" : "iana", "extensions" : ["htke"]}, "application/vnd.kidspiration" : { "source" : "iana", "extensions" : ["kia"]}, "application/vnd.kinar" : { "source" : "iana", "extensions" : ["kne","knp"]}, "application/vnd.koan" : { "source" : "iana", "extensions" : ["skp","skd","skt","skm"]}, "application/vnd.kodak-descriptor" : { "source" : "iana", "extensions" : ["sse"]}, "application/vnd.las.las+json" : { "source" : "iana", "compressible" : true}, "application/vnd.las.las+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["lasxml"]}, "application/vnd.leap+json" : { "source" : "iana", "compressible" : true}, "application/vnd.liberty-request+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.llamagraphics.life-balance.desktop" : { "source" : "iana", "extensions" : ["lbd"]}, "application/vnd.llamagraphics.life-balance.exchange+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["lbe"]}, "application/vnd.lotus-1-2-3" : { "source" : "iana", "extensions" : ["123"]}, "application/vnd.lotus-approach" : { "source" : "iana", "extensions" : ["apr"]}, "application/vnd.lotus-freelance" : { "source" : "iana", "extensions" : ["pre"]}, "application/vnd.lotus-notes" : { "source" : "iana", "extensions" : ["nsf"]}, "application/vnd.lotus-organizer" : { "source" : "iana", "extensions" : ["org"]}, "application/vnd.lotus-screencam" : { "source" : "iana", "extensions" : ["scm"]}, "application/vnd.lotus-wordpro" : { "source" : "iana", "extensions" : ["lwp"]}, "application/vnd.macports.portpkg" : { "source" : "iana", "extensions" : ["portpkg"]}, "application/vnd.mapbox-vector-tile" : { "source" : "iana"}, "application/vnd.marlin.drm.actiontoken+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.marlin.drm.conftoken+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.marlin.drm.license+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.marlin.drm.mdcf" : { "source" : "iana"}, "application/vnd.mason+json" : { "source" : "iana", "compressible" : true}, "application/vnd.maxmind.maxmind-db" : { "source" : "iana"}, "application/vnd.mcd" : { "source" : "iana", "extensions" : ["mcd"]}, "application/vnd.medcalcdata" : { "source" : "iana", "extensions" : ["mc1"]}, "application/vnd.mediastation.cdkey" : { "source" : "iana", "extensions" : ["cdkey"]}, "application/vnd.meridian-slingshot" : { "source" : "iana"}, "application/vnd.mfer" : { "source" : "iana", "extensions" : ["mwf"]}, "application/vnd.mfmp" : { "source" : "iana", "extensions" : ["mfm"]}, "application/vnd.micro+json" : { "source" : "iana", "compressible" : true}, "application/vnd.micrografx.flo" : { "source" : "iana", "extensions" : ["flo"]}, "application/vnd.micrografx.igx" : { "source" : "iana", "extensions" : ["igx"]}, "application/vnd.microsoft.portable-executable" : { "source" : "iana"}, "application/vnd.microsoft.windows.thumbnail-cache" : { "source" : "iana"}, "application/vnd.miele+json" : { "source" : "iana", "compressible" : true}, "application/vnd.mif" : { "source" : "iana", "extensions" : ["mif"]}, "application/vnd.minisoft-hp3000-save" : { "source" : "iana"}, "application/vnd.mitsubishi.misty-guard.trustweb" : { "source" : "iana"}, "application/vnd.mobius.daf" : { "source" : "iana", "extensions" : ["daf"]}, "application/vnd.mobius.dis" : { "source" : "iana", "extensions" : ["dis"]}, "application/vnd.mobius.mbk" : { "source" : "iana", "extensions" : ["mbk"]}, "application/vnd.mobius.mqy" : { "source" : "iana", "extensions" : ["mqy"]}, "application/vnd.mobius.msl" : { "source" : "iana", "extensions" : ["msl"]}, "application/vnd.mobius.plc" : { "source" : "iana", "extensions" : ["plc"]}, "application/vnd.mobius.txf" : { "source" : "iana", "extensions" : ["txf"]}, "application/vnd.mophun.application" : { "source" : "iana", "extensions" : ["mpn"]}, "application/vnd.mophun.certificate" : { "source" : "iana", "extensions" : ["mpc"]}, "application/vnd.motorola.flexsuite" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.adsi" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.fis" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.gotap" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.kmr" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.ttc" : { "source" : "iana"}, "application/vnd.motorola.flexsuite.wem" : { "source" : "iana"}, "application/vnd.motorola.iprm" : { "source" : "iana"}, "application/vnd.mozilla.xul+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xul"]}, "application/vnd.ms-3mfdocument" : { "source" : "iana"}, "application/vnd.ms-artgalry" : { "source" : "iana", "extensions" : ["cil"]}, "application/vnd.ms-asf" : { "source" : "iana"}, "application/vnd.ms-cab-compressed" : { "source" : "iana", "extensions" : ["cab"]}, "application/vnd.ms-color.iccprofile" : { "source" : "apache"}, "application/vnd.ms-excel" : { "source" : "iana", "compressible" : false, "extensions" : ["xls","xlm","xla","xlc","xlt","xlw"]}, "application/vnd.ms-excel.addin.macroenabled.12" : { "source" : "iana", "extensions" : ["xlam"]}, "application/vnd.ms-excel.sheet.binary.macroenabled.12" : { "source" : "iana", "extensions" : ["xlsb"]}, "application/vnd.ms-excel.sheet.macroenabled.12" : { "source" : "iana", "extensions" : ["xlsm"]}, "application/vnd.ms-excel.template.macroenabled.12" : { "source" : "iana", "extensions" : ["xltm"]}, "application/vnd.ms-fontobject" : { "source" : "iana", "compressible" : true, "extensions" : ["eot"]}, "application/vnd.ms-htmlhelp" : { "source" : "iana", "extensions" : ["chm"]}, "application/vnd.ms-ims" : { "source" : "iana", "extensions" : ["ims"]}, "application/vnd.ms-lrm" : { "source" : "iana", "extensions" : ["lrm"]}, "application/vnd.ms-office.activex+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.ms-officetheme" : { "source" : "iana", "extensions" : ["thmx"]}, "application/vnd.ms-opentype" : { "source" : "apache", "compressible" : true}, "application/vnd.ms-outlook" : { "compressible" : false, "extensions" : ["msg"]}, "application/vnd.ms-package.obfuscated-opentype" : { "source" : "apache"}, "application/vnd.ms-pki.seccat" : { "source" : "apache", "extensions" : ["cat"]}, "application/vnd.ms-pki.stl" : { "source" : "apache", "extensions" : ["stl"]}, "application/vnd.ms-playready.initiator+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.ms-powerpoint" : { "source" : "iana", "compressible" : false, "extensions" : ["ppt","pps","pot"]}, "application/vnd.ms-powerpoint.addin.macroenabled.12" : { "source" : "iana", "extensions" : ["ppam"]}, "application/vnd.ms-powerpoint.presentation.macroenabled.12" : { "source" : "iana", "extensions" : ["pptm"]}, "application/vnd.ms-powerpoint.slide.macroenabled.12" : { "source" : "iana", "extensions" : ["sldm"]}, "application/vnd.ms-powerpoint.slideshow.macroenabled.12" : { "source" : "iana", "extensions" : ["ppsm"]}, "application/vnd.ms-powerpoint.template.macroenabled.12" : { "source" : "iana", "extensions" : ["potm"]}, "application/vnd.ms-printdevicecapabilities+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.ms-printing.printticket+xml" : { "source" : "apache", "compressible" : true}, "application/vnd.ms-printschematicket+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.ms-project" : { "source" : "iana", "extensions" : ["mpp","mpt"]}, "application/vnd.ms-tnef" : { "source" : "iana"}, "application/vnd.ms-windows.devicepairing" : { "source" : "iana"}, "application/vnd.ms-windows.nwprinting.oob" : { "source" : "iana"}, "application/vnd.ms-windows.printerpairing" : { "source" : "iana"}, "application/vnd.ms-windows.wsd.oob" : { "source" : "iana"}, "application/vnd.ms-wmdrm.lic-chlg-req" : { "source" : "iana"}, "application/vnd.ms-wmdrm.lic-resp" : { "source" : "iana"}, "application/vnd.ms-wmdrm.meter-chlg-req" : { "source" : "iana"}, "application/vnd.ms-wmdrm.meter-resp" : { "source" : "iana"}, "application/vnd.ms-word.document.macroenabled.12" : { "source" : "iana", "extensions" : ["docm"]}, "application/vnd.ms-word.template.macroenabled.12" : { "source" : "iana", "extensions" : ["dotm"]}, "application/vnd.ms-works" : { "source" : "iana", "extensions" : ["wps","wks","wcm","wdb"]}, "application/vnd.ms-wpl" : { "source" : "iana", "extensions" : ["wpl"]}, "application/vnd.ms-xpsdocument" : { "source" : "iana", "compressible" : false, "extensions" : ["xps"]}, "application/vnd.msa-disk-image" : { "source" : "iana"}, "application/vnd.mseq" : { "source" : "iana", "extensions" : ["mseq"]}, "application/vnd.msign" : { "source" : "iana"}, "application/vnd.multiad.creator" : { "source" : "iana"}, "application/vnd.multiad.creator.cif" : { "source" : "iana"}, "application/vnd.music-niff" : { "source" : "iana"}, "application/vnd.musician" : { "source" : "iana", "extensions" : ["mus"]}, "application/vnd.muvee.style" : { "source" : "iana", "extensions" : ["msty"]}, "application/vnd.mynfc" : { "source" : "iana", "extensions" : ["taglet"]}, "application/vnd.ncd.control" : { "source" : "iana"}, "application/vnd.ncd.reference" : { "source" : "iana"}, "application/vnd.nearst.inv+json" : { "source" : "iana", "compressible" : true}, "application/vnd.nervana" : { "source" : "iana"}, "application/vnd.netfpx" : { "source" : "iana"}, "application/vnd.neurolanguage.nlu" : { "source" : "iana", "extensions" : ["nlu"]}, "application/vnd.nimn" : { "source" : "iana"}, "application/vnd.nintendo.nitro.rom" : { "source" : "iana"}, "application/vnd.nintendo.snes.rom" : { "source" : "iana"}, "application/vnd.nitf" : { "source" : "iana", "extensions" : ["ntf","nitf"]}, "application/vnd.noblenet-directory" : { "source" : "iana", "extensions" : ["nnd"]}, "application/vnd.noblenet-sealer" : { "source" : "iana", "extensions" : ["nns"]}, "application/vnd.noblenet-web" : { "source" : "iana", "extensions" : ["nnw"]}, "application/vnd.nokia.catalogs" : { "source" : "iana"}, "application/vnd.nokia.conml+wbxml" : { "source" : "iana"}, "application/vnd.nokia.conml+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.iptv.config+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.isds-radio-presets" : { "source" : "iana"}, "application/vnd.nokia.landmark+wbxml" : { "source" : "iana"}, "application/vnd.nokia.landmark+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.landmarkcollection+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.n-gage.ac+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.n-gage.data" : { "source" : "iana", "extensions" : ["ngdat"]}, "application/vnd.nokia.n-gage.symbian.install" : { "source" : "iana", "extensions" : ["n-gage"]}, "application/vnd.nokia.ncd" : { "source" : "iana"}, "application/vnd.nokia.pcd+wbxml" : { "source" : "iana"}, "application/vnd.nokia.pcd+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.nokia.radio-preset" : { "source" : "iana", "extensions" : ["rpst"]}, "application/vnd.nokia.radio-presets" : { "source" : "iana", "extensions" : ["rpss"]}, "application/vnd.novadigm.edm" : { "source" : "iana", "extensions" : ["edm"]}, "application/vnd.novadigm.edx" : { "source" : "iana", "extensions" : ["edx"]}, "application/vnd.novadigm.ext" : { "source" : "iana", "extensions" : ["ext"]}, "application/vnd.ntt-local.content-share" : { "source" : "iana"}, "application/vnd.ntt-local.file-transfer" : { "source" : "iana"}, "application/vnd.ntt-local.ogw_remote-access" : { "source" : "iana"}, "application/vnd.ntt-local.sip-ta_remote" : { "source" : "iana"}, "application/vnd.ntt-local.sip-ta_tcp_stream" : { "source" : "iana"}, "application/vnd.oasis.opendocument.chart" : { "source" : "iana", "extensions" : ["odc"]}, "application/vnd.oasis.opendocument.chart-template" : { "source" : "iana", "extensions" : ["otc"]}, "application/vnd.oasis.opendocument.database" : { "source" : "iana", "extensions" : ["odb"]}, "application/vnd.oasis.opendocument.formula" : { "source" : "iana", "extensions" : ["odf"]}, "application/vnd.oasis.opendocument.formula-template" : { "source" : "iana", "extensions" : ["odft"]}, "application/vnd.oasis.opendocument.graphics" : { "source" : "iana", "compressible" : false, "extensions" : ["odg"]}, "application/vnd.oasis.opendocument.graphics-template" : { "source" : "iana", "extensions" : ["otg"]}, "application/vnd.oasis.opendocument.image" : { "source" : "iana", "extensions" : ["odi"]}, "application/vnd.oasis.opendocument.image-template" : { "source" : "iana", "extensions" : ["oti"]}, "application/vnd.oasis.opendocument.presentation" : { "source" : "iana", "compressible" : false, "extensions" : ["odp"]}, "application/vnd.oasis.opendocument.presentation-template" : { "source" : "iana", "extensions" : ["otp"]}, "application/vnd.oasis.opendocument.spreadsheet" : { "source" : "iana", "compressible" : false, "extensions" : ["ods"]}, "application/vnd.oasis.opendocument.spreadsheet-template" : { "source" : "iana", "extensions" : ["ots"]}, "application/vnd.oasis.opendocument.text" : { "source" : "iana", "compressible" : false, "extensions" : ["odt"]}, "application/vnd.oasis.opendocument.text-master" : { "source" : "iana", "extensions" : ["odm"]}, "application/vnd.oasis.opendocument.text-template" : { "source" : "iana", "extensions" : ["ott"]}, "application/vnd.oasis.opendocument.text-web" : { "source" : "iana", "extensions" : ["oth"]}, "application/vnd.obn" : { "source" : "iana"}, "application/vnd.ocf+cbor" : { "source" : "iana"}, "application/vnd.oftn.l10n+json" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.contentaccessdownload+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.contentaccessstreaming+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.cspg-hexbinary" : { "source" : "iana"}, "application/vnd.oipf.dae.svg+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.dae.xhtml+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.mippvcontrolmessage+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.pae.gem" : { "source" : "iana"}, "application/vnd.oipf.spdiscovery+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.spdlist+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.ueprofile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oipf.userprofile+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.olpc-sugar" : { "source" : "iana", "extensions" : ["xo"]}, "application/vnd.oma-scws-config" : { "source" : "iana"}, "application/vnd.oma-scws-http-request" : { "source" : "iana"}, "application/vnd.oma-scws-http-response" : { "source" : "iana"}, "application/vnd.oma.bcast.associated-procedure-parameter+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.drm-trigger+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.imd+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.ltkm" : { "source" : "iana"}, "application/vnd.oma.bcast.notification+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.provisioningtrigger" : { "source" : "iana"}, "application/vnd.oma.bcast.sgboot" : { "source" : "iana"}, "application/vnd.oma.bcast.sgdd+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.sgdu" : { "source" : "iana"}, "application/vnd.oma.bcast.simple-symbol-container" : { "source" : "iana"}, "application/vnd.oma.bcast.smartcard-trigger+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.sprov+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.bcast.stkm" : { "source" : "iana"}, "application/vnd.oma.cab-address-book+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.cab-feature-handler+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.cab-pcc+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.cab-subs-invite+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.cab-user-prefs+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.dcd" : { "source" : "iana"}, "application/vnd.oma.dcdc" : { "source" : "iana"}, "application/vnd.oma.dd2+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["dd2"]}, "application/vnd.oma.drm.risd+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.group-usage-list+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.lwm2m+json" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.lwm2m+tlv" : { "source" : "iana"}, "application/vnd.oma.pal+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.poc.detailed-progress-report+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.poc.final-report+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.poc.groups+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.poc.invocation-descriptor+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.poc.optimized-progress-report+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.push" : { "source" : "iana"}, "application/vnd.oma.scidm.messages+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oma.xcap-directory+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.omads-email+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.omads-file+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.omads-folder+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.omaloc-supl-init" : { "source" : "iana"}, "application/vnd.onepager" : { "source" : "iana"}, "application/vnd.onepagertamp" : { "source" : "iana"}, "application/vnd.onepagertamx" : { "source" : "iana"}, "application/vnd.onepagertat" : { "source" : "iana"}, "application/vnd.onepagertatp" : { "source" : "iana"}, "application/vnd.onepagertatx" : { "source" : "iana"}, "application/vnd.openblox.game+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openblox.game-binary" : { "source" : "iana"}, "application/vnd.openeye.oeb" : { "source" : "iana"}, "application/vnd.openofficeorg.extension" : { "source" : "apache", "extensions" : ["oxt"]}, "application/vnd.openstreetmap.data+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.custom-properties+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.customxmlproperties+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawing+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.chart+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.extended-properties+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.comments+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.presentation" : { "source" : "iana", "compressible" : false, "extensions" : ["pptx"]}, "application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.presprops+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.slide" : { "source" : "iana", "extensions" : ["sldx"]}, "application/vnd.openxmlformats-officedocument.presentationml.slide+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.slideshow" : { "source" : "iana", "extensions" : ["ppsx"]}, "application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.tags+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.template" : { "source" : "iana", "extensions" : ["potx"]}, "application/vnd.openxmlformats-officedocument.presentationml.template.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : { "source" : "iana", "compressible" : false, "extensions" : ["xlsx"]}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.template" : { "source" : "iana", "extensions" : ["xltx"]}, "application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.theme+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.themeoverride+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.vmldrawing" : { "source" : "iana"}, "application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : { "source" : "iana", "compressible" : false, "extensions" : ["docx"]}, "application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.template" : { "source" : "iana", "extensions" : ["dotx"]}, "application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-package.core-properties+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.openxmlformats-package.relationships+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oracle.resource+json" : { "source" : "iana", "compressible" : true}, "application/vnd.orange.indata" : { "source" : "iana"}, "application/vnd.osa.netdeploy" : { "source" : "iana"}, "application/vnd.osgeo.mapguide.package" : { "source" : "iana", "extensions" : ["mgp"]}, "application/vnd.osgi.bundle" : { "source" : "iana"}, "application/vnd.osgi.dp" : { "source" : "iana", "extensions" : ["dp"]}, "application/vnd.osgi.subsystem" : { "source" : "iana", "extensions" : ["esa"]}, "application/vnd.otps.ct-kip+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.oxli.countgraph" : { "source" : "iana"}, "application/vnd.pagerduty+json" : { "source" : "iana", "compressible" : true}, "application/vnd.palm" : { "source" : "iana", "extensions" : ["pdb","pqa","oprc"]}, "application/vnd.panoply" : { "source" : "iana"}, "application/vnd.paos.xml" : { "source" : "iana"}, "application/vnd.patentdive" : { "source" : "iana"}, "application/vnd.patientecommsdoc" : { "source" : "iana"}, "application/vnd.pawaafile" : { "source" : "iana", "extensions" : ["paw"]}, "application/vnd.pcos" : { "source" : "iana"}, "application/vnd.pg.format" : { "source" : "iana", "extensions" : ["str"]}, "application/vnd.pg.osasli" : { "source" : "iana", "extensions" : ["ei6"]}, "application/vnd.piaccess.application-licence" : { "source" : "iana"}, "application/vnd.picsel" : { "source" : "iana", "extensions" : ["efif"]}, "application/vnd.pmi.widget" : { "source" : "iana", "extensions" : ["wg"]}, "application/vnd.poc.group-advertisement+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.pocketlearn" : { "source" : "iana", "extensions" : ["plf"]}, "application/vnd.powerbuilder6" : { "source" : "iana", "extensions" : ["pbd"]}, "application/vnd.powerbuilder6-s" : { "source" : "iana"}, "application/vnd.powerbuilder7" : { "source" : "iana"}, "application/vnd.powerbuilder7-s" : { "source" : "iana"}, "application/vnd.powerbuilder75" : { "source" : "iana"}, "application/vnd.powerbuilder75-s" : { "source" : "iana"}, "application/vnd.preminet" : { "source" : "iana"}, "application/vnd.previewsystems.box" : { "source" : "iana", "extensions" : ["box"]}, "application/vnd.proteus.magazine" : { "source" : "iana", "extensions" : ["mgz"]}, "application/vnd.psfs" : { "source" : "iana"}, "application/vnd.publishare-delta-tree" : { "source" : "iana", "extensions" : ["qps"]}, "application/vnd.pvi.ptid1" : { "source" : "iana", "extensions" : ["ptid"]}, "application/vnd.pwg-multiplexed" : { "source" : "iana"}, "application/vnd.pwg-xhtml-print+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.qualcomm.brew-app-res" : { "source" : "iana"}, "application/vnd.quarantainenet" : { "source" : "iana"}, "application/vnd.quark.quarkxpress" : { "source" : "iana", "extensions" : ["qxd","qxt","qwd","qwt","qxl","qxb"]}, "application/vnd.quobject-quoxdocument" : { "source" : "iana"}, "application/vnd.radisys.moml+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-audit+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-audit-conf+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-audit-conn+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-audit-dialog+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-audit-stream+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-conf+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-base+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-fax-detect+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-fax-sendrecv+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-group+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-speech+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.radisys.msml-dialog-transform+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.rainstor.data" : { "source" : "iana"}, "application/vnd.rapid" : { "source" : "iana"}, "application/vnd.rar" : { "source" : "iana"}, "application/vnd.realvnc.bed" : { "source" : "iana", "extensions" : ["bed"]}, "application/vnd.recordare.musicxml" : { "source" : "iana", "extensions" : ["mxl"]}, "application/vnd.recordare.musicxml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["musicxml"]}, "application/vnd.renlearn.rlprint" : { "source" : "iana"}, "application/vnd.restful+json" : { "source" : "iana", "compressible" : true}, "application/vnd.rig.cryptonote" : { "source" : "iana", "extensions" : ["cryptonote"]}, "application/vnd.rim.cod" : { "source" : "apache", "extensions" : ["cod"]}, "application/vnd.rn-realmedia" : { "source" : "apache", "extensions" : ["rm"]}, "application/vnd.rn-realmedia-vbr" : { "source" : "apache", "extensions" : ["rmvb"]}, "application/vnd.route66.link66+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["link66"]}, "application/vnd.rs-274x" : { "source" : "iana"}, "application/vnd.ruckus.download" : { "source" : "iana"}, "application/vnd.s3sms" : { "source" : "iana"}, "application/vnd.sailingtracker.track" : { "source" : "iana", "extensions" : ["st"]}, "application/vnd.sbm.cid" : { "source" : "iana"}, "application/vnd.sbm.mid2" : { "source" : "iana"}, "application/vnd.scribus" : { "source" : "iana"}, "application/vnd.sealed.3df" : { "source" : "iana"}, "application/vnd.sealed.csf" : { "source" : "iana"}, "application/vnd.sealed.doc" : { "source" : "iana"}, "application/vnd.sealed.eml" : { "source" : "iana"}, "application/vnd.sealed.mht" : { "source" : "iana"}, "application/vnd.sealed.net" : { "source" : "iana"}, "application/vnd.sealed.ppt" : { "source" : "iana"}, "application/vnd.sealed.tiff" : { "source" : "iana"}, "application/vnd.sealed.xls" : { "source" : "iana"}, "application/vnd.sealedmedia.softseal.html" : { "source" : "iana"}, "application/vnd.sealedmedia.softseal.pdf" : { "source" : "iana"}, "application/vnd.seemail" : { "source" : "iana", "extensions" : ["see"]}, "application/vnd.sema" : { "source" : "iana", "extensions" : ["sema"]}, "application/vnd.semd" : { "source" : "iana", "extensions" : ["semd"]}, "application/vnd.semf" : { "source" : "iana", "extensions" : ["semf"]}, "application/vnd.shana.informed.formdata" : { "source" : "iana", "extensions" : ["ifm"]}, "application/vnd.shana.informed.formtemplate" : { "source" : "iana", "extensions" : ["itp"]}, "application/vnd.shana.informed.interchange" : { "source" : "iana", "extensions" : ["iif"]}, "application/vnd.shana.informed.package" : { "source" : "iana", "extensions" : ["ipk"]}, "application/vnd.shootproof+json" : { "source" : "iana", "compressible" : true}, "application/vnd.sigrok.session" : { "source" : "iana"}, "application/vnd.simtech-mindmapper" : { "source" : "iana", "extensions" : ["twd","twds"]}, "application/vnd.siren+json" : { "source" : "iana", "compressible" : true}, "application/vnd.smaf" : { "source" : "iana", "extensions" : ["mmf"]}, "application/vnd.smart.notebook" : { "source" : "iana"}, "application/vnd.smart.teacher" : { "source" : "iana", "extensions" : ["teacher"]}, "application/vnd.software602.filler.form+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.software602.filler.form-xml-zip" : { "source" : "iana"}, "application/vnd.solent.sdkm+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["sdkm","sdkd"]}, "application/vnd.spotfire.dxp" : { "source" : "iana", "extensions" : ["dxp"]}, "application/vnd.spotfire.sfs" : { "source" : "iana", "extensions" : ["sfs"]}, "application/vnd.sqlite3" : { "source" : "iana"}, "application/vnd.sss-cod" : { "source" : "iana"}, "application/vnd.sss-dtf" : { "source" : "iana"}, "application/vnd.sss-ntf" : { "source" : "iana"}, "application/vnd.stardivision.calc" : { "source" : "apache", "extensions" : ["sdc"]}, "application/vnd.stardivision.draw" : { "source" : "apache", "extensions" : ["sda"]}, "application/vnd.stardivision.impress" : { "source" : "apache", "extensions" : ["sdd"]}, "application/vnd.stardivision.math" : { "source" : "apache", "extensions" : ["smf"]}, "application/vnd.stardivision.writer" : { "source" : "apache", "extensions" : ["sdw","vor"]}, "application/vnd.stardivision.writer-global" : { "source" : "apache", "extensions" : ["sgl"]}, "application/vnd.stepmania.package" : { "source" : "iana", "extensions" : ["smzip"]}, "application/vnd.stepmania.stepchart" : { "source" : "iana", "extensions" : ["sm"]}, "application/vnd.street-stream" : { "source" : "iana"}, "application/vnd.sun.wadl+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["wadl"]}, "application/vnd.sun.xml.calc" : { "source" : "apache", "extensions" : ["sxc"]}, "application/vnd.sun.xml.calc.template" : { "source" : "apache", "extensions" : ["stc"]}, "application/vnd.sun.xml.draw" : { "source" : "apache", "extensions" : ["sxd"]}, "application/vnd.sun.xml.draw.template" : { "source" : "apache", "extensions" : ["std"]}, "application/vnd.sun.xml.impress" : { "source" : "apache", "extensions" : ["sxi"]}, "application/vnd.sun.xml.impress.template" : { "source" : "apache", "extensions" : ["sti"]}, "application/vnd.sun.xml.math" : { "source" : "apache", "extensions" : ["sxm"]}, "application/vnd.sun.xml.writer" : { "source" : "apache", "extensions" : ["sxw"]}, "application/vnd.sun.xml.writer.global" : { "source" : "apache", "extensions" : ["sxg"]}, "application/vnd.sun.xml.writer.template" : { "source" : "apache", "extensions" : ["stw"]}, "application/vnd.sus-calendar" : { "source" : "iana", "extensions" : ["sus","susp"]}, "application/vnd.svd" : { "source" : "iana", "extensions" : ["svd"]}, "application/vnd.swiftview-ics" : { "source" : "iana"}, "application/vnd.symbian.install" : { "source" : "apache", "extensions" : ["sis","sisx"]}, "application/vnd.syncml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xsm"]}, "application/vnd.syncml.dm+wbxml" : { "source" : "iana", "extensions" : ["bdm"]}, "application/vnd.syncml.dm+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xdm"]}, "application/vnd.syncml.dm.notification" : { "source" : "iana"}, "application/vnd.syncml.dmddf+wbxml" : { "source" : "iana"}, "application/vnd.syncml.dmddf+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.syncml.dmtnds+wbxml" : { "source" : "iana"}, "application/vnd.syncml.dmtnds+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.syncml.ds.notification" : { "source" : "iana"}, "application/vnd.tableschema+json" : { "source" : "iana", "compressible" : true}, "application/vnd.tao.intent-module-archive" : { "source" : "iana", "extensions" : ["tao"]}, "application/vnd.tcpdump.pcap" : { "source" : "iana", "extensions" : ["pcap","cap","dmp"]}, "application/vnd.think-cell.ppttc+json" : { "source" : "iana", "compressible" : true}, "application/vnd.tmd.mediaflex.api+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.tml" : { "source" : "iana"}, "application/vnd.tmobile-livetv" : { "source" : "iana", "extensions" : ["tmo"]}, "application/vnd.tri.onesource" : { "source" : "iana"}, "application/vnd.trid.tpt" : { "source" : "iana", "extensions" : ["tpt"]}, "application/vnd.triscape.mxs" : { "source" : "iana", "extensions" : ["mxs"]}, "application/vnd.trueapp" : { "source" : "iana", "extensions" : ["tra"]}, "application/vnd.truedoc" : { "source" : "iana"}, "application/vnd.ubisoft.webplayer" : { "source" : "iana"}, "application/vnd.ufdl" : { "source" : "iana", "extensions" : ["ufd","ufdl"]}, "application/vnd.uiq.theme" : { "source" : "iana", "extensions" : ["utz"]}, "application/vnd.umajin" : { "source" : "iana", "extensions" : ["umj"]}, "application/vnd.unity" : { "source" : "iana", "extensions" : ["unityweb"]}, "application/vnd.uoml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["uoml"]}, "application/vnd.uplanet.alert" : { "source" : "iana"}, "application/vnd.uplanet.alert-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.bearer-choice" : { "source" : "iana"}, "application/vnd.uplanet.bearer-choice-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.cacheop" : { "source" : "iana"}, "application/vnd.uplanet.cacheop-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.channel" : { "source" : "iana"}, "application/vnd.uplanet.channel-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.list" : { "source" : "iana"}, "application/vnd.uplanet.list-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.listcmd" : { "source" : "iana"}, "application/vnd.uplanet.listcmd-wbxml" : { "source" : "iana"}, "application/vnd.uplanet.signal" : { "source" : "iana"}, "application/vnd.uri-map" : { "source" : "iana"}, "application/vnd.valve.source.material" : { "source" : "iana"}, "application/vnd.vcx" : { "source" : "iana", "extensions" : ["vcx"]}, "application/vnd.vd-study" : { "source" : "iana"}, "application/vnd.vectorworks" : { "source" : "iana"}, "application/vnd.vel+json" : { "source" : "iana", "compressible" : true}, "application/vnd.verimatrix.vcas" : { "source" : "iana"}, "application/vnd.veryant.thin" : { "source" : "iana"}, "application/vnd.vidsoft.vidconference" : { "source" : "iana"}, "application/vnd.visio" : { "source" : "iana", "extensions" : ["vsd","vst","vss","vsw"]}, "application/vnd.visionary" : { "source" : "iana", "extensions" : ["vis"]}, "application/vnd.vividence.scriptfile" : { "source" : "iana"}, "application/vnd.vsf" : { "source" : "iana", "extensions" : ["vsf"]}, "application/vnd.wap.sic" : { "source" : "iana"}, "application/vnd.wap.slc" : { "source" : "iana"}, "application/vnd.wap.wbxml" : { "source" : "iana", "extensions" : ["wbxml"]}, "application/vnd.wap.wmlc" : { "source" : "iana", "extensions" : ["wmlc"]}, "application/vnd.wap.wmlscriptc" : { "source" : "iana", "extensions" : ["wmlsc"]}, "application/vnd.webturbo" : { "source" : "iana", "extensions" : ["wtb"]}, "application/vnd.wfa.p2p" : { "source" : "iana"}, "application/vnd.wfa.wsc" : { "source" : "iana"}, "application/vnd.windows.devicepairing" : { "source" : "iana"}, "application/vnd.wmc" : { "source" : "iana"}, "application/vnd.wmf.bootstrap" : { "source" : "iana"}, "application/vnd.wolfram.mathematica" : { "source" : "iana"}, "application/vnd.wolfram.mathematica.package" : { "source" : "iana"}, "application/vnd.wolfram.player" : { "source" : "iana", "extensions" : ["nbp"]}, "application/vnd.wordperfect" : { "source" : "iana", "extensions" : ["wpd"]}, "application/vnd.wqd" : { "source" : "iana", "extensions" : ["wqd"]}, "application/vnd.wrq-hp3000-labelled" : { "source" : "iana"}, "application/vnd.wt.stf" : { "source" : "iana", "extensions" : ["stf"]}, "application/vnd.wv.csp+wbxml" : { "source" : "iana"}, "application/vnd.wv.csp+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.wv.ssp+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.xacml+json" : { "source" : "iana", "compressible" : true}, "application/vnd.xara" : { "source" : "iana", "extensions" : ["xar"]}, "application/vnd.xfdl" : { "source" : "iana", "extensions" : ["xfdl"]}, "application/vnd.xfdl.webform" : { "source" : "iana"}, "application/vnd.xmi+xml" : { "source" : "iana", "compressible" : true}, "application/vnd.xmpie.cpkg" : { "source" : "iana"}, "application/vnd.xmpie.dpkg" : { "source" : "iana"}, "application/vnd.xmpie.plan" : { "source" : "iana"}, "application/vnd.xmpie.ppkg" : { "source" : "iana"}, "application/vnd.xmpie.xlim" : { "source" : "iana"}, "application/vnd.yamaha.hv-dic" : { "source" : "iana", "extensions" : ["hvd"]}, "application/vnd.yamaha.hv-script" : { "source" : "iana", "extensions" : ["hvs"]}, "application/vnd.yamaha.hv-voice" : { "source" : "iana", "extensions" : ["hvp"]}, "application/vnd.yamaha.openscoreformat" : { "source" : "iana", "extensions" : ["osf"]}, "application/vnd.yamaha.openscoreformat.osfpvg+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["osfpvg"]}, "application/vnd.yamaha.remote-setup" : { "source" : "iana"}, "application/vnd.yamaha.smaf-audio" : { "source" : "iana", "extensions" : ["saf"]}, "application/vnd.yamaha.smaf-phrase" : { "source" : "iana", "extensions" : ["spf"]}, "application/vnd.yamaha.through-ngn" : { "source" : "iana"}, "application/vnd.yamaha.tunnel-udpencap" : { "source" : "iana"}, "application/vnd.yaoweme" : { "source" : "iana"}, "application/vnd.yellowriver-custom-menu" : { "source" : "iana", "extensions" : ["cmp"]}, "application/vnd.youtube.yt" : { "source" : "iana"}, "application/vnd.zul" : { "source" : "iana", "extensions" : ["zir","zirz"]}, "application/vnd.zzazz.deck+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["zaz"]}, "application/voicexml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["vxml"]}, "application/voucher-cms+json" : { "source" : "iana", "compressible" : true}, "application/vq-rtcpxr" : { "source" : "iana"}, "application/wasm" : { "compressible" : true, "extensions" : ["wasm"]}, "application/watcherinfo+xml" : { "source" : "iana", "compressible" : true}, "application/webpush-options+json" : { "source" : "iana", "compressible" : true}, "application/whoispp-query" : { "source" : "iana"}, "application/whoispp-response" : { "source" : "iana"}, "application/widget" : { "source" : "iana", "extensions" : ["wgt"]}, "application/winhlp" : { "source" : "apache", "extensions" : ["hlp"]}, "application/wita" : { "source" : "iana"}, "application/wordperfect5.1" : { "source" : "iana"}, "application/wsdl+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["wsdl"]}, "application/wspolicy+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["wspolicy"]}, "application/x-7z-compressed" : { "source" : "apache", "compressible" : false, "extensions" : ["7z"]}, "application/x-abiword" : { "source" : "apache", "extensions" : ["abw"]}, "application/x-ace-compressed" : { "source" : "apache", "extensions" : ["ace"]}, "application/x-amf" : { "source" : "apache"}, "application/x-apple-diskimage" : { "source" : "apache", "extensions" : ["dmg"]}, "application/x-arj" : { "compressible" : false, "extensions" : ["arj"]}, "application/x-authorware-bin" : { "source" : "apache", "extensions" : ["aab","x32","u32","vox"]}, "application/x-authorware-map" : { "source" : "apache", "extensions" : ["aam"]}, "application/x-authorware-seg" : { "source" : "apache", "extensions" : ["aas"]}, "application/x-bcpio" : { "source" : "apache", "extensions" : ["bcpio"]}, "application/x-bdoc" : { "compressible" : false, "extensions" : ["bdoc"]}, "application/x-bittorrent" : { "source" : "apache", "extensions" : ["torrent"]}, "application/x-blorb" : { "source" : "apache", "extensions" : ["blb","blorb"]}, "application/x-bzip" : { "source" : "apache", "compressible" : false, "extensions" : ["bz"]}, "application/x-bzip2" : { "source" : "apache", "compressible" : false, "extensions" : ["bz2","boz"]}, "application/x-cbr" : { "source" : "apache", "extensions" : ["cbr","cba","cbt","cbz","cb7"]}, "application/x-cdlink" : { "source" : "apache", "extensions" : ["vcd"]}, "application/x-cfs-compressed" : { "source" : "apache", "extensions" : ["cfs"]}, "application/x-chat" : { "source" : "apache", "extensions" : ["chat"]}, "application/x-chess-pgn" : { "source" : "apache", "extensions" : ["pgn"]}, "application/x-chrome-extension" : { "extensions" : ["crx"]}, "application/x-cocoa" : { "source" : "nginx", "extensions" : ["cco"]}, "application/x-compress" : { "source" : "apache"}, "application/x-conference" : { "source" : "apache", "extensions" : ["nsc"]}, "application/x-cpio" : { "source" : "apache", "extensions" : ["cpio"]}, "application/x-csh" : { "source" : "apache", "extensions" : ["csh"]}, "application/x-deb" : { "compressible" : false}, "application/x-debian-package" : { "source" : "apache", "extensions" : ["deb","udeb"]}, "application/x-dgc-compressed" : { "source" : "apache", "extensions" : ["dgc"]}, "application/x-director" : { "source" : "apache", "extensions" : ["dir","dcr","dxr","cst","cct","cxt","w3d","fgd","swa"]}, "application/x-doom" : { "source" : "apache", "extensions" : ["wad"]}, "application/x-dtbncx+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["ncx"]}, "application/x-dtbook+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["dtb"]}, "application/x-dtbresource+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["res"]}, "application/x-dvi" : { "source" : "apache", "compressible" : false, "extensions" : ["dvi"]}, "application/x-envoy" : { "source" : "apache", "extensions" : ["evy"]}, "application/x-eva" : { "source" : "apache", "extensions" : ["eva"]}, "application/x-font-bdf" : { "source" : "apache", "extensions" : ["bdf"]}, "application/x-font-dos" : { "source" : "apache"}, "application/x-font-framemaker" : { "source" : "apache"}, "application/x-font-ghostscript" : { "source" : "apache", "extensions" : ["gsf"]}, "application/x-font-libgrx" : { "source" : "apache"}, "application/x-font-linux-psf" : { "source" : "apache", "extensions" : ["psf"]}, "application/x-font-pcf" : { "source" : "apache", "extensions" : ["pcf"]}, "application/x-font-snf" : { "source" : "apache", "extensions" : ["snf"]}, "application/x-font-speedo" : { "source" : "apache"}, "application/x-font-sunos-news" : { "source" : "apache"}, "application/x-font-type1" : { "source" : "apache", "extensions" : ["pfa","pfb","pfm","afm"]}, "application/x-font-vfont" : { "source" : "apache"}, "application/x-freearc" : { "source" : "apache", "extensions" : ["arc"]}, "application/x-futuresplash" : { "source" : "apache", "extensions" : ["spl"]}, "application/x-gca-compressed" : { "source" : "apache", "extensions" : ["gca"]}, "application/x-glulx" : { "source" : "apache", "extensions" : ["ulx"]}, "application/x-gnumeric" : { "source" : "apache", "extensions" : ["gnumeric"]}, "application/x-gramps-xml" : { "source" : "apache", "extensions" : ["gramps"]}, "application/x-gtar" : { "source" : "apache", "extensions" : ["gtar"]}, "application/x-gzip" : { "source" : "apache"}, "application/x-hdf" : { "source" : "apache", "extensions" : ["hdf"]}, "application/x-httpd-php" : { "compressible" : true, "extensions" : ["php"]}, "application/x-install-instructions" : { "source" : "apache", "extensions" : ["install"]}, "application/x-iso9660-image" : { "source" : "apache", "extensions" : ["iso"]}, "application/x-java-archive-diff" : { "source" : "nginx", "extensions" : ["jardiff"]}, "application/x-java-jnlp-file" : { "source" : "apache", "compressible" : false, "extensions" : ["jnlp"]}, "application/x-javascript" : { "compressible" : true}, "application/x-latex" : { "source" : "apache", "compressible" : false, "extensions" : ["latex"]}, "application/x-lua-bytecode" : { "extensions" : ["luac"]}, "application/x-lzh-compressed" : { "source" : "apache", "extensions" : ["lzh","lha"]}, "application/x-makeself" : { "source" : "nginx", "extensions" : ["run"]}, "application/x-mie" : { "source" : "apache", "extensions" : ["mie"]}, "application/x-mobipocket-ebook" : { "source" : "apache", "extensions" : ["prc","mobi"]}, "application/x-mpegurl" : { "compressible" : false}, "application/x-ms-application" : { "source" : "apache", "extensions" : ["application"]}, "application/x-ms-shortcut" : { "source" : "apache", "extensions" : ["lnk"]}, "application/x-ms-wmd" : { "source" : "apache", "extensions" : ["wmd"]}, "application/x-ms-wmz" : { "source" : "apache", "extensions" : ["wmz"]}, "application/x-ms-xbap" : { "source" : "apache", "extensions" : ["xbap"]}, "application/x-msaccess" : { "source" : "apache", "extensions" : ["mdb"]}, "application/x-msbinder" : { "source" : "apache", "extensions" : ["obd"]}, "application/x-mscardfile" : { "source" : "apache", "extensions" : ["crd"]}, "application/x-msclip" : { "source" : "apache", "extensions" : ["clp"]}, "application/x-msdos-program" : { "extensions" : ["exe"]}, "application/x-msdownload" : { "source" : "apache", "extensions" : ["exe","dll","com","bat","msi"]}, "application/x-msmediaview" : { "source" : "apache", "extensions" : ["mvb","m13","m14"]}, "application/x-msmetafile" : { "source" : "apache", "extensions" : ["wmf","wmz","emf","emz"]}, "application/x-msmoney" : { "source" : "apache", "extensions" : ["mny"]}, "application/x-mspublisher" : { "source" : "apache", "extensions" : ["pub"]}, "application/x-msschedule" : { "source" : "apache", "extensions" : ["scd"]}, "application/x-msterminal" : { "source" : "apache", "extensions" : ["trm"]}, "application/x-mswrite" : { "source" : "apache", "extensions" : ["wri"]}, "application/x-netcdf" : { "source" : "apache", "extensions" : ["nc","cdf"]}, "application/x-ns-proxy-autoconfig" : { "compressible" : true, "extensions" : ["pac"]}, "application/x-nzb" : { "source" : "apache", "extensions" : ["nzb"]}, "application/x-perl" : { "source" : "nginx", "extensions" : ["pl","pm"]}, "application/x-pilot" : { "source" : "nginx", "extensions" : ["prc","pdb"]}, "application/x-pkcs12" : { "source" : "apache", "compressible" : false, "extensions" : ["p12","pfx"]}, "application/x-pkcs7-certificates" : { "source" : "apache", "extensions" : ["p7b","spc"]}, "application/x-pkcs7-certreqresp" : { "source" : "apache", "extensions" : ["p7r"]}, "application/x-rar-compressed" : { "source" : "apache", "compressible" : false, "extensions" : ["rar"]}, "application/x-redhat-package-manager" : { "source" : "nginx", "extensions" : ["rpm"]}, "application/x-research-info-systems" : { "source" : "apache", "extensions" : ["ris"]}, "application/x-sea" : { "source" : "nginx", "extensions" : ["sea"]}, "application/x-sh" : { "source" : "apache", "compressible" : true, "extensions" : ["sh"]}, "application/x-shar" : { "source" : "apache", "extensions" : ["shar"]}, "application/x-shockwave-flash" : { "source" : "apache", "compressible" : false, "extensions" : ["swf"]}, "application/x-silverlight-app" : { "source" : "apache", "extensions" : ["xap"]}, "application/x-sql" : { "source" : "apache", "extensions" : ["sql"]}, "application/x-stuffit" : { "source" : "apache", "compressible" : false, "extensions" : ["sit"]}, "application/x-stuffitx" : { "source" : "apache", "extensions" : ["sitx"]}, "application/x-subrip" : { "source" : "apache", "extensions" : ["srt"]}, "application/x-sv4cpio" : { "source" : "apache", "extensions" : ["sv4cpio"]}, "application/x-sv4crc" : { "source" : "apache", "extensions" : ["sv4crc"]}, "application/x-t3vm-image" : { "source" : "apache", "extensions" : ["t3"]}, "application/x-tads" : { "source" : "apache", "extensions" : ["gam"]}, "application/x-tar" : { "source" : "apache", "compressible" : true, "extensions" : ["tar"]}, "application/x-tcl" : { "source" : "apache", "extensions" : ["tcl","tk"]}, "application/x-tex" : { "source" : "apache", "extensions" : ["tex"]}, "application/x-tex-tfm" : { "source" : "apache", "extensions" : ["tfm"]}, "application/x-texinfo" : { "source" : "apache", "extensions" : ["texinfo","texi"]}, "application/x-tgif" : { "source" : "apache", "extensions" : ["obj"]}, "application/x-ustar" : { "source" : "apache", "extensions" : ["ustar"]}, "application/x-virtualbox-hdd" : { "compressible" : true, "extensions" : ["hdd"]}, "application/x-virtualbox-ova" : { "compressible" : true, "extensions" : ["ova"]}, "application/x-virtualbox-ovf" : { "compressible" : true, "extensions" : ["ovf"]}, "application/x-virtualbox-vbox" : { "compressible" : true, "extensions" : ["vbox"]}, "application/x-virtualbox-vbox-extpack" : { "compressible" : false, "extensions" : ["vbox-extpack"]}, "application/x-virtualbox-vdi" : { "compressible" : true, "extensions" : ["vdi"]}, "application/x-virtualbox-vhd" : { "compressible" : true, "extensions" : ["vhd"]}, "application/x-virtualbox-vmdk" : { "compressible" : true, "extensions" : ["vmdk"]}, "application/x-wais-source" : { "source" : "apache", "extensions" : ["src"]}, "application/x-web-app-manifest+json" : { "compressible" : true, "extensions" : ["webapp"]}, "application/x-www-form-urlencoded" : { "source" : "iana", "compressible" : true}, "application/x-x509-ca-cert" : { "source" : "apache", "extensions" : ["der","crt","pem"]}, "application/x-xfig" : { "source" : "apache", "extensions" : ["fig"]}, "application/x-xliff+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["xlf"]}, "application/x-xpinstall" : { "source" : "apache", "compressible" : false, "extensions" : ["xpi"]}, "application/x-xz" : { "source" : "apache", "extensions" : ["xz"]}, "application/x-zmachine" : { "source" : "apache", "extensions" : ["z1","z2","z3","z4","z5","z6","z7","z8"]}, "application/x400-bp" : { "source" : "iana"}, "application/xacml+xml" : { "source" : "iana", "compressible" : true}, "application/xaml+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["xaml"]}, "application/xcap-att+xml" : { "source" : "iana", "compressible" : true}, "application/xcap-caps+xml" : { "source" : "iana", "compressible" : true}, "application/xcap-diff+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xdf"]}, "application/xcap-el+xml" : { "source" : "iana", "compressible" : true}, "application/xcap-error+xml" : { "source" : "iana", "compressible" : true}, "application/xcap-ns+xml" : { "source" : "iana", "compressible" : true}, "application/xcon-conference-info+xml" : { "source" : "iana", "compressible" : true}, "application/xcon-conference-info-diff+xml" : { "source" : "iana", "compressible" : true}, "application/xenc+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xenc"]}, "application/xhtml+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xhtml","xht"]}, "application/xhtml-voice+xml" : { "source" : "apache", "compressible" : true}, "application/xliff+xml" : { "source" : "iana", "compressible" : true}, "application/xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xml","xsl","xsd","rng"]}, "application/xml-dtd" : { "source" : "iana", "compressible" : true, "extensions" : ["dtd"]}, "application/xml-external-parsed-entity" : { "source" : "iana"}, "application/xml-patch+xml" : { "source" : "iana", "compressible" : true}, "application/xmpp+xml" : { "source" : "iana", "compressible" : true}, "application/xop+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xop"]}, "application/xproc+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["xpl"]}, "application/xslt+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xslt"]}, "application/xspf+xml" : { "source" : "apache", "compressible" : true, "extensions" : ["xspf"]}, "application/xv+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["mxml","xhvml","xvml","xvm"]}, "application/yang" : { "source" : "iana", "extensions" : ["yang"]}, "application/yang-data+json" : { "source" : "iana", "compressible" : true}, "application/yang-data+xml" : { "source" : "iana", "compressible" : true}, "application/yang-patch+json" : { "source" : "iana", "compressible" : true}, "application/yang-patch+xml" : { "source" : "iana", "compressible" : true}, "application/yin+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["yin"]}, "application/zip" : { "source" : "iana", "compressible" : false, "extensions" : ["zip"]}, "application/zlib" : { "source" : "iana"}, "application/zstd" : { "source" : "iana"}, "audio/1d-interleaved-parityfec" : { "source" : "iana"}, "audio/32kadpcm" : { "source" : "iana"}, "audio/3gpp" : { "source" : "iana", "compressible" : false, "extensions" : ["3gpp"]}, "audio/3gpp2" : { "source" : "iana"}, "audio/aac" : { "source" : "iana"}, "audio/ac3" : { "source" : "iana"}, "audio/adpcm" : { "source" : "apache", "extensions" : ["adp"]}, "audio/amr" : { "source" : "iana"}, "audio/amr-wb" : { "source" : "iana"}, "audio/amr-wb+" : { "source" : "iana"}, "audio/aptx" : { "source" : "iana"}, "audio/asc" : { "source" : "iana"}, "audio/atrac-advanced-lossless" : { "source" : "iana"}, "audio/atrac-x" : { "source" : "iana"}, "audio/atrac3" : { "source" : "iana"}, "audio/basic" : { "source" : "iana", "compressible" : false, "extensions" : ["au","snd"]}, "audio/bv16" : { "source" : "iana"}, "audio/bv32" : { "source" : "iana"}, "audio/clearmode" : { "source" : "iana"}, "audio/cn" : { "source" : "iana"}, "audio/dat12" : { "source" : "iana"}, "audio/dls" : { "source" : "iana"}, "audio/dsr-es201108" : { "source" : "iana"}, "audio/dsr-es202050" : { "source" : "iana"}, "audio/dsr-es202211" : { "source" : "iana"}, "audio/dsr-es202212" : { "source" : "iana"}, "audio/dv" : { "source" : "iana"}, "audio/dvi4" : { "source" : "iana"}, "audio/eac3" : { "source" : "iana"}, "audio/encaprtp" : { "source" : "iana"}, "audio/evrc" : { "source" : "iana"}, "audio/evrc-qcp" : { "source" : "iana"}, "audio/evrc0" : { "source" : "iana"}, "audio/evrc1" : { "source" : "iana"}, "audio/evrcb" : { "source" : "iana"}, "audio/evrcb0" : { "source" : "iana"}, "audio/evrcb1" : { "source" : "iana"}, "audio/evrcnw" : { "source" : "iana"}, "audio/evrcnw0" : { "source" : "iana"}, "audio/evrcnw1" : { "source" : "iana"}, "audio/evrcwb" : { "source" : "iana"}, "audio/evrcwb0" : { "source" : "iana"}, "audio/evrcwb1" : { "source" : "iana"}, "audio/evs" : { "source" : "iana"}, "audio/fwdred" : { "source" : "iana"}, "audio/g711-0" : { "source" : "iana"}, "audio/g719" : { "source" : "iana"}, "audio/g722" : { "source" : "iana"}, "audio/g7221" : { "source" : "iana"}, "audio/g723" : { "source" : "iana"}, "audio/g726-16" : { "source" : "iana"}, "audio/g726-24" : { "source" : "iana"}, "audio/g726-32" : { "source" : "iana"}, "audio/g726-40" : { "source" : "iana"}, "audio/g728" : { "source" : "iana"}, "audio/g729" : { "source" : "iana"}, "audio/g7291" : { "source" : "iana"}, "audio/g729d" : { "source" : "iana"}, "audio/g729e" : { "source" : "iana"}, "audio/gsm" : { "source" : "iana"}, "audio/gsm-efr" : { "source" : "iana"}, "audio/gsm-hr-08" : { "source" : "iana"}, "audio/ilbc" : { "source" : "iana"}, "audio/ip-mr_v2.5" : { "source" : "iana"}, "audio/isac" : { "source" : "apache"}, "audio/l16" : { "source" : "iana"}, "audio/l20" : { "source" : "iana"}, "audio/l24" : { "source" : "iana", "compressible" : false}, "audio/l8" : { "source" : "iana"}, "audio/lpc" : { "source" : "iana"}, "audio/melp" : { "source" : "iana"}, "audio/melp1200" : { "source" : "iana"}, "audio/melp2400" : { "source" : "iana"}, "audio/melp600" : { "source" : "iana"}, "audio/midi" : { "source" : "apache", "extensions" : ["mid","midi","kar","rmi"]}, "audio/mobile-xmf" : { "source" : "iana"}, "audio/mp3" : { "compressible" : false, "extensions" : ["mp3"]}, "audio/mp4" : { "source" : "iana", "compressible" : false, "extensions" : ["m4a","mp4a"]}, "audio/mp4a-latm" : { "source" : "iana"}, "audio/mpa" : { "source" : "iana"}, "audio/mpa-robust" : { "source" : "iana"}, "audio/mpeg" : { "source" : "iana", "compressible" : false, "extensions" : ["mpga","mp2","mp2a","mp3","m2a","m3a"]}, "audio/mpeg4-generic" : { "source" : "iana"}, "audio/musepack" : { "source" : "apache"}, "audio/ogg" : { "source" : "iana", "compressible" : false, "extensions" : ["oga","ogg","spx"]}, "audio/opus" : { "source" : "iana"}, "audio/parityfec" : { "source" : "iana"}, "audio/pcma" : { "source" : "iana"}, "audio/pcma-wb" : { "source" : "iana"}, "audio/pcmu" : { "source" : "iana"}, "audio/pcmu-wb" : { "source" : "iana"}, "audio/prs.sid" : { "source" : "iana"}, "audio/qcelp" : { "source" : "iana"}, "audio/raptorfec" : { "source" : "iana"}, "audio/red" : { "source" : "iana"}, "audio/rtp-enc-aescm128" : { "source" : "iana"}, "audio/rtp-midi" : { "source" : "iana"}, "audio/rtploopback" : { "source" : "iana"}, "audio/rtx" : { "source" : "iana"}, "audio/s3m" : { "source" : "apache", "extensions" : ["s3m"]}, "audio/silk" : { "source" : "apache", "extensions" : ["sil"]}, "audio/smv" : { "source" : "iana"}, "audio/smv-qcp" : { "source" : "iana"}, "audio/smv0" : { "source" : "iana"}, "audio/sp-midi" : { "source" : "iana"}, "audio/speex" : { "source" : "iana"}, "audio/t140c" : { "source" : "iana"}, "audio/t38" : { "source" : "iana"}, "audio/telephone-event" : { "source" : "iana"}, "audio/tetra_acelp" : { "source" : "iana"}, "audio/tone" : { "source" : "iana"}, "audio/uemclip" : { "source" : "iana"}, "audio/ulpfec" : { "source" : "iana"}, "audio/usac" : { "source" : "iana"}, "audio/vdvi" : { "source" : "iana"}, "audio/vmr-wb" : { "source" : "iana"}, "audio/vnd.3gpp.iufp" : { "source" : "iana"}, "audio/vnd.4sb" : { "source" : "iana"}, "audio/vnd.audiokoz" : { "source" : "iana"}, "audio/vnd.celp" : { "source" : "iana"}, "audio/vnd.cisco.nse" : { "source" : "iana"}, "audio/vnd.cmles.radio-events" : { "source" : "iana"}, "audio/vnd.cns.anp1" : { "source" : "iana"}, "audio/vnd.cns.inf1" : { "source" : "iana"}, "audio/vnd.dece.audio" : { "source" : "iana", "extensions" : ["uva","uvva"]}, "audio/vnd.digital-winds" : { "source" : "iana", "extensions" : ["eol"]}, "audio/vnd.dlna.adts" : { "source" : "iana"}, "audio/vnd.dolby.heaac.1" : { "source" : "iana"}, "audio/vnd.dolby.heaac.2" : { "source" : "iana"}, "audio/vnd.dolby.mlp" : { "source" : "iana"}, "audio/vnd.dolby.mps" : { "source" : "iana"}, "audio/vnd.dolby.pl2" : { "source" : "iana"}, "audio/vnd.dolby.pl2x" : { "source" : "iana"}, "audio/vnd.dolby.pl2z" : { "source" : "iana"}, "audio/vnd.dolby.pulse.1" : { "source" : "iana"}, "audio/vnd.dra" : { "source" : "iana", "extensions" : ["dra"]}, "audio/vnd.dts" : { "source" : "iana", "extensions" : ["dts"]}, "audio/vnd.dts.hd" : { "source" : "iana", "extensions" : ["dtshd"]}, "audio/vnd.dts.uhd" : { "source" : "iana"}, "audio/vnd.dvb.file" : { "source" : "iana"}, "audio/vnd.everad.plj" : { "source" : "iana"}, "audio/vnd.hns.audio" : { "source" : "iana"}, "audio/vnd.lucent.voice" : { "source" : "iana", "extensions" : ["lvp"]}, "audio/vnd.ms-playready.media.pya" : { "source" : "iana", "extensions" : ["pya"]}, "audio/vnd.nokia.mobile-xmf" : { "source" : "iana"}, "audio/vnd.nortel.vbk" : { "source" : "iana"}, "audio/vnd.nuera.ecelp4800" : { "source" : "iana", "extensions" : ["ecelp4800"]}, "audio/vnd.nuera.ecelp7470" : { "source" : "iana", "extensions" : ["ecelp7470"]}, "audio/vnd.nuera.ecelp9600" : { "source" : "iana", "extensions" : ["ecelp9600"]}, "audio/vnd.octel.sbc" : { "source" : "iana"}, "audio/vnd.presonus.multitrack" : { "source" : "iana"}, "audio/vnd.qcelp" : { "source" : "iana"}, "audio/vnd.rhetorex.32kadpcm" : { "source" : "iana"}, "audio/vnd.rip" : { "source" : "iana", "extensions" : ["rip"]}, "audio/vnd.rn-realaudio" : { "compressible" : false}, "audio/vnd.sealedmedia.softseal.mpeg" : { "source" : "iana"}, "audio/vnd.vmx.cvsd" : { "source" : "iana"}, "audio/vnd.wave" : { "compressible" : false}, "audio/vorbis" : { "source" : "iana", "compressible" : false}, "audio/vorbis-config" : { "source" : "iana"}, "audio/wav" : { "compressible" : false, "extensions" : ["wav"]}, "audio/wave" : { "compressible" : false, "extensions" : ["wav"]}, "audio/webm" : { "source" : "apache", "compressible" : false, "extensions" : ["weba"]}, "audio/x-aac" : { "source" : "apache", "compressible" : false, "extensions" : ["aac"]}, "audio/x-aiff" : { "source" : "apache", "extensions" : ["aif","aiff","aifc"]}, "audio/x-caf" : { "source" : "apache", "compressible" : false, "extensions" : ["caf"]}, "audio/x-flac" : { "source" : "apache", "extensions" : ["flac"]}, "audio/x-m4a" : { "source" : "nginx", "extensions" : ["m4a"]}, "audio/x-matroska" : { "source" : "apache", "extensions" : ["mka"]}, "audio/x-mpegurl" : { "source" : "apache", "extensions" : ["m3u"]}, "audio/x-ms-wax" : { "source" : "apache", "extensions" : ["wax"]}, "audio/x-ms-wma" : { "source" : "apache", "extensions" : ["wma"]}, "audio/x-pn-realaudio" : { "source" : "apache", "extensions" : ["ram","ra"]}, "audio/x-pn-realaudio-plugin" : { "source" : "apache", "extensions" : ["rmp"]}, "audio/x-realaudio" : { "source" : "nginx", "extensions" : ["ra"]}, "audio/x-tta" : { "source" : "apache"}, "audio/x-wav" : { "source" : "apache", "extensions" : ["wav"]}, "audio/xm" : { "source" : "apache", "extensions" : ["xm"]}, "chemical/x-cdx" : { "source" : "apache", "extensions" : ["cdx"]}, "chemical/x-cif" : { "source" : "apache", "extensions" : ["cif"]}, "chemical/x-cmdf" : { "source" : "apache", "extensions" : ["cmdf"]}, "chemical/x-cml" : { "source" : "apache", "extensions" : ["cml"]}, "chemical/x-csml" : { "source" : "apache", "extensions" : ["csml"]}, "chemical/x-pdb" : { "source" : "apache"}, "chemical/x-xyz" : { "source" : "apache", "extensions" : ["xyz"]}, "font/collection" : { "source" : "iana", "extensions" : ["ttc"]}, "font/otf" : { "source" : "iana", "compressible" : true, "extensions" : ["otf"]}, "font/sfnt" : { "source" : "iana"}, "font/ttf" : { "source" : "iana", "extensions" : ["ttf"]}, "font/woff" : { "source" : "iana", "extensions" : ["woff"]}, "font/woff2" : { "source" : "iana", "extensions" : ["woff2"]}, "image/aces" : { "source" : "iana", "extensions" : ["exr"]}, "image/apng" : { "compressible" : false, "extensions" : ["apng"]}, "image/avci" : { "source" : "iana"}, "image/avcs" : { "source" : "iana"}, "image/bmp" : { "source" : "iana", "compressible" : true, "extensions" : ["bmp"]}, "image/cgm" : { "source" : "iana", "extensions" : ["cgm"]}, "image/dicom-rle" : { "source" : "iana", "extensions" : ["drle"]}, "image/emf" : { "source" : "iana", "extensions" : ["emf"]}, "image/fits" : { "source" : "iana", "extensions" : ["fits"]}, "image/g3fax" : { "source" : "iana", "extensions" : ["g3"]}, "image/gif" : { "source" : "iana", "compressible" : false, "extensions" : ["gif"]}, "image/heic" : { "source" : "iana", "extensions" : ["heic"]}, "image/heic-sequence" : { "source" : "iana", "extensions" : ["heics"]}, "image/heif" : { "source" : "iana", "extensions" : ["heif"]}, "image/heif-sequence" : { "source" : "iana", "extensions" : ["heifs"]}, "image/ief" : { "source" : "iana", "extensions" : ["ief"]}, "image/jls" : { "source" : "iana", "extensions" : ["jls"]}, "image/jp2" : { "source" : "iana", "compressible" : false, "extensions" : ["jp2","jpg2"]}, "image/jpeg" : { "source" : "iana", "compressible" : false, "extensions" : ["jpeg","jpg","jpe"]}, "image/jpm" : { "source" : "iana", "compressible" : false, "extensions" : ["jpm"]}, "image/jpx" : { "source" : "iana", "compressible" : false, "extensions" : ["jpx","jpf"]}, "image/ktx" : { "source" : "iana", "extensions" : ["ktx"]}, "image/naplps" : { "source" : "iana"}, "image/pjpeg" : { "compressible" : false}, "image/png" : { "source" : "iana", "compressible" : false, "extensions" : ["png"]}, "image/prs.btif" : { "source" : "iana", "extensions" : ["btif"]}, "image/prs.pti" : { "source" : "iana", "extensions" : ["pti"]}, "image/pwg-raster" : { "source" : "iana"}, "image/sgi" : { "source" : "apache", "extensions" : ["sgi"]}, "image/svg+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["svg","svgz"]}, "image/t38" : { "source" : "iana", "extensions" : ["t38"]}, "image/tiff" : { "source" : "iana", "compressible" : false, "extensions" : ["tif","tiff"]}, "image/tiff-fx" : { "source" : "iana", "extensions" : ["tfx"]}, "image/vnd.adobe.photoshop" : { "source" : "iana", "compressible" : true, "extensions" : ["psd"]}, "image/vnd.airzip.accelerator.azv" : { "source" : "iana", "extensions" : ["azv"]}, "image/vnd.cns.inf2" : { "source" : "iana"}, "image/vnd.dece.graphic" : { "source" : "iana", "extensions" : ["uvi","uvvi","uvg","uvvg"]}, "image/vnd.djvu" : { "source" : "iana", "extensions" : ["djvu","djv"]}, "image/vnd.dvb.subtitle" : { "source" : "iana", "extensions" : ["sub"]}, "image/vnd.dwg" : { "source" : "iana", "extensions" : ["dwg"]}, "image/vnd.dxf" : { "source" : "iana", "extensions" : ["dxf"]}, "image/vnd.fastbidsheet" : { "source" : "iana", "extensions" : ["fbs"]}, "image/vnd.fpx" : { "source" : "iana", "extensions" : ["fpx"]}, "image/vnd.fst" : { "source" : "iana", "extensions" : ["fst"]}, "image/vnd.fujixerox.edmics-mmr" : { "source" : "iana", "extensions" : ["mmr"]}, "image/vnd.fujixerox.edmics-rlc" : { "source" : "iana", "extensions" : ["rlc"]}, "image/vnd.globalgraphics.pgb" : { "source" : "iana"}, "image/vnd.microsoft.icon" : { "source" : "iana", "extensions" : ["ico"]}, "image/vnd.mix" : { "source" : "iana"}, "image/vnd.mozilla.apng" : { "source" : "iana"}, "image/vnd.ms-modi" : { "source" : "iana", "extensions" : ["mdi"]}, "image/vnd.ms-photo" : { "source" : "apache", "extensions" : ["wdp"]}, "image/vnd.net-fpx" : { "source" : "iana", "extensions" : ["npx"]}, "image/vnd.radiance" : { "source" : "iana"}, "image/vnd.sealed.png" : { "source" : "iana"}, "image/vnd.sealedmedia.softseal.gif" : { "source" : "iana"}, "image/vnd.sealedmedia.softseal.jpg" : { "source" : "iana"}, "image/vnd.svf" : { "source" : "iana"}, "image/vnd.tencent.tap" : { "source" : "iana", "extensions" : ["tap"]}, "image/vnd.valve.source.texture" : { "source" : "iana", "extensions" : ["vtf"]}, "image/vnd.wap.wbmp" : { "source" : "iana", "extensions" : ["wbmp"]}, "image/vnd.xiff" : { "source" : "iana", "extensions" : ["xif"]}, "image/vnd.zbrush.pcx" : { "source" : "iana", "extensions" : ["pcx"]}, "image/webp" : { "source" : "apache", "extensions" : ["webp"]}, "image/wmf" : { "source" : "iana", "extensions" : ["wmf"]}, "image/x-3ds" : { "source" : "apache", "extensions" : ["3ds"]}, "image/x-cmu-raster" : { "source" : "apache", "extensions" : ["ras"]}, "image/x-cmx" : { "source" : "apache", "extensions" : ["cmx"]}, "image/x-freehand" : { "source" : "apache", "extensions" : ["fh","fhc","fh4","fh5","fh7"]}, "image/x-icon" : { "source" : "apache", "compressible" : true, "extensions" : ["ico"]}, "image/x-jng" : { "source" : "nginx", "extensions" : ["jng"]}, "image/x-mrsid-image" : { "source" : "apache", "extensions" : ["sid"]}, "image/x-ms-bmp" : { "source" : "nginx", "compressible" : true, "extensions" : ["bmp"]}, "image/x-pcx" : { "source" : "apache", "extensions" : ["pcx"]}, "image/x-pict" : { "source" : "apache", "extensions" : ["pic","pct"]}, "image/x-portable-anymap" : { "source" : "apache", "extensions" : ["pnm"]}, "image/x-portable-bitmap" : { "source" : "apache", "extensions" : ["pbm"]}, "image/x-portable-graymap" : { "source" : "apache", "extensions" : ["pgm"]}, "image/x-portable-pixmap" : { "source" : "apache", "extensions" : ["ppm"]}, "image/x-rgb" : { "source" : "apache", "extensions" : ["rgb"]}, "image/x-tga" : { "source" : "apache", "extensions" : ["tga"]}, "image/x-xbitmap" : { "source" : "apache", "extensions" : ["xbm"]}, "image/x-xcf" : { "compressible" : false}, "image/x-xpixmap" : { "source" : "apache", "extensions" : ["xpm"]}, "image/x-xwindowdump" : { "source" : "apache", "extensions" : ["xwd"]}, "message/cpim" : { "source" : "iana"}, "message/delivery-status" : { "source" : "iana"}, "message/disposition-notification" : { "source" : "iana", "extensions" : ["disposition-notification"]}, "message/external-body" : { "source" : "iana"}, "message/feedback-report" : { "source" : "iana"}, "message/global" : { "source" : "iana", "extensions" : ["u8msg"]}, "message/global-delivery-status" : { "source" : "iana", "extensions" : ["u8dsn"]}, "message/global-disposition-notification" : { "source" : "iana", "extensions" : ["u8mdn"]}, "message/global-headers" : { "source" : "iana", "extensions" : ["u8hdr"]}, "message/http" : { "source" : "iana", "compressible" : false}, "message/imdn+xml" : { "source" : "iana", "compressible" : true}, "message/news" : { "source" : "iana"}, "message/partial" : { "source" : "iana", "compressible" : false}, "message/rfc822" : { "source" : "iana", "compressible" : true, "extensions" : ["eml","mime"]}, "message/s-http" : { "source" : "iana"}, "message/sip" : { "source" : "iana"}, "message/sipfrag" : { "source" : "iana"}, "message/tracking-status" : { "source" : "iana"}, "message/vnd.si.simp" : { "source" : "iana"}, "message/vnd.wfa.wsc" : { "source" : "iana", "extensions" : ["wsc"]}, "model/3mf" : { "source" : "iana"}, "model/gltf+json" : { "source" : "iana", "compressible" : true, "extensions" : ["gltf"]}, "model/gltf-binary" : { "source" : "iana", "compressible" : true, "extensions" : ["glb"]}, "model/iges" : { "source" : "iana", "compressible" : false, "extensions" : ["igs","iges"]}, "model/mesh" : { "source" : "iana", "compressible" : false, "extensions" : ["msh","mesh","silo"]}, "model/stl" : { "source" : "iana"}, "model/vnd.collada+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["dae"]}, "model/vnd.dwf" : { "source" : "iana", "extensions" : ["dwf"]}, "model/vnd.flatland.3dml" : { "source" : "iana"}, "model/vnd.gdl" : { "source" : "iana", "extensions" : ["gdl"]}, "model/vnd.gs-gdl" : { "source" : "apache"}, "model/vnd.gs.gdl" : { "source" : "iana"}, "model/vnd.gtw" : { "source" : "iana", "extensions" : ["gtw"]}, "model/vnd.moml+xml" : { "source" : "iana", "compressible" : true}, "model/vnd.mts" : { "source" : "iana", "extensions" : ["mts"]}, "model/vnd.opengex" : { "source" : "iana"}, "model/vnd.parasolid.transmit.binary" : { "source" : "iana"}, "model/vnd.parasolid.transmit.text" : { "source" : "iana"}, "model/vnd.rosette.annotated-data-model" : { "source" : "iana"}, "model/vnd.usdz+zip" : { "source" : "iana", "compressible" : false}, "model/vnd.valve.source.compiled-map" : { "source" : "iana"}, "model/vnd.vtu" : { "source" : "iana", "extensions" : ["vtu"]}, "model/vrml" : { "source" : "iana", "compressible" : false, "extensions" : ["wrl","vrml"]}, "model/x3d+binary" : { "source" : "apache", "compressible" : false, "extensions" : ["x3db","x3dbz"]}, "model/x3d+fastinfoset" : { "source" : "iana"}, "model/x3d+vrml" : { "source" : "apache", "compressible" : false, "extensions" : ["x3dv","x3dvz"]}, "model/x3d+xml" : { "source" : "iana", "compressible" : true, "extensions" : ["x3d","x3dz"]}, "model/x3d-vrml" : { "source" : "iana"}, "multipart/alternative" : { "source" : "iana", "compressible" : false}, "multipart/appledouble" : { "source" : "iana"}, "multipart/byteranges" : { "source" : "iana"}, "multipart/digest" : { "source" : "iana"}, "multipart/encrypted" : { "source" : "iana", "compressible" : false}, "multipart/form-data" : { "source" : "iana", "compressible" : false}, "multipart/header-set" : { "source" : "iana"}, "multipart/mixed" : { "source" : "iana", "compressible" : false}, "multipart/multilingual" : { "source" : "iana"}, "multipart/parallel" : { "source" : "iana"}, "multipart/related" : { "source" : "iana", "compressible" : false}, "multipart/report" : { "source" : "iana"}, "multipart/signed" : { "source" : "iana", "compressible" : false}, "multipart/vnd.bint.med-plus" : { "source" : "iana"}, "multipart/voice-message" : { "source" : "iana"}, "multipart/x-mixed-replace" : { "source" : "iana"}, "text/1d-interleaved-parityfec" : { "source" : "iana"}, "text/cache-manifest" : { "source" : "iana", "compressible" : true, "extensions" : ["appcache","manifest"]}, "text/calendar" : { "source" : "iana", "extensions" : ["ics","ifb"]}, "text/calender" : { "compressible" : true}, "text/cmd" : { "compressible" : true}, "text/coffeescript" : { "extensions" : ["coffee","litcoffee"]}, "text/css" : { "source" : "iana", "charset" : "UTF-8", "compressible" : true, "extensions" : ["css"]}, "text/csv" : { "source" : "iana", "compressible" : true, "extensions" : ["csv"]}, "text/csv-schema" : { "source" : "iana"}, "text/directory" : { "source" : "iana"}, "text/dns" : { "source" : "iana"}, "text/ecmascript" : { "source" : "iana"}, "text/encaprtp" : { "source" : "iana"}, "text/enriched" : { "source" : "iana"}, "text/fwdred" : { "source" : "iana"}, "text/grammar-ref-list" : { "source" : "iana"}, "text/html" : { "source" : "iana", "compressible" : true, "extensions" : ["html","htm","shtml"]}, "text/jade" : { "extensions" : ["jade"]}, "text/javascript" : { "source" : "iana", "compressible" : true}, "text/jcr-cnd" : { "source" : "iana"}, "text/jsx" : { "compressible" : true, "extensions" : ["jsx"]}, "text/less" : { "compressible" : true, "extensions" : ["less"]}, "text/markdown" : { "source" : "iana", "compressible" : true, "extensions" : ["markdown","md"]}, "text/mathml" : { "source" : "nginx", "extensions" : ["mml"]}, "text/mizar" : { "source" : "iana"}, "text/n3" : { "source" : "iana", "compressible" : true, "extensions" : ["n3"]}, "text/parameters" : { "source" : "iana"}, "text/parityfec" : { "source" : "iana"}, "text/plain" : { "source" : "iana", "compressible" : true, "extensions" : ["txt","text","conf","def","list","log","in","ini"]}, "text/provenance-notation" : { "source" : "iana"}, "text/prs.fallenstein.rst" : { "source" : "iana"}, "text/prs.lines.tag" : { "source" : "iana", "extensions" : ["dsc"]}, "text/prs.prop.logic" : { "source" : "iana"}, "text/raptorfec" : { "source" : "iana"}, "text/red" : { "source" : "iana"}, "text/rfc822-headers" : { "source" : "iana"}, "text/richtext" : { "source" : "iana", "compressible" : true, "extensions" : ["rtx"]}, "text/rtf" : { "source" : "iana", "compressible" : true, "extensions" : ["rtf"]}, "text/rtp-enc-aescm128" : { "source" : "iana"}, "text/rtploopback" : { "source" : "iana"}, "text/rtx" : { "source" : "iana"}, "text/sgml" : { "source" : "iana", "extensions" : ["sgml","sgm"]}, "text/shex" : { "extensions" : ["shex"]}, "text/slim" : { "extensions" : ["slim","slm"]}, "text/strings" : { "source" : "iana"}, "text/stylus" : { "extensions" : ["stylus","styl"]}, "text/t140" : { "source" : "iana"}, "text/tab-separated-values" : { "source" : "iana", "compressible" : true, "extensions" : ["tsv"]}, "text/troff" : { "source" : "iana", "extensions" : ["t","tr","roff","man","me","ms"]}, "text/turtle" : { "source" : "iana", "charset" : "UTF-8", "extensions" : ["ttl"]}, "text/ulpfec" : { "source" : "iana"}, "text/uri-list" : { "source" : "iana", "compressible" : true, "extensions" : ["uri","uris","urls"]}, "text/vcard" : { "source" : "iana", "compressible" : true, "extensions" : ["vcard"]}, "text/vnd.a" : { "source" : "iana"}, "text/vnd.abc" : { "source" : "iana"}, "text/vnd.ascii-art" : { "source" : "iana"}, "text/vnd.curl" : { "source" : "iana", "extensions" : ["curl"]}, "text/vnd.curl.dcurl" : { "source" : "apache", "extensions" : ["dcurl"]}, "text/vnd.curl.mcurl" : { "source" : "apache", "extensions" : ["mcurl"]}, "text/vnd.curl.scurl" : { "source" : "apache", "extensions" : ["scurl"]}, "text/vnd.debian.copyright" : { "source" : "iana"}, "text/vnd.dmclientscript" : { "source" : "iana"}, "text/vnd.dvb.subtitle" : { "source" : "iana", "extensions" : ["sub"]}, "text/vnd.esmertec.theme-descriptor" : { "source" : "iana"}, "text/vnd.fly" : { "source" : "iana", "extensions" : ["fly"]}, "text/vnd.fmi.flexstor" : { "source" : "iana", "extensions" : ["flx"]}, "text/vnd.gml" : { "source" : "iana"}, "text/vnd.graphviz" : { "source" : "iana", "extensions" : ["gv"]}, "text/vnd.hgl" : { "source" : "iana"}, "text/vnd.in3d.3dml" : { "source" : "iana", "extensions" : ["3dml"]}, "text/vnd.in3d.spot" : { "source" : "iana", "extensions" : ["spot"]}, "text/vnd.iptc.newsml" : { "source" : "iana"}, "text/vnd.iptc.nitf" : { "source" : "iana"}, "text/vnd.latex-z" : { "source" : "iana"}, "text/vnd.motorola.reflex" : { "source" : "iana"}, "text/vnd.ms-mediapackage" : { "source" : "iana"}, "text/vnd.net2phone.commcenter.command" : { "source" : "iana"}, "text/vnd.radisys.msml-basic-layout" : { "source" : "iana"}, "text/vnd.senx.warpscript" : { "source" : "iana"}, "text/vnd.si.uricatalogue" : { "source" : "iana"}, "text/vnd.sun.j2me.app-descriptor" : { "source" : "iana", "extensions" : ["jad"]}, "text/vnd.trolltech.linguist" : { "source" : "iana"}, "text/vnd.wap.si" : { "source" : "iana"}, "text/vnd.wap.sl" : { "source" : "iana"}, "text/vnd.wap.wml" : { "source" : "iana", "extensions" : ["wml"]}, "text/vnd.wap.wmlscript" : { "source" : "iana", "extensions" : ["wmls"]}, "text/vtt" : { "charset" : "UTF-8", "compressible" : true, "extensions" : ["vtt"]}, "text/x-asm" : { "source" : "apache", "extensions" : ["s","asm"]}, "text/x-c" : { "source" : "apache", "extensions" : ["c","cc","cxx","cpp","h","hh","dic"]}, "text/x-component" : { "source" : "nginx", "extensions" : ["htc"]}, "text/x-fortran" : { "source" : "apache", "extensions" : ["f","for","f77","f90"]}, "text/x-gwt-rpc" : { "compressible" : true}, "text/x-handlebars-template" : { "extensions" : ["hbs"]}, "text/x-java-source" : { "source" : "apache", "extensions" : ["java"]}, "text/x-jquery-tmpl" : { "compressible" : true}, "text/x-lua" : { "extensions" : ["lua"]}, "text/x-markdown" : { "compressible" : true, "extensions" : ["mkd"]}, "text/x-nfo" : { "source" : "apache", "extensions" : ["nfo"]}, "text/x-opml" : { "source" : "apache", "extensions" : ["opml"]}, "text/x-org" : { "compressible" : true, "extensions" : ["org"]}, "text/x-pascal" : { "source" : "apache", "extensions" : ["p","pas"]}, "text/x-processing" : { "compressible" : true, "extensions" : ["pde"]}, "text/x-sass" : { "extensions" : ["sass"]}, "text/x-scss" : { "extensions" : ["scss"]}, "text/x-setext" : { "source" : "apache", "extensions" : ["etx"]}, "text/x-sfv" : { "source" : "apache", "extensions" : ["sfv"]}, "text/x-suse-ymp" : { "compressible" : true, "extensions" : ["ymp"]}, "text/x-uuencode" : { "source" : "apache", "extensions" : ["uu"]}, "text/x-vcalendar" : { "source" : "apache", "extensions" : ["vcs"]}, "text/x-vcard" : { "source" : "apache", "extensions" : ["vcf"]}, "text/xml" : { "source" : "iana", "compressible" : true, "extensions" : ["xml"]}, "text/xml-external-parsed-entity" : { "source" : "iana"}, "text/yaml" : { "extensions" : ["yaml","yml"]}, "video/1d-interleaved-parityfec" : { "source" : "iana"}, "video/3gpp" : { "source" : "iana", "extensions" : ["3gp","3gpp"]}, "video/3gpp-tt" : { "source" : "iana"}, "video/3gpp2" : { "source" : "iana", "extensions" : ["3g2"]}, "video/bmpeg" : { "source" : "iana"}, "video/bt656" : { "source" : "iana"}, "video/celb" : { "source" : "iana"}, "video/dv" : { "source" : "iana"}, "video/encaprtp" : { "source" : "iana"}, "video/h261" : { "source" : "iana", "extensions" : ["h261"]}, "video/h263" : { "source" : "iana", "extensions" : ["h263"]}, "video/h263-1998" : { "source" : "iana"}, "video/h263-2000" : { "source" : "iana"}, "video/h264" : { "source" : "iana", "extensions" : ["h264"]}, "video/h264-rcdo" : { "source" : "iana"}, "video/h264-svc" : { "source" : "iana"}, "video/h265" : { "source" : "iana"}, "video/iso.segment" : { "source" : "iana"}, "video/jpeg" : { "source" : "iana", "extensions" : ["jpgv"]}, "video/jpeg2000" : { "source" : "iana"}, "video/jpm" : { "source" : "apache", "extensions" : ["jpm","jpgm"]}, "video/mj2" : { "source" : "iana", "extensions" : ["mj2","mjp2"]}, "video/mp1s" : { "source" : "iana"}, "video/mp2p" : { "source" : "iana"}, "video/mp2t" : { "source" : "iana", "extensions" : ["ts"]}, "video/mp4" : { "source" : "iana", "compressible" : false, "extensions" : ["mp4","mp4v","mpg4"]}, "video/mp4v-es" : { "source" : "iana"}, "video/mpeg" : { "source" : "iana", "compressible" : false, "extensions" : ["mpeg","mpg","mpe","m1v","m2v"]}, "video/mpeg4-generic" : { "source" : "iana"}, "video/mpv" : { "source" : "iana"}, "video/nv" : { "source" : "iana"}, "video/ogg" : { "source" : "iana", "compressible" : false, "extensions" : ["ogv"]}, "video/parityfec" : { "source" : "iana"}, "video/pointer" : { "source" : "iana"}, "video/quicktime" : { "source" : "iana", "compressible" : false, "extensions" : ["qt","mov"]}, "video/raptorfec" : { "source" : "iana"}, "video/raw" : { "source" : "iana"}, "video/rtp-enc-aescm128" : { "source" : "iana"}, "video/rtploopback" : { "source" : "iana"}, "video/rtx" : { "source" : "iana"}, "video/smpte291" : { "source" : "iana"}, "video/smpte292m" : { "source" : "iana"}, "video/ulpfec" : { "source" : "iana"}, "video/vc1" : { "source" : "iana"}, "video/vc2" : { "source" : "iana"}, "video/vnd.cctv" : { "source" : "iana"}, "video/vnd.dece.hd" : { "source" : "iana", "extensions" : ["uvh","uvvh"]}, "video/vnd.dece.mobile" : { "source" : "iana", "extensions" : ["uvm","uvvm"]}, "video/vnd.dece.mp4" : { "source" : "iana"}, "video/vnd.dece.pd" : { "source" : "iana", "extensions" : ["uvp","uvvp"]}, "video/vnd.dece.sd" : { "source" : "iana", "extensions" : ["uvs","uvvs"]}, "video/vnd.dece.video" : { "source" : "iana", "extensions" : ["uvv","uvvv"]}, "video/vnd.directv.mpeg" : { "source" : "iana"}, "video/vnd.directv.mpeg-tts" : { "source" : "iana"}, "video/vnd.dlna.mpeg-tts" : { "source" : "iana"}, "video/vnd.dvb.file" : { "source" : "iana", "extensions" : ["dvb"]}, "video/vnd.fvt" : { "source" : "iana", "extensions" : ["fvt"]}, "video/vnd.hns.video" : { "source" : "iana"}, "video/vnd.iptvforum.1dparityfec-1010" : { "source" : "iana"}, "video/vnd.iptvforum.1dparityfec-2005" : { "source" : "iana"}, "video/vnd.iptvforum.2dparityfec-1010" : { "source" : "iana"}, "video/vnd.iptvforum.2dparityfec-2005" : { "source" : "iana"}, "video/vnd.iptvforum.ttsavc" : { "source" : "iana"}, "video/vnd.iptvforum.ttsmpeg2" : { "source" : "iana"}, "video/vnd.motorola.video" : { "source" : "iana"}, "video/vnd.motorola.videop" : { "source" : "iana"}, "video/vnd.mpegurl" : { "source" : "iana", "extensions" : ["mxu","m4u"]}, "video/vnd.ms-playready.media.pyv" : { "source" : "iana", "extensions" : ["pyv"]}, "video/vnd.nokia.interleaved-multimedia" : { "source" : "iana"}, "video/vnd.nokia.mp4vr" : { "source" : "iana"}, "video/vnd.nokia.videovoip" : { "source" : "iana"}, "video/vnd.objectvideo" : { "source" : "iana"}, "video/vnd.radgamettools.bink" : { "source" : "iana"}, "video/vnd.radgamettools.smacker" : { "source" : "iana"}, "video/vnd.sealed.mpeg1" : { "source" : "iana"}, "video/vnd.sealed.mpeg4" : { "source" : "iana"}, "video/vnd.sealed.swf" : { "source" : "iana"}, "video/vnd.sealedmedia.softseal.mov" : { "source" : "iana"}, "video/vnd.uvvu.mp4" : { "source" : "iana", "extensions" : ["uvu","uvvu"]}, "video/vnd.vivo" : { "source" : "iana", "extensions" : ["viv"]}, "video/vp8" : { "source" : "iana"}, "video/webm" : { "source" : "apache", "compressible" : false, "extensions" : ["webm"]}, "video/x-f4v" : { "source" : "apache", "extensions" : ["f4v"]}, "video/x-fli" : { "source" : "apache", "extensions" : ["fli"]}, "video/x-flv" : { "source" : "apache", "compressible" : false, "extensions" : ["flv"]}, "video/x-m4v" : { "source" : "apache", "extensions" : ["m4v"]}, "video/x-matroska" : { "source" : "apache", "compressible" : false, "extensions" : ["mkv","mk3d","mks"]}, "video/x-mng" : { "source" : "apache", "extensions" : ["mng"]}, "video/x-ms-asf" : { "source" : "apache", "extensions" : ["asf","asx"]}, "video/x-ms-vob" : { "source" : "apache", "extensions" : ["vob"]}, "video/x-ms-wm" : { "source" : "apache", "extensions" : ["wm"]}, "video/x-ms-wmv" : { "source" : "apache", "compressible" : false, "extensions" : ["wmv"]}, "video/x-ms-wmx" : { "source" : "apache", "extensions" : ["wmx"]}, "video/x-ms-wvx" : { "source" : "apache", "extensions" : ["wvx"]}, "video/x-msvideo" : { "source" : "apache", "extensions" : ["avi"]}, "video/x-sgi-movie" : { "source" : "apache", "extensions" : ["movie"]}, "video/x-smv" : { "source" : "apache", "extensions" : ["smv"]}, "x-conference/x-cooltalk" : { "source" : "apache", "extensions" : ["ice"]}, "x-shader/x-fragment" : { "compressible" : true}, "x-shader/x-vertex" : { "compressible" : true}};
 tink__$Chunk_EmptyChunk.EMPTY = new haxe_io_Bytes(new ArrayBuffer(0));
 tink_Chunk.EMPTY = new tink__$Chunk_EmptyChunk();
 tink_streams_Empty.inst = new tink_streams_Empty();
 tink_io_Source.EMPTY = tink_streams_Empty.inst;
 tink_json_JsonString.BACKSLASH = "\\";
-tink_serialize__$Encoder_BytesBuffer.POOL = [];
 tink_websocket_MessageRegrouper.inst = tink_streams_Regrouper.ofFuncSync(function(frames,s) {
 	if(!frames[frames.length - 1].fin) {
 		return tink_streams_RegroupResult.Untouched;
@@ -11127,4 +18916,4 @@ tink_websocket_MessageRegrouper.inst = tink_streams_Regrouper.ofFuncSync(functio
 	return tink_streams_RegroupResult.Converted(tink_streams_Stream.single(tmp));
 });
 DuckJet.main();
-})(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
+})(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

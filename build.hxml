@@ -1,6 +1,7 @@
-dev.hxml
+server.hxml
 -cp src
 -main DuckJet
 --dce full
+-D duckfireEnabled
 
 --js app/duck-jet.js

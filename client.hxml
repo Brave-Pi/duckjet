@@ -1,0 +1,7 @@
+dev.hxml
+-cp src
+-D js-es=6
+duck_jet.Client
+-D client
+
+-js bin/js/client.js

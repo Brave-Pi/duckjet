@@ -16,7 +16,9 @@ typedef DropoffSession = {
 	currentFile:String,
 	tmp:String,
 	channel:SignalTrigger<Yield<Chunk, Error>>,
-	attachments:Array<String>
+	attachments:Array<String>,
+  attachmentsWritten:Int,
+  closed:Bool 
 };
 
 typedef SessionInitiation = {uuid:String};

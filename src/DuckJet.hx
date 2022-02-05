@@ -1,15 +1,15 @@
 package;
 
+#if !client
 import tink.http.containers.*;
 import tink.http.Response;
 import tink.web.routing.*;
 import fire_duck.Session;
 import duck_jet.Ws;
-
+using tink.io.Source;
 using Lambda;
 
 import boisly.AppSettings;
-
 @:await class DuckJet {
 	public static var handler:tink.http.Handler;
 
@@ -17,15 +17,15 @@ import boisly.AppSettings;
 
 	@:await public static function main() {
     try {
-
-      @:await run(Sys.args()[0]);
+      trace(boisly.AppSettings.config);
+      @:await run(Std.parseInt(Sys.args()[0]));
     } catch(e) {
       trace(e.details());
       throw Error.withData('Unable to start service', e);
     }
 	}
 
-	@:async public static function run(port)
+	@:async public static function run(?port = 8080)
 		return try {
 			final container = new NodeContainer(port,
 				{upgradable: true});
@@ -43,6 +43,13 @@ import boisly.AppSettings;
 			handler = req ->
 				router.route(Context.authed(req,
 					cast Session.new))
+        .next(res -> if(boisly.AppSettings.config.duckJet.loggingEnabled) {
+          trace(req.header);
+          trace(req.body);
+          trace(res.header);
+          trace(@:await res.body.all());
+          res;
+        } else res)
 				.recover(OutgoingResponse.reportError);
 			#else
 			final router = new Router<duck_jet.Api.Impl>(controller);
@@ -50,6 +57,7 @@ import boisly.AppSettings;
 				router.route(Context.ofRequest(req))
 				.recover(OutgoingResponse.reportError);
 			#end
+      handler = handler.applyMiddleware(new tink.http.middleware.CrossOriginResourceSharing(~/.*/gi));
 			Ws.server.clientConnected.handle(controller.dropoffSession);
 			var result = @:await container.run(handler);
 			Sys.println('${AppSettings.config.duckJet.svc.name} running on port $port');
@@ -58,12 +66,14 @@ import boisly.AppSettings;
 		} catch(e) throw Error.withData('Unable to run on port $port', e);
 }
 
-// #if !macro
-// #end
+#end
 
 @:config
 class JetConfig extends fire_duck.Config {
 	public var duckJet:{
+    var sessionTimeout:Int;
+    @:optional
+    var loggingEnabled:Bool;
 		var svc:{
       var https:Bool;
 			var name:String;

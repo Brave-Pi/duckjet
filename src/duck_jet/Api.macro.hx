@@ -18,20 +18,21 @@ class Impl {
 			})(e);
 
 		var actualExpr = macro $b{
-			[(macro final binData:$ct = tink.Serialize.decode(d)), inner]
+			[(macro final binData:$ct = tink.Json.parse(d)), inner]
 		};
 
 		return macro switch m {
-			case Binary(d):
+			case Text(d):
 				try $actualExpr catch (e) {
+					fire_duck.Logger.log(Error.withData("Invalid transmission data: " + e.details(),
+						e));
 					client.close();
           
-					trace(Error.withData("Invalid transmission data: " + e.details(),
-						e));
 				}
 
 			default:
-				throw 'I know not what you speak of';
+        fire_duck.Logger.log('ignore');
+				return;
 		}
 	}
 }
